@@ -57,3 +57,11 @@ end
 Players.PlayerRemoving:Connect(function(player)
 	Profile.clearSession(player)
 end)
+
+-- Latúnia: protótipo separado, sem substituir Hub, Ember, spawn ou selos.
+-- Editor desta integração: Codex, autorizado pelo dono para esta rodada.
+local Latunia = require(script.Parent.Latunia.Codex.Map)
+local latuniaOk, latuniaError = pcall(Latunia.build, workspace, returnToHub)
+if not latuniaOk then
+	warn("Latúnia não iniciou; Hub/Ember preservados: " .. tostring(latuniaError))
+end

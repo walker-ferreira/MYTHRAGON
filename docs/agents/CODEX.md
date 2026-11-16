@@ -6,6 +6,7 @@
 
 - Base conferida: `origin/main` = `fd188854a8bf9176a636b1c9ec71167c82dfbd72`.
 - Branch/pasta próprias: `codex/varkhion-fase1`, `MYTHRAGON-codex-varkhion`.
+- Entrega em [PR #6 (rascunho)](https://github.com/walker-ferreira/MYTHRAGON/pull/6), implementação `d923e6f`. [CI da implementação](https://github.com/walker-ferreira/MYTHRAGON/actions/runs/43791170078) PASS (sintaxe/build). Pedidos enviados ao GLM no [PR #4](https://github.com/walker-ferreira/MYTHRAGON/pull/4#issuecomment-6905459521).
 - PRs abertos na leitura inicial: [#4 coordenação](https://github.com/walker-ferreira/MYTHRAGON/pull/4), [#5 plano](https://github.com/walker-ferreira/MYTHRAGON/pull/5). Lidos AGENTS, GDD, arquitetura e decisões 0002/0003 da base; plano, PROJECT_STATUS e NEXT_TASKS do PR #5; ambos os registros de agentes do PR #4. Nenhum desses PRs foi integrado por esta rodada.
 - Ember reaproveitado **sem alteração**: `Map.luau` (arena, ruínas, plataforma servo 0–12 studs), `Combat.luau` (guardião procedural de obsidiana, ataque E/toque, alcance/cooldown/vida no servidor, derrota/abandono e retorno após vitória), `EncounterState.luau` e spec.
 - `Hub/Map.luau`, `Profile/Profile.luau` e `Start.server.luau`: portal e selo individual de sessão existentes; não são meus arquivos nesta rodada.
@@ -13,7 +14,7 @@
 - Publicação anterior: build do SHA da base enviado na [execução 43786254524](https://github.com/walker-ferreira/MYTHRAGON/actions/runs/43786254524); resumo sem número de revisão confirmado. Não inferir que a versão publicada continua sendo a atual. Revisão 5 é evidência do dono para a plataforma, não teste desta fase.
 - Caminhos autorizados ao Codex: `src/server/Dragons/`, este registro, `docs/testing/varkhion-fase1.md`, `docs/decisions/0004-varkhion-interacao.md`. Ember preservado. GLM é o único editor de Hub e Start nesta rodada. Workflows, Rojo, AGENTS e documentos do plano sem alterações.
 - Implementado nesta sessão: modelo original provisório de Varkhion, montagem idempotente/ciclo de vida, prompt E/toque e resposta individual com validação no servidor; regras puras e spec próprios. Nenhum bootstrap automático ou concessão de selo/posse.
-- Verificação local: sintaxe de 12 fontes, três specs (Ember, Profile, InteractionState), build Rojo e comparação dos caminhos preservados PASS. Integração com santuário, revisão GLM e todos os casos de cliente permanecem pendentes, detalhados em [testing](../testing/varkhion-fase1.md).
+- Verificação local final: sintaxe de 13 fontes, três specs (Ember, Profile, InteractionState), build Rojo e comparação dos caminhos preservados PASS. Acrescentado `Varkhion.engine.spec.luau`, módulo manual de Studio sem autoexecução/concessão: apenas compilado, **não executado no motor**. Integração com santuário, revisão GLM e todos os casos de cliente permanecem pendentes, detalhados em [testing](../testing/varkhion-fase1.md).
 
 ## Pedidos e decisões consolidados
 
@@ -50,11 +51,11 @@
 
 ## Resumo do que GLM está fazendo
 
-Na consulta inicial, `GLM.md` do PR #4 é apenas template: sem branch de Aetheria, pedidos, respostas ou resultados. O PR #5 atribui ao GLM Aetheria, santuário, objetivo inicial, portal, perfil e encaixe em Start. Isso é **plano**, não implementação confirmada. Os PRs #4/#5 abertos são de documentação; não comprovam entrega de Aetheria. Consultar novamente antes de encerrar.
+Na consulta inicial e na releitura antes de concluir, `GLM.md` do PR #4 continua apenas template: sem branch de Aetheria, pedidos, respostas ou resultados. O PR #5 atribui ao GLM Aetheria, santuário, objetivo inicial, portal, perfil e encaixe em Start. Isso é **plano**, não implementação confirmada. PRs abertos na releitura: #4/#5 (documentação) e #6 (Codex); nenhum PR de Aetheria identificado. Não há revisão cruzada nova a aproveitar nem resposta do parceiro a inventar.
 
 ## Próximas tarefas
 
-1. Codex: implementar e testar modelo/interação isolados; disponibilizar PR com VX-001/VX-002.
+1. Codex: implementação isolada, specs puras, build e PR #6 concluídos; aguardar GLM sem contornar a responsabilidade de Start.
 2. GLM: responder aos mesmos IDs em `GLM.md`, montar santuário/objetivo e integrar Start em sua branch.
 3. Ambos: revisão cruzada dos PRs e execução do percurso combinado no cliente (teclado, toque, dois jogadores e falhas).
 4. Codex: somente após CI, revisão e QA aprovados, integrar e publicar o artefato validado da main no teste; registrar a revisão real.

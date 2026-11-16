@@ -32,6 +32,8 @@ Como não há incorporação de modelo externo, nenhum Script, LocalScript ou Mo
 
 Specs puras cobrem alcance, cooldown, vida, entradas não finitas, callback pendente, repetição, falha/retry, dois jogadores e desconexão/destruição. Elas não testam o motor, geometria na tela ou controles reais.
 
+O módulo manual `Varkhion.engine.spec.luau` oferece verificações de geometria/montagem/ciclo de vida para o servidor do Studio, sem autoexecução ou concessão. Está compilado, mas ainda não foi executado no motor; instruções no checklist.
+
 O mapeamento Rojo existente (`$path: src/server`) já inclui o novo diretório: sem editar configuração ou autoexecutar demo. **Até GLM montar o módulo em Start, o novo dragão não aparece na cena em runtime.** Essa dependência é explícita; não criar um segundo bootstrap automático para contorná-la.
 
 Regressão de Ember: conservar os quatro arquivos exatamente como na base, incluindo função da plataforma 0–12 studs. Manter `Ember.build`, `connectReturn`, callback de vitória e perfil individual. Checklist de evidências e bloqueios em [docs/testing/varkhion-fase1.md](../testing/varkhion-fase1.md).

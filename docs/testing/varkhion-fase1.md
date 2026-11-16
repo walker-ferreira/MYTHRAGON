@@ -9,7 +9,7 @@ Ambiente: Windows, CLI Luau 0.744 e Rojo 7.6.1. Resultados executados nesta roda
 
 | Verificação | Comando / critério | Resultado |
 | --- | --- | --- |
-| Sintaxe | `luau-compile --null` em todos os `.luau` de `src` | PASS: 12 fontes |
+| Sintaxe | `luau-compile --null` em todos os `.luau` de `src` | PASS: 13 fontes (inclui compilação, não execução, do spec de motor) |
 | Combate existente | `luau src/server/Ember/EncounterState.spec.luau` | PASS: `Ember rules: PASS` |
 | Perfil existente | `luau src/server/Profile/Profile.spec.luau` | PASS: `Profile rules: PASS` |
 | Interação Varkhion | `luau src/server/Dragons/InteractionState.spec.luau` | PASS: `Varkhion interaction rules: PASS` |
@@ -18,7 +18,19 @@ Ambiente: Windows, CLI Luau 0.744 e Rojo 7.6.1. Resultados executados nesta roda
 
 ## CI remota
 
-Pendente de PR/execução. O workflow atual verifica sintaxe e build; **não executa as specs**. Não contar os testes locais como CI nem build como validação de cliente.
+[PR #6](https://github.com/walker-ferreira/MYTHRAGON/pull/6), implementação `d923e6f`: [execução 43791170078](https://github.com/walker-ferreira/MYTHRAGON/actions/runs/43791170078), **PASS** (sintaxe/build das 12 fontes desse commit). A atualização posterior adiciona o spec manual do motor e estas evidências; resultado do HEAD mais recente deve ser conferido nos checks do PR.
+
+O workflow atual verifica sintaxe e build; **não executa as specs**. Não contar os testes locais como CI nem build como validação de cliente.
+
+## Spec de motor disponível, ainda não executado
+
+`src/server/Dragons/Varkhion.engine.spec.luau` é um ModuleScript sem autoexecução, sem jogador simulado ou concessão. No **servidor do Studio durante Play**, executar pela Command Bar:
+
+```luau
+require(game.ServerScriptService.Mythragon.Dragons["Varkhion.engine.spec"])()
+```
+
+Cria e limpa um fixture temporário afastado do mapa. Verifica montagem única, âncora girada, limite de geometria, identidade visual estrutural, partes inertes, prompt, destruição explícita/recriação e ausência de scripts dentro do modelo. Saída esperada: `Varkhion engine geometry/lifecycle: PASS`. **Estado real: não executado**; não substitui o percurso jogável nem valida a aparência visual.
 
 ## Cliente Roblox / Studio
 

@@ -149,16 +149,14 @@ function Combat:enter(player)
                 break
             end
             local position = root.Position
-            if position.Y < self.center.Y - 10
-                or (position - self.center).Magnitude > 65 then
-                self:returnPlayer(player)
-                break
+            local outsideArena = position.Y < self.center.Y - 10
+                or (position - self.center).Magnitude > 65
+            local won = s.rules.result == "victory"
+            if outsideArena or (won and os.clock() - s.wonAt >= 30) then
+                if self:returnPlayer(player) then break end
+                continue
             end
-            if s.rules.result == "victory" then
-                if os.clock() - s.wonAt >= 30 then
-                    self:returnPlayer(player)
-                    break
-                end
+            if won then
                 continue
             end
             self.warning.Transparency = 0.35
@@ -206,9 +204,24 @@ function Combat:attack(player)
 end
 
 function Combat:returnPlayer(player)
-    if not self:valid(player) then return end
-    self:close("abandoned")
-    if self.onReturn then self.onReturn(player) end
+    local s = self:valid(player)
+    if not s or s.returning or not self.onReturn then return false end
+
+    s.returning = true
+    local ok, err = pcall(self.onReturn, player)
+    s.returning = false
+    if not ok then
+        warn("Ember: falha ao retornar ao hub: " .. tostring(err))
+        if self.session == s then
+            self:message("Falha ao voltar ao hub · tente o portal roxo novamente")
+        end
+        return false
+    end
+
+    if self.session == s then
+        self:close("abandoned")
+    end
+    return true
 end
 
 return Combat

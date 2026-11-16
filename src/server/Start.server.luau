@@ -21,8 +21,12 @@ map.Parent = workspace
 local function onVictory(player, encounterId)
 	local status, seal = Profile.recordVictory(player, "Ember", encounterId)
 	if status == "granted" and seal then
-		Hub.setSealEarned(map.Hub, seal.index)
-		Hub.notifySealEarned(player, seal.title)
+		-- Painel individual: só este jogador vê o selo conquistado.
+		Hub.setSealEarned(player, seal.index)
+		Hub.notify(player, seal.title .. " conquistado!")
+	elseif status == "duplicate" and seal and Profile.hasSeal(player, seal.id) then
+		-- Selo já existe na sessão: painel segue a fonte de verdade (Profile).
+		Hub.setSealEarned(player, seal.index)
 	end
 end
 

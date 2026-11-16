@@ -1,8 +1,9 @@
--- Hub: ilha flutuante, quatro selos com estado da sessão e entrada clara do
--- Reino de Ember por um portal rúnico. Responsável nesta rodada: GLM 5.3.
+-- Hub: ilha flutuante, quatro selos de identificação neutra e entrada clara
+-- do Reino de Ember por um portal rúnico. Responsável nesta rodada: GLM 5.3.
 -- O portal só aceita o jogador no servidor: personagem vivo e dentro da
--- distância máxima do portal. O feedback de selo é por jogador (aviso no
--- PlayerGui) e o estado do selo no mundo é atualizado por sessão.
+-- distância máxima do portal. O progresso de conquista é INDIVIDUAL: painel
+-- persistente no PlayerGui de cada jogador (ResetOnSpawn=false); os selos
+-- no mundo são apenas identificação, iguais para todos.
 -- Direção 3D desta rodada: builds procedurais próprios inspirados em
 -- referências de portal rúnico, pedras entalhadas e ilha flutuante;
 -- nenhum modelo externo importado. Fontes e regras em
@@ -62,74 +63,145 @@ local function createSparks(parent, color)
 	return sparks
 end
 
--- Estado visual do selo: bloqueado = orbe de basalto apagado e runa fraca;
--- conquistado = orbe aceso com luz e faíscas. Chamado por Hub.setSealEarned.
-local function applySealState(seal, earned)
+-- Aparência neutra dos selos no mundo: orbe de basalto apagado e runa
+-- fraca, igual para todos — identificação do reino, não estado de
+-- conquista. O progresso individual vive no painel por jogador (PlayerGui).
+local function applySealState(seal)
 	local color = seal:GetAttribute("Color") or Color3.fromRGB(255, 255, 255)
 	local rune = seal.Parent and seal.Parent:FindFirstChild(seal.Name .. "Rune")
 	local light = seal:FindFirstChild("SealLight")
 	local sparks = seal:FindFirstChild("Sparks")
-	if earned then
-		seal.Material = Enum.Material.Neon
-		seal.Color = color
-		seal.Transparency = 0
-		if light then
-			light.Enabled = true
-		end
-		if sparks then
-			sparks.Enabled = true
-		end
-		if rune then
-			rune.Transparency = 0
-		end
-	else
-		seal.Material = Enum.Material.Basalt
-		seal.Color = color:Lerp(LOCKED_COLOR, 0.78)
-		seal.Transparency = 0.15
-		if light then
-			light.Enabled = false
-		end
-		if sparks then
-			sparks.Enabled = false
-		end
-		if rune then
-			rune.Transparency = 0.65
-		end
+	seal.Material = Enum.Material.Basalt
+	seal.Color = color:Lerp(LOCKED_COLOR, 0.78)
+	seal.Transparency = 0.15
+	if light then
+		light.Enabled = false
+	end
+	if sparks then
+		sparks.Enabled = false
+	end
+	if rune then
+		rune.Transparency = 0.65
 	end
 end
 
--- Marca o selo visual do hub como conquistado nesta sessão (uma única vez).
--- hubModel é o Model retornado por Hub.build dentro do parent informado.
-function Hub.setSealEarned(hubModel, sealIndex)
-	if not hubModel or hubModel.Parent == nil then
-		return
-	end
-	local seal = hubModel:FindFirstChild("Seal" .. tostring(sealIndex))
-	if not (seal and seal:IsA("BasePart")) then
-		return
-	end
-	if seal:GetAttribute("Earned") then
-		return
-	end
-	seal:SetAttribute("Earned", true)
-	applySealState(seal, true)
+-- Painel de progresso INDIVIDUAL (PlayerGui é exclusivo de quem o recebe).
+-- Fonte de verdade é o Profile; o Start chama Hub.setSealEarned(player, index)
+-- após a concessão. Painéis: criados para PlayerAdded e para quem já está no
+-- servidor, com dedup; limpos no PlayerRemoving.
+local panels = {}
+local panelsInitialized = false
 
-	local tag = Instance.new("BillboardGui")
-	tag.Name = "EarnedTag"
-	tag.Size = UDim2.new(6, 0, 1.5, 0)
-	tag.StudsOffsetWorldSpace = Vector3.new(0, 2.6, 0)
-	tag.AlwaysOnTop = true
-	tag.Parent = seal
+local function applyEarned(panel, index)
+	if not panel or panel.earned[index] then
+		return
+	end
+	panel.earned[index] = true
+	panel.labels[index].TextColor3 = Color3.fromRGB(255, 214, 90)
+	panel.labels[index].Text = "✓ " .. SEAL_TITLES[index] .. " · conquistado"
+end
 
-	local label = Instance.new("TextLabel")
-	label.Size = UDim2.fromScale(1, 1)
-	label.BackgroundTransparency = 1
-	label.Font = Enum.Font.GothamBold
-	label.TextSize = 18
-	label.TextColor3 = Color3.fromRGB(255, 214, 90)
-	label.TextStrokeTransparency = 0.4
-	label.Text = "✓ " .. (SEAL_TITLES[sealIndex] or "Selo") .. " conquistado"
-	label.Parent = tag
+local function ensurePanel(player)
+	if panels[player] then
+		return panels[player]
+	end
+	local playerGui = player:FindFirstChildOfClass("PlayerGui")
+	if not playerGui then
+		return nil
+	end
+
+	local gui = Instance.new("ScreenGui")
+	gui.Name = "SealPanel"
+	gui.ResetOnSpawn = false
+	gui.DisplayOrder = 5
+	gui.Parent = playerGui
+
+	local frame = Instance.new("Frame")
+	frame.Name = "Panel"
+	frame.AnchorPoint = Vector2.new(1, 0)
+	frame.Position = UDim2.new(1, -16, 0, 16)
+	frame.Size = UDim2.new(0, 230, 0, 136)
+	frame.BackgroundColor3 = Color3.fromRGB(20, 16, 28)
+	frame.BackgroundTransparency = 0.2
+	frame.BorderSizePixel = 0
+	frame.Parent = gui
+
+	local title = Instance.new("TextLabel")
+	title.Name = "Title"
+	title.Size = UDim2.new(1, 0, 0, 28)
+	title.BackgroundTransparency = 1
+	title.Font = Enum.Font.GothamBold
+	title.TextSize = 14
+	title.TextColor3 = Color3.fromRGB(235, 226, 245)
+	title.Text = "Selos · sessão"
+	title.Parent = frame
+
+	local labels = {}
+	for index, sealTitle in ipairs(SEAL_TITLES) do
+		local row = Instance.new("TextLabel")
+		row.Name = "Seal" .. index
+		row.Position = UDim2.new(0, 10, 0, 28 + (index - 1) * 26)
+		row.Size = UDim2.new(1, -20, 0, 24)
+		row.BackgroundTransparency = 1
+		row.Font = Enum.Font.Gotham
+		row.TextSize = 14
+		row.TextXAlignment = Enum.TextXAlignment.Left
+		row.TextColor3 = Color3.fromRGB(150, 142, 168)
+		row.Text = "○ " .. sealTitle .. " · bloqueado"
+		row.Parent = frame
+		labels[index] = row
+	end
+
+	local panel = { gui = gui, labels = labels, earned = {} }
+	panels[player] = panel
+	return panel
+end
+
+local function setupPanel(player)
+	if panels[player] then
+		return
+	end
+	task.spawn(function()
+		local playerGui = player:FindFirstChildOfClass("PlayerGui")
+			or player:WaitForChild("PlayerGui", 30)
+		if playerGui and player.Parent and not panels[player] then
+			ensurePanel(player)
+		end
+	end)
+end
+
+local function initPanels()
+	if panelsInitialized then
+		return
+	end
+	panelsInitialized = true
+	Players.PlayerAdded:Connect(setupPanel)
+	Players.PlayerRemoving:Connect(function(player)
+		local panel = panels[player]
+		if panel then
+			panel.gui:Destroy()
+			panels[player] = nil
+		end
+	end)
+	for _, player in ipairs(Players:GetPlayers()) do
+		setupPanel(player)
+	end
+end
+
+-- Marca o selo conquistado APENAS no painel deste jogador. Idempotente.
+function Hub.setSealEarned(player, index)
+	local panel = ensurePanel(player)
+	if not panel then
+		-- PlayerGui ainda indisponível (raro): cria quando chegar e aplica.
+		task.spawn(function()
+			local playerGui = player:WaitForChild("PlayerGui", 30)
+			if playerGui and player.Parent then
+				applyEarned(ensurePanel(player), index)
+			end
+		end)
+		return
+	end
+	applyEarned(panel, index)
 end
 
 -- Feedback por jogador: aviso exclusivo no PlayerGui, sem tocar no cliente.
@@ -166,6 +238,8 @@ function Hub.notify(player, text)
 end
 
 function Hub.build(parent, onEnterEmber)
+	initPanels()
+
 	local model = Instance.new("Model")
 	model.Name = "Hub"
 	model.Parent = parent
@@ -228,7 +302,7 @@ function Hub.build(parent, onEnterEmber)
 		light.Parent = seal
 
 		createSparks(seal, color)
-		applySealState(seal, false)
+		applySealState(seal)
 	end
 
 	-- Portal rúnico de Ember: base, batentes, verga com runa e superfície.

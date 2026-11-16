@@ -1,9 +1,9 @@
 -- SOMENTE STUDIO: progresso de teste desta rodada. Enquanto a concessão real
 -- vem da vitória validada de Ember (sol/ember-combate), este script simula a
 -- vitória alguns segundos após o jogador entrar para exercitar no Studio o
--- caminho inteiro: recordVictory idempotente -> Hub.setSealEarned ->
--- aviso por jogador. Não roda no jogo publicado (RunService:IsStudio());
--- remover depois do piloto é seguro.
+-- caminho inteiro: recordVictory idempotente -> Hub.setSealEarned(player) ->
+-- painel individual + aviso por jogador. Não roda no jogo publicado
+-- (RunService:IsStudio()); remover depois do piloto é seguro.
 
 local RunService = game:GetService("RunService")
 if not RunService:IsStudio() then
@@ -17,24 +17,12 @@ local Hub = require(script.Parent.Parent.Hub.Map)
 
 local DEMO_DELAY = 4
 
-local function waitForMap()
-	for _ = 1, 40 do
-		local map = workspace:FindFirstChild("MythragonMap")
-		if map then
-			return map
-		end
-		task.wait(0.25)
-	end
-	return nil
-end
-
 local function applyGranted(player, seal)
-	local map = waitForMap()
-	local hub = map and map:FindFirstChild("Hub")
-	if hub and seal then
-		Hub.setSealEarned(hub, seal.index)
+	if not seal then
+		return
 	end
-	Hub.notifySealEarned(player, seal.title)
+	Hub.setSealEarned(player, seal.index)
+	Hub.notify(player, seal.title .. " conquistado!")
 end
 
 local function runDemo(player)

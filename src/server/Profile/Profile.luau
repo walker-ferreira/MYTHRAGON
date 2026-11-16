@@ -41,6 +41,16 @@ export type Session = {
 
 local sessions: { [Player]: Session } = {}
 
+-- Registro tolerante a ambiente: Roblox tem warn; o CLI Luau standalone
+-- (spec) não o tem, então o diagnóstico cai no print quando indisponível.
+local function logDuplicate(message: string)
+	if warn then
+		warn(message)
+	else
+		print(message)
+	end
+end
+
 local function getSession(player: Player): Session
 	local session = sessions[player]
 	if not session then
@@ -66,7 +76,7 @@ function Profile.recordVictory(player: Player, realmId: string, encounterId: str
 	if type(encounterId) == "string" and encounterId ~= "" then
 		if session.encounters[encounterId] then
 			session.duplicates += 1
-			warn(("[Profile] evento duplicado ignorado: %s / %s (total %d)")
+			logDuplicate(("[Profile] evento duplicado ignorado: %s / %s (total %d)")
 				:format(player.Name, encounterId, session.duplicates))
 			return "duplicate", seal
 		end
@@ -74,7 +84,7 @@ function Profile.recordVictory(player: Player, realmId: string, encounterId: str
 	end
 	if session.seals[seal.id] then
 		session.duplicates += 1
-		warn(("[Profile] selo já concedido nesta sessão: %s / %s (total %d)")
+		logDuplicate(("[Profile] selo já concedido nesta sessão: %s / %s (total %d)")
 			:format(player.Name, seal.id, session.duplicates))
 		return "duplicate", seal
 	end

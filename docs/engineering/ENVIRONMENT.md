@@ -21,4 +21,13 @@ Verificado em 2026-11-16 no Windows:
   Não há environment protegido configurado na auditoria inicial.
 - Produção não configurada. Staging: 10777026486 / 135004978091658.
 
+Atualização operacional: main protegida via API (check `build` obrigatório e base
+atualizada, conversas resolvidas, inclusive admin; sem force-push/deleção; zero
+aprovações humanas obrigatórias). Auto-merge habilitado. Environment staging
+criado e restrito à branch main, sem reviewers. Respostas API conferidas.
+
+Permissão GitHub ainda insuficiente **para editar workflows**: OAuth não possui
+`workflow`; push de workflows recusado. Código/docs sem workflows enviados a #12,
+mas CI nova/publicação automática ainda NÃO instaladas. Ver OPS-002.
+
 Não registrar cookies, tokens, API keys ou conteúdo de configuração com segredos.

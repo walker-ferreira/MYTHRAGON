@@ -20,6 +20,8 @@ def main():
     sources = sorted((ROOT / "src").rglob("*.luau"))
     for path in sources:
         run([compiler, "--null", str(path)])
+    for path in sorted((ROOT / "tools").rglob("*.luau")):
+        run([compiler, "--null", str(path)])
     with tempfile.TemporaryDirectory() as d:
         bad = Path(d) / "invalid.luau"
         bad.write_text("local = invalid\n")

@@ -60,12 +60,12 @@ end
 
 local function buildIslandRock(parent)
     local rockLayers = {
-        { Vector3.new(0, -7, 0), Vector3.new(55, 12, 43), 4 },
+        { Vector3.new(0, -10, 0), Vector3.new(55, 12, 43), 4 },
         { Vector3.new(-5, -14, 3), Vector3.new(40, 10, 34), -10 },
         { Vector3.new(4, -20, -3), Vector3.new(29, 10, 24), 14 },
         { Vector3.new(-1, -26, 2), Vector3.new(17, 9, 15), -12 },
-        { Vector3.new(-20, -10, 7), Vector3.new(16, 14, 18), 26 },
-        { Vector3.new(19, -9, -11), Vector3.new(16, 12, 19), -26 },
+        { Vector3.new(-20, -15, 7), Vector3.new(16, 14, 18), 26 },
+        { Vector3.new(19, -14, -11), Vector3.new(16, 12, 19), -26 },
     }
 
     for index, layer in ipairs(rockLayers) do

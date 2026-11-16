@@ -1,8 +1,7 @@
 -- Montagem do mapa e ligação dos módulos.
--- Editor desta rodada (Fase 1): GLM 5.3 — registrado em docs/agents/GLM.md
--- (GLM-R003). Nenhuma ligação alterada: contrato Ember (Codex) e perfil
--- permanecem. O comentário da rodada anterior citava 0002 porque o
--- renumeração da decisão só aconteceu depois (registro 0003/0004).
+-- Editor desta rodada (Fase 1): GLM 5.3 — acordado com o Codex (VX-001;
+-- dono aprovou GLM como editor único de Hub e Start). Integra o Varkhion
+-- do Codex ao Aetheria e mantém os contratos Ember → perfil inalterados.
 
 local Players = game:GetService("Players")
 
@@ -35,6 +34,24 @@ end
 local enterEmber = Ember.build(map, onVictory)
 local returnToHub = Hub.build(map, enterEmber)
 Ember.connectReturn(map, returnToHub)
+
+-- Varkhion (respostas VX-001/VX-002 em docs/agents/GLM.md): montagem
+-- única, após a construção de Aetheria. O módulo do Codex vive em
+-- src/server/Dragons (PR #6); enquanto a pasta não existir na árvore
+-- integrada, o hub segue funcional sem o dragão.
+local dragonsFolder = script.Parent:FindFirstChild("Dragons")
+local hubModel = map:FindFirstChild("Hub")
+local anchor = hubModel and hubModel:FindFirstChild("VarkhionAnchor")
+if dragonsFolder and anchor then
+	local Varkhion = require(dragonsFolder.Varkhion)
+	Varkhion.mount(map, anchor, function(player)
+		-- VX-002: callback síncrono, sem yield e idempotente; conclui
+		-- apenas o objetivo inicial do santuário. Nenhum selo ou posse.
+		Hub.completeObjective(player, "santuario")
+	end)
+elseif not dragonsFolder then
+	warn("[Start] pasta Dragons ausente: Varkhion nao montado (aguardando integracao do PR #6)")
+end
 
 Players.PlayerRemoving:Connect(function(player)
 	Profile.clearSession(player)

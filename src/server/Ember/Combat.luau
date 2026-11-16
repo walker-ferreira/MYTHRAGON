@@ -160,7 +160,8 @@ function Combat:enter(player)
             if self.session ~= s or s.rules.result ~= "active" then break end
             self.warning.Transparency = 1
             local valid = self:valid(player)
-            if valid and (root.Position - self.body.Position).Magnitude <= 12 then
+            -- Keep the entire damage radius inside the 22-stud warning square.
+            if valid and (root.Position - self.body.Position).Magnitude <= 11 then
                 humanoid:TakeDamage(25)
                 if self.session == s then
                     self:message("-25 PV · Você " .. math.ceil(humanoid.Health)

@@ -1,14 +1,13 @@
--- Montagem do mapa e ligação dos módulos.
--- Editor desta rodada (Fase 1): GLM 5.3 — registrado em docs/agents/GLM.md
--- (GLM-R003). Nenhuma ligação alterada: contrato Ember (Codex) e perfil
--- permanecem. O comentário da rodada anterior citava 0002 porque o
--- renumeração da decisão só aconteceu depois (registro 0003/0004).
+-- Composição da Fase 1. Editor exclusivo desta rodada: Codex.
+-- Transferência autorizada pelo dono; resposta GLM-R003 em docs/agents/CODEX.md.
+-- Hub continua com GLM. Preservar o contrato de vitória/retorno de Ember.
 
 local Players = game:GetService("Players")
 
 local Hub = require(script.Parent.Hub.Map)
 local Ember = require(script.Parent.Ember.Map)
 local Profile = require(script.Parent.Profile.Profile)
+local Varkhion = require(script.Parent.Dragons.Varkhion)
 
 local map = Instance.new("Folder")
 map.Name = "MythragonMap"
@@ -35,6 +34,15 @@ end
 local enterEmber = Ember.build(map, onVictory)
 local returnToHub = Hub.build(map, enterEmber)
 Ember.connectReturn(map, returnToHub)
+
+-- GLM-R001: o Hub cria o mount uma vez, orientado para leste (-Z local).
+-- Completar santuario novamente retorna false: duplicata legítima, não erro.
+local mount = assert(map.Hub:FindFirstChild("VarkhionMount"),
+	"Aetheria must create Hub.VarkhionMount before mounting Varkhion")
+Varkhion.mount(map.Hub, mount, function(player, speciesId)
+	assert(speciesId == "Varkhion", "Unexpected sanctuary species")
+	Hub.completeObjective(player, "santuario")
+end)
 
 Players.PlayerRemoving:Connect(function(player)
 	Profile.clearSession(player)

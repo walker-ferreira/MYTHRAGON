@@ -1,5 +1,13 @@
 # Fase 1 — Varkhion: evidências e bloqueios
 
+## Fechamento conferido nesta rodada
+
+PRs #7 e #6 já **mesclados**, main `6f8a82190e3213e281dffbfd90445852d2ca652c`. CI [43799299461](https://github.com/walker-ferreira/MYTHRAGON/actions/runs/43799299461) e publicação de teste [43799378423](https://github.com/walker-ferreira/MYTHRAGON/actions/runs/43799378423) aprovadas; conclusão da publicação confirmada novamente por consulta à execução. Envio feito como candidato a pedido do dono para jogar, somente Place `135004978091658`, Universe `10777026486`.
+
+Os achados antigos de DarkWood/layout foram corrigidos no código publicado; o texto abaixo mantém o histórico das revisões. **A tabela de testes jogáveis permanece sem execução nesta sessão**: teclado, toque, ida/volta, vitória/único selo, derrota/retry, plataforma e dois jogadores ainda não têm resultado de cliente registrado. Não marcar Fase 1 totalmente aceita só por merge/CI/publicação. Revisão numérica Roblox não confirmada pelo output disponível; nenhum número inventado.
+
+PR #9 (Vila Central/Atlas) foi revisado separadamente sob GLM-R007, com mudanças solicitadas. Ele não desfaz nem exige repetir os merges/publicação já concluídos.
+
 **Editor:** Codex. **Base:** `fd188854a8bf9176a636b1c9ec71167c82dfbd72`.
 **Branch:** `codex/varkhion-fase1`. O SHA da implementação e links de CI devem ser registrados no PR; não confundir a base com o candidato de teste.
 

@@ -5,6 +5,7 @@
 ## Estado atual e inventário
 
 - **Prioridade solicitada — revisão PR #9 / GLM-R007 e fechamento Fase 1:** PR #9 lido em `9440c47a13da921ea163c4ff4d9e63298589b9f7`, base empilhada `glm/aetheria-fase-1`; CI [43806774484](https://github.com/walker-ferreira/MYTHRAGON/actions/runs/43806774484) PASS de sintaxe/build, não motor. Revisão abaixo solicita alterações. Trabalho local Latúnia foi preservado e validado: 20 fontes compiladas, quatro specs CLI e build Rojo PASS; Hub/Ember/Dragons/Profile/config intactos em relação à base.
+- Revisão GLM-R007 publicada no [PR #9](https://github.com/walker-ferreira/MYTHRAGON/pull/9#issuecomment-6907871336). Trabalho Latúnia disponível em [PR #10 (rascunho)](https://github.com/walker-ferreira/MYTHRAGON/pull/10), código `3f928a9`, [CI 43808135779 PASS](https://github.com/walker-ferreira/MYTHRAGON/actions/runs/43808135779). Nenhum desses protótipos novos foi integrado na main ou publicado no Roblox. Atualizações seguintes apenas documentais não equivalem a novos testes de cliente.
 
 ### GLM-R007 — Resposta: revisão do PR #9 (Vila Central 3D)
 

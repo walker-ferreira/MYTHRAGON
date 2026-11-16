@@ -19,7 +19,7 @@ Dirigíveis são modelos estáticos vazios. O transporte entre docas é **traves
 | `luau src/server/Latunia/Codex/Layout.spec.luau` | PASS: posições, rotas, chegada em terra, cooldown/concorrência/saída |
 | Build Rojo | PASS: Rojo 7.6.1, artefato local fora do Git |
 | Preservação de Hub/Ember/Profile/Dragons/config em relação à base | PASS: comparação Git sem diferenças |
-| CI do novo PR | Pendente de publicação da branch |
+| CI do código `3f928a9` no [PR #10](https://github.com/walker-ferreira/MYTHRAGON/pull/10) | [43808135779](https://github.com/walker-ferreira/MYTHRAGON/actions/runs/43808135779) PASS: sintaxe/build; specs rodaram separadamente no CLI |
 
 ## Motor e cliente — nenhum teste jogável ainda
 

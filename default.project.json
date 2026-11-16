@@ -1,0 +1,24 @@
+{
+  "name": "MYTHRAGON",
+  "tree": {
+    "$className": "DataModel",
+    "ServerScriptService": {
+      "$className": "ServerScriptService",
+      "Mythragon": {
+        "$path": "src/server"
+      }
+    },
+    "Workspace": {
+      "$className": "Workspace",
+      "$properties": {
+        "FallenPartsDestroyHeight": -80
+      }
+    },
+    "Lighting": {
+      "$className": "Lighting",
+      "$properties": {
+        "ClockTime": 17
+      }
+    }
+  }
+}

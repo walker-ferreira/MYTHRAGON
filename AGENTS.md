@@ -27,3 +27,14 @@ Leia este arquivo no início de cada sessão. O usuário identifica o agente com
 - Confira `git status --short`, `git diff --name-only` e `git diff --cached --name-only`. Se já houver commits de trabalho, compare também a branch com a revisão de base. Resolva qualquer sobreposição com o responsável pelo arquivo.
 - Informe os arquivos alterados, os testes feitos no Roblox Studio e as pendências de integração.
 - Peça aprovação antes de fazer commits, enviar alterações ao GitHub, integrar branches ou publicar no Roblox.
+
+
+## Caminhos do mapa piloto
+
+- GPT‑6.1 Sol edita `src/server/Ember/`.
+- GLM 5.3 edita `src/server/Hub/`. Novos módulos de perfil e selos podem ficar em `src/server/Profile/`.
+- `src/server/Start.server.luau`, `default.project.json`, `rokit.toml` e `.github/workflows/` são arquivos de integração. Defina com o usuário um único editor para qualquer tarefa que precise mexer neles.
+
+## Documentação para cada sessão
+
+Leia o [GDD](GDD.md), a [arquitetura](ARCHITECTURE.md) e as [decisões versionadas](docs/decisions/README.md) relacionadas à tarefa antes de implementar. Registre novas decisões e correções verificadas no mesmo PR da alteração, com o teste ou evidência correspondente. Defina um editor para os documentos compartilhados quando os agentes trabalharem em paralelo.

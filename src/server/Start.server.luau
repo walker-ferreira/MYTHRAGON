@@ -1,6 +1,8 @@
--- Montagem do mapa piloto e ligação dos módulos.
--- Editor desta rodada: GLM 5.3 (autorizado pelo usuário para a integração
--- vitória -> perfil). Sol edita src/server/Ember/ e docs/decisions/0002.
+-- Montagem do mapa e ligação dos módulos.
+-- Editor desta rodada (Fase 1): GLM 5.3 — registrado em docs/agents/GLM.md
+-- (GLM-R003). Nenhuma ligação alterada: contrato Ember (Codex) e perfil
+-- permanecem. O comentário da rodada anterior citava 0002 porque o
+-- renumeração da decisão só aconteceu depois (registro 0003/0004).
 
 local Players = game:GetService("Players")
 

@@ -1,40 +1,67 @@
-# MYTHRAGON — instruções para os agentes
+# MYTHRAGON — contrato operacional dos agentes
 
-Leia este arquivo no início de cada sessão. O usuário identifica o agente como GPT‑6.1 Sol ou GLM 5.3. Se a identidade ou o escopo estiverem indefinidos, faça apenas leitura e peça a informação necessária.
+## Autorização permanente
 
-## Responsabilidades
+O proprietário autorizou desenvolvimento, edição, dependências confiáveis, testes,
+branches/worktrees, commits, push, PRs, revisão, integração tecnicamente validada e
+publicação automática **somente em staging**. Não pedir confirmação para repetir
+essas operações dentro de uma tarefa atribuída. Esta política substitui exigências
+antigas de aprovação por arquivo/commit/publicação nos registros históricos.
+Não amplia permissões reais do aplicativo, sandbox, Windows ou credenciais.
+Nunca expor segredos, descartar trabalho alheio, burlar controles ou publicar em
+produção sem aprovação específica. Risco destrutivo exige intervenção consolidada.
 
-| Agente | Responsabilidade | Branch sugerida |
-| --- | --- | --- |
-| GPT‑6.1 Sol | Reino Ember, inimigos, combate, regras de vitória e derrota e execução da saída do reino. | `sol/ember-combate` |
-| GLM 5.3 | Perfil, DataStore, hub, portal no lado do hub e estado e concessão dos quatro selos. | `glm/perfil-hub-selos` |
+## Responsabilidades permanentes
 
-## Antes de editar
+- **CODEX / integrador técnico (nesta sessão GPT-6.1 Sol):** arquitetura, sistemas,
+  integração, contratos, revisão, testes, ferramentas, CI/CD, releases e diagnóstico.
+  Editor de `Start.server.luau`, `default.project.json`, `rokit.toml`, workflows e
+  documentação de engenharia. Desenvolve também conteúdo e gameplay atribuídos.
+- **GLM:** mapas, assets, Hub, interfaces, perfil e sistemas/gameplay atribuídos;
+  testes das entregas e revisão cruzada. Não limitado ao trabalho visual.
+- Cada agente mantém seu registro em `docs/agents/`. Fila oficial:
+  `docs/agents/TASK_QUEUE.md`. Não modificar o registro pessoal do parceiro.
+- Contribuições GLM chegam por branch/PR; somente o pipeline oficial publica o
+  Place compartilhado. Não iniciar publicações concorrentes por outro caminho.
 
-1. Confirme a aprovação do usuário para implementar a tarefa. A análise inicial é somente leitura.
-2. Consulte `git status --short` e inspecione a árvore real. Informe ao usuário os caminhos exatos que pretende criar ou alterar. Cada caminho recebe um único responsável por rodada, incluindo arquivos novos, renomeados e excluídos.
-3. Se um arquivo misturar responsabilidades, ou se a tarefa envolver configuração, scripts compartilhados, interfaces, eventos ou um arquivo de lugar do Roblox (`.rbxl` ou `.rbxlx`), combine com o usuário quem fará a edição. Até haver um responsável definido, apenas leia esse arquivo.
-4. Para trabalhar em paralelo, cada agente usa sua própria branch e uma pasta de trabalho separada, com clone ou `git worktree`. Duas sessões na mesma pasta podem fazer a revisão somente leitura. Preserve qualquer alteração local do usuário.
+## Antes e durante cada tarefa
 
-## Integração entre Ember e o hub
+1. Ler GDD, arquitetura, decisões, ambos os registros e fila/memória de engenharia.
+2. Executar `git status`, `git fetch origin`, verificar branch e SHA de base.
+3. Usar worktree/clone exclusivo; nunca dois escritores no mesmo diretório.
+   Preservar alterações locais. Não fazer force-push destrutivo.
+4. Registrar ID, responsável, base, branch, caminhos, dependências, aceite, estado e
+   próximo checkpoint. Informar os caminhos ao iniciar; o integrador resolve
+   sobreposição técnica por contrato, sem exigir arbitragem rotineira do dono.
+5. Um Markdown atualizado não prova que outro executor recebeu a tarefa.
+   Registrar PR/issue e confirmação de recebimento quando houver.
+6. Não executar subagentes sem atribuição explícita. Não simular revisão independente.
 
-- Sol é responsável pelo resultado do combate em Ember. GLM é responsável por registrar o progresso e conceder o selo. Antes de ligar os dois, combinem a interface e quem vai editar o arquivo que a declara. A mesma vitória deve conceder a recompensa uma única vez.
-- GLM cuida da interação com o portal no hub. Sol cuida da chegada a Ember e da saída do reino. Quando precisar de uma alteração fora do seu escopo, informe ao responsável o caminho, o comportamento esperado e como verificar a mudança.
-- Se o jogo estiver concentrado em um único arquivo de lugar, só o responsável definido pode salvá-lo naquela rodada. O outro entrega sua contribuição separadamente para o responsável integrar.
+## Qualidade e publicação
 
-## Entrega
+- Servidor é autoridade de combate, viagem, vitória e concessão idempotente de selos.
+  Preservar contratos Ember → Profile → Hub e montagem de Varkhion/Latúnia.
+- Main integrada é fonte oficial; local, push, merge, build, publicação, persistência
+  e runtime são fatos distintos, cada um com sua evidência.
+- Staging autorizado: Universe **10777026486**, Place **135004978091658**.
+  Confirmar associação via API antes de cada publicação.
+- Staging experimental pode ser publicado após integração e checks técnicos
+  obrigatórios, com cliente/visual pendentes declarados. Falha conhecida que impede
+  inicialização principal bloqueia candidato normal. Produção exige destino
+  separado, aceite do proprietário, evidências e rollback.
+- Estados: PLANNED → IMPLEMENTING → REVIEW → BUILD_OK → PREVIEW_OK → PUBLISHED.
+  PERSISTED_OK, RUNTIME_OK, PLAYTEST_OK e PRODUCTION_APPROVED exigem evidências
+  próprias; skipped nunca significa PASS. Motor isolado não prova física/cliente.
 
-- Confira `git status --short`, `git diff --name-only` e `git diff --cached --name-only`. Se já houver commits de trabalho, compare também a branch com a revisão de base. Resolva qualquer sobreposição com o responsável pelo arquivo.
-- Informe os arquivos alterados, os testes feitos no Roblox Studio e as pendências de integração.
-- Peça aprovação antes de fazer commits, enviar alterações ao GitHub, integrar branches ou publicar no Roblox.
+## Recuperação e entrega
 
+Ler erro/log completo, conferir versões/caminhos/permissões, consultar documentação
+oficial e operações anteriores, aplicar correção mínima, repetir com estratégia
+justificada, validar e registrar em `docs/engineering/RECOVERY_PLAYBOOK.md`.
+Publicação ambígua: consultar a operação anterior **antes** de reenviar.
+Não repetir indefinidamente nem esconder erro.
 
-## Caminhos do mapa piloto
-
-- GPT‑6.1 Sol edita `src/server/Ember/`.
-- GLM 5.3 edita `src/server/Hub/`. Novos módulos de perfil e selos podem ficar em `src/server/Profile/`.
-- `src/server/Start.server.luau`, `default.project.json`, `rokit.toml` e `.github/workflows/` são arquivos de integração. Defina com o usuário um único editor para qualquer tarefa que precise mexer neles.
-
-## Documentação para cada sessão
-
-Leia o [GDD](GDD.md), a [arquitetura](ARCHITECTURE.md) e as [decisões versionadas](docs/decisions/README.md) relacionadas à tarefa antes de implementar. Registre novas decisões e correções verificadas no mesmo PR da alteração, com o teste ou evidência correspondente. Defina um editor para os documentos compartilhados quando os agentes trabalharem em paralelo.
+Ao fechar checkpoint: registrar commit, testes realmente executados, links de
+evidência, limitações e próxima ação. Continuar a missão autorizada enquanto houver
+capacidade. Pedir ajuda só para acesso humano inevitável, decisão de escopo/design,
+risco destrutivo, avaliação indisponível ou produção; consolidar bloqueios numa mensagem.

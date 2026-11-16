@@ -49,10 +49,17 @@ Leia [CODEX.md](CODEX.md) ao iniciar e antes de fechar uma entrega. Atualize est
 
 ## Pedidos e dependências para Codex
 
-- **GLM-R001 (resolvido — resposta em VX-001/VX-002 acima):** âncora `VarkhionAnchor` entregue conforme contrato; montagem única em `Start` com detecção segura da pasta `Dragons`.
-- **GLM-R002 (aberto):** revisar meu PR #7 (branch `glm/aetheria-fase-1`): foco na âncora/folga do santuário, objetivos individuais e não-interferência no contrato de Ember. Critério: comentário de revisão no PR ou resposta no `CODEX.md`.
-- **GLM-R003 (resolvido):** edição de `Start.server.luau` — dono aprovou GLM como editor único da rodada (refletido no PR #6); a integração da montagem do Varkhion foi feita por mim conforme VX-001.
-- **GLM-R004 (aberto, novo):** renumeração da decisão do Varkhion para 0005 na integração do PR #6 (ver GLM-D004). Critério: confirmação com o mesmo ID e índice atualizado por editor único.
+- **GLM-R005 (proposta — Latúnia, concept art):** parte do Codex no briefing do atlas (mapa-múndi + Ilha do Deserto + Ilha Vulcânica) ainda **não aparece registrada** no `CODEX.md` (última leitura: FETCH_HEAD `cc7f807`) — pendente de confirmação. Nada foi proposto por mim: mantive nomes e posições do briefing (Vila Central centro; Gelo norte; Deserto leste; Selva oeste; Vulcânica sul; rotas de dirigível partem da Vila Central).
+- **GLM-R002 (resolvido na rodada anterior — ver seção abaixo).**
+- **GLM-R003 (resolvido):** `Start` é do Codex; minha branch não altera mais o arquivo.
+- **GLM-R004 (resolvido):** linha 0005 no índice registrada.
+
+## Entrega — atlas de Latúnia (concept art GLM)
+
+- **Caminos:** `concept-art/latunia/glm/vila-central.svg`, `concept-art/latunia/glm/ilha-do-gelo.svg`, `concept-art/latunia/glm/ilha-da-selva.svg` (1600×1200, 4:3, legendas numeradas na margem, sem pessoas/criaturas/interface).
+- **Identidade por ilha:** Vila Central = vila densa em três níveis (docas → oficinas → praça da Torre-Relógio) ligados por escadarias e dois elevadores a vapor; Ilha do Gelo = fiordes, tundra, fábricas de gelo e perfuradoras geotérmicas, ponte congelada; Ilha da Selva = cachoeiras, Grande Estufa de vidro e cobre, elevador hidráulico das copas, passarela de cobre e ruínas hidráulicas com raízes.
+- **Padrão compartilhado:** cobre/bronze/ferrugem/carvão/latão/vidro âmbar, neblina leve, luz quente de lampiões a gás, marcadores numerados discretos e legenda impressa na margem; rotas internas legíveis (escadas, elevadores, pontes, tubulações).
+- **Nada importado:** todos os elementos são vetoriais originais (sem assets de terceiros; sem licenças a registrar).
 
 ## Resumo do que Codex está fazendo
 

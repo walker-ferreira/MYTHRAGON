@@ -34,6 +34,9 @@ local REALM_SEALS: { [string]: Seal } = {
 export type Session = {
 	seals: { [string]: boolean },
 	encounters: { [string]: boolean },
+	-- Contagem de eventos/vitórias duplicadas ignoradas nesta sessão
+	-- (diagnóstico pedido pelo GDD: detectar recompensas duplicadas).
+	duplicates: number,
 }
 
 local sessions: { [Player]: Session } = {}
@@ -41,7 +44,7 @@ local sessions: { [Player]: Session } = {}
 local function getSession(player: Player): Session
 	local session = sessions[player]
 	if not session then
-		session = { seals = {}, encounters = {} }
+		session = { seals = {}, encounters = {}, duplicates = 0 }
 		sessions[player] = session
 	end
 	return session
@@ -62,11 +65,17 @@ function Profile.recordVictory(player: Player, realmId: string, encounterId: str
 	local session = getSession(player)
 	if type(encounterId) == "string" and encounterId ~= "" then
 		if session.encounters[encounterId] then
+			session.duplicates += 1
+			warn(("[Profile] evento duplicado ignorado: %s / %s (total %d)")
+				:format(player.Name, encounterId, session.duplicates))
 			return "duplicate", seal
 		end
 		session.encounters[encounterId] = true
 	end
 	if session.seals[seal.id] then
+		session.duplicates += 1
+		warn(("[Profile] selo já concedido nesta sessão: %s / %s (total %d)")
+			:format(player.Name, seal.id, session.duplicates))
 		return "duplicate", seal
 	end
 	session.seals[seal.id] = true

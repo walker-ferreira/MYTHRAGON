@@ -4,6 +4,8 @@
 
 ## Estado atual e inventário
 
+- **Atualização para publicação solicitada pelo dono (“publica para eu testar”):** autorizado candidato **somente no Place de teste**, antes do aceite jogável. Isso não aprova a Fase 1 nem produção. Incorporado `glm/aetheria-fase-1@0f99a92`: A corrigido para Wood; B recebeu layout responsivo; VX-003 agora contém revisão completa dos fontes/Start em `18ddc90`, sem bloqueantes de código. Codex revisou as correções e preservou integralmente Hub/documentos do parceiro por merge. Start continua único com Codex; a reversão do GLM não remove a montagem da árvore combinada.
+- As pendências de cliente permanecem explicitamente abertas. O impedimento anterior de publicar antes de QA é substituído **apenas para este envio de candidato de teste solicitado pelo dono**; não transformar essa exceção em regra permanente ou evidência de jogo testado.
 - Base conferida: `origin/main` = `fd188854a8bf9176a636b1c9ec71167c82dfbd72`.
 - Branch/pasta próprias: `codex/varkhion-fase1`, `MYTHRAGON-codex-varkhion`.
 - Entrega em [PR #6 (rascunho)](https://github.com/walker-ferreira/MYTHRAGON/pull/6), implementação `d923e6f`. [CI da implementação](https://github.com/walker-ferreira/MYTHRAGON/actions/runs/43791170078) PASS (sintaxe/build). Pedidos enviados ao GLM no [PR #4](https://github.com/walker-ferreira/MYTHRAGON/pull/4#issuecomment-6905459521).

@@ -6,11 +6,12 @@ Ambientes: esta rodada **não** executou o jogo no cliente Roblox (sem Studio aq
 
 ## Verificado nesta rodada
 
-- **CI do PR #7 (build job):** aprovada no SHA `47501c1` — sintaxe Luau de todos os `.luau` de `src` e `rojo build default.project.json` com `$path src/server` incluindo os módulos alterados.
-- **Integração do Varkhion (PR #6 do Codex):** resposta aos pedidos VX-001/002/003 registrada em `docs/agents/GLM.md`; âncora `VarkhionAnchor` entregue conforme contrato; montagem única em `Start` com detecção segura da pasta `Dragons` (a branch funciona sozinha e completa após o merge do PR #6).
-- **Revisão de código do fluxo completo:** spawn → objetivos (Guardiões/Varkhion) → portal → Ember → retorno → painel de selos; limpeza dos estados por jogador (`inTransit`, `panels`, `objectivePanels`, sessões do `Profile`).
-- **Preservação dos contratos:** `Ember.build(parent, onVictory) -> enter(player): boolean`, `connectReturn(parent, onReturn)`, `Profile.recordVictory(player, "Ember", encounterId)` e chamadas em `Start` intactas.
-- **Revisão parcial do PR #6:** contrato, docs, CI e estrutura conferidos; leitura dos fontes bloqueada pela política local (registrada em VX-003 — nenhuma revisão fictícia).
+- **CI do PR #7 (build job):** aprovada no SHA `47501c1` — sintaxe Luau de todos os `.luau` de `src` e `rojo build default.project.json` com `$path src/server` incluindo os módulos alterados. Head novo (pós-correções): confirmar a CI do PR.
+- **GLM-R002.A:** `Enum.Material.DarkWood` (inválido, abortava `Hub.build` na primeira árvore) substituído por `Enum.Material.Wood` com a cor escura preservada; demais materiais do arquivo auditados (todos válidos). Não é coberto por CI — verificação por inspeção.
+- **GLM-R002.B (análise de layout, não playtest):** painéis com largura responsiva (`UISizeConstraint`, piso 145) — 320×568: objetivos 12..157, selos 163..308 (folga 6px); 640×360: objetivos ~12..218, selos ~410..628; toast no rodapé central (0,5,-150;1,-60), fora dos painéis e do botão de pulo nos dois viewports; textos com `TextScaled`+`TextWrapped`+`UITextSizeConstraint` máx. 14.
+- **Item C (geometria):** santuário ampliado confirmado contra o modelo do PR #6 — envergadura ~±15 studs, cauda ~14,7 do centro, dentro do dais Ø48 com pilares a raio 20; inspeção visual no cliente pendente.
+- **Revisão dos fontes do PR #6 (VX-003):** completa, registrada em `docs/agents/GLM.md` — contrato VX-001/002 honrado, callback/Start corretos, observações menores não bloqueantes.
+- **Preservação dos contratos:** `Ember.build(parent, onVictory) -> enter(player): boolean`, `connectReturn(parent, onReturn)`, `Profile.recordVictory(player, "Ember", encounterId)` idempotente; painéis e progresso individuais preservados; `Start` revertido à base (edição transferida ao Codex, GLM-R003).
 
 ## Casos jogáveis (pendentes — executar no Studio/cliente)
 

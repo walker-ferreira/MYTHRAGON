@@ -3,6 +3,14 @@
 **Editor:** Codex. **Base:** `fd188854a8bf9176a636b1c9ec71167c82dfbd72`.
 **Branch:** `codex/varkhion-fase1`. O SHA da implementação e links de CI devem ser registrados no PR; não confundir a base com o candidato de teste.
 
+## Candidato para o dono testar — autorização posterior
+
+O dono pediu expressamente **“publica para eu testar”**. Está autorizado este candidato no Place de teste mesmo com o percurso jogável pendente; **não** é aceite da Fase 1 ou autorização de produção.
+
+Incorporado GLM `0f99a92`: material Wood válido, painéis responsivos e revisão completa dos fontes Codex pelo GLM em `18ddc90`. Codex revisou o diff e preservou seus próprios fontes/Start revisados; Hub e documentos GLM foram incorporados sem edição por Codex. Achados A/B corrigidos no código; legibilidade real, encaixe e fluxo completo continuam sem execução no cliente.
+
+Esta exceção posterior vale só para disponibilizar o candidato ao teste do dono. A tabela de casos abaixo continua **pendente**, sem marcação fictícia de teclado, toque, vitória, derrota, plataforma ou dois jogadores. SHA final, CI e confirmação da publicação serão registrados nos PRs para não alterar o commit publicado depois do envio.
+
 ## Automação local
 
 Ambiente: Windows, CLI Luau 0.744 e Rojo 7.6.1. Resultados executados nesta rodada:

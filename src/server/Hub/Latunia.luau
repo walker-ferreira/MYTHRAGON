@@ -245,6 +245,36 @@ function Latunia.build(parent, anchorCFrame)
 			A(CFrame.new(-12 - (3 - index) * 6, 0.2, 14)), Enum.Material.Slate, STONE_DARK)
 	end
 
+	-- ===== Atracadouros às docas centrais do arquipélago (L3D-001) =====
+	-- As docas centrais do Codex ficam a ±100..140 studs do slot Central;
+	-- esses cais ligam o deck (topo Y 0) a elas em nível contínuo, para que
+	-- os prompts de viagem fiquem alcançáveis a pé.
+	for _, spec in ipairs({
+		{ name = "N", dir = Vector3.new(0, 0, -1) },
+		{ name = "S", dir = Vector3.new(0, 0, 1) },
+		{ name = "L", dir = Vector3.new(1, 0, 0) },
+		{ name = "O", dir = Vector3.new(-1, 0, 0) },
+	}) do
+		local along = math.abs(spec.dir.Z) > 0 and Vector3.new(1, 0, 0) or Vector3.new(0, 0, 1)
+		local size = Vector3.new(math.abs(along.X) * 8 + math.abs(spec.dir.X) * 80,
+			1, math.abs(along.Z) * 8 + math.abs(spec.dir.Z) * 80)
+		local center = spec.dir * (26 + 80 / 2)
+		local pier = part(model, "Atracadouro" .. spec.name, size,
+			A(CFrame.new(center.X, -0.5, center.Z)), Enum.Material.WoodPlanks,
+			Color3.fromRGB(90, 68, 46))
+		-- Pilares de sustentação do cais a cada 26 studs.
+		for index = 0, 3 do
+			local offset = spec.dir * (34 + index * 26)
+			part(model, "Atracadouro" .. spec.name .. "Pilar" .. index,
+				Vector3.new(1.2, 12, 1.2),
+				A(CFrame.new(offset.X, -6.5, offset.Z)), Enum.Material.Metal, IRON)
+		end
+		local pierLamp = lamp(model, "LampiaoAtracadouro" .. spec.name,
+			Vector3.new(center.X, 0, center.Z) + along * 3)
+		_ = pier
+		_ = pierLamp
+	end
+
 	-- ===== (1) Docas da Vila: deck inferior ao sul + escadaria =====
 	-- Deck de Z 12..34: a plataforma de pouso (Z 30..33) fica sobre ele.
 	part(model, "DocasDeck", Vector3.new(46, 1, 22), A(CFrame.new(0, -6, 23)),

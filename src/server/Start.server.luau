@@ -59,9 +59,16 @@ Players.PlayerRemoving:Connect(function(player)
 end)
 
 -- Latúnia: protótipo separado, sem substituir Hub, Ember, spawn ou selos.
--- Editor desta integração: Codex, autorizado pelo dono para esta rodada.
-local Latunia = require(script.Parent.Latunia.Codex.Map)
-local latuniaOk, latuniaError = pcall(Latunia.build, workspace, returnToHub)
+-- Integração base: Codex (autorizado pelo dono na rodada Fase 1).
+-- Ligação da Vila Central (GLM): autorizada diretamente pelo dono nesta
+-- sessão ("vc mesmo não consegue ligar?") — usando o gancho
+-- partnerBuilders previsto em Map.build pelo Codex (L3D-001); código do
+-- Codex preservado; a ilha recebe a âncora do slot Central e responde
+-- GLM-R007/D em docs/agents/GLM.md.
+local LatuniaCodex = require(script.Parent.Latunia.Codex.Map)
+local LatuniaVila = require(script.Parent.Hub.Latunia)
+local partnerBuilders = { Central = LatuniaVila.build }
+local latuniaOk, latuniaError = pcall(LatuniaCodex.build, workspace, returnToHub, partnerBuilders)
 if not latuniaOk then
 	warn("Latúnia não iniciou; Hub/Ember preservados: " .. tostring(latuniaError))
 end

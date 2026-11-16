@@ -21,3 +21,18 @@ publicação serializada; nunca inventar que revisão antiga foi restaurada.
 Compilação Luau não valida Enum.Material nem APIs. Consultar API dump oficial e
 testar montagem no motor; conferir saúde por componente. Se engine não acessível,
 registrar PENDING, não PASS e não esconder erro.
+
+## OPS-002 — OAuth sem escopo workflow
+
+- Erro real ao enviar o commit 52ff492: `refusing to allow an OAuth App to create
+  or update workflow .github/workflows/ci.yml without workflow scope`.
+- Autenticação existente possui repo/read:org/gist, mas não workflow.
+- Não tentar Contents API, token extraído de outro app ou workflow alternativo para
+  contornar a restrição. O acesso deve ser ampliado pelo fluxo oficial GitHub CLI.
+- Ação mínima do proprietário: executar no PowerShell
+  `& "$env:LOCALAPPDATA\Temp\opencode\mythragon-tools\gh\bin\gh.exe" auth refresh -h github.com -s workflow`
+  e concluir a autorização GitHub no navegador. Não enviar token no chat.
+- Depois: integrador confirma auth scopes, faz push, acompanha CI, resolve falhas,
+  integra pelo PR e deixa staging automático selecionar o build.
+- Commits locais preservados; registro remoto da auditoria não prova que o novo
+  pipeline já esteja instalado no GitHub.

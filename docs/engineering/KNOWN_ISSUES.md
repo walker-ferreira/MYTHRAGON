@@ -11,3 +11,4 @@
 | CONTENT-001 | Gelo/Selva são desembarques provisórios | Planejado GLM; não são ilhas completas |
 | AGENT-001 | executor não interativo de GLM/Codex externo não comprovado | Investigar; CODEX |
 | DATA-001 | Profile mantém só sessão | Conhecido; fora do escopo desta recuperação |
+| OPS-002 | Push que altera workflows recusado: OAuth sem escopo workflow | BLOQUEADO por autenticação humana; não contornar |

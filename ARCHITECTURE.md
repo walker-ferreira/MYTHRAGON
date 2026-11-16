@@ -1,29 +1,66 @@
 # MYTHRAGON — arquitetura
 
-## Estrutura atual
+## Composição e propriedade
+
+Rojo 7.6.1 inclui `src/server` em `ServerScriptService.Mythragon`.
+`Start.server.luau` chama `Diagnostics.Bootstrap.run()` uma vez por servidor.
+Bootstrap é idempotente, registra etapas Core (Ember/Profile/Hub), Varkhion e
+Latunia; falha de qualquer componente obrigatório deixa saúde FAILED, mesmo quando
+o restante do mundo continua disponível. Sem Core, dependentes são BLOCKED.
+Não tentar hot-rebuild de Core após erro: iniciar servidor novo evita callbacks
+de sessão duplicados. Montagem/rollback de Latúnia continuam no controller existente.
 
 | Caminho | Papel | Responsável |
 | --- | --- | --- |
-| `src/server/Hub/` | Hub, portal de entrada e selos visuais | GLM 5.3 |
-| `src/server/Ember/` | Arena, chegada e retorno de Ember | GPT‑6.1 Sol |
-| `src/server/Profile/` | Caminho previsto para perfil e persistência | GLM 5.3 |
-| `src/server/Start.server.luau` | Montagem do mapa e ligação dos módulos | Editor único por tarefa |
-| `default.project.json` e `rokit.toml` | Montagem Rojo e versão da ferramenta | Editor único por tarefa |
-| `.github/workflows/` | Validação, build e futuro envio | Editor único por tarefa |
+| src/server/Hub/ | Aetheria, portais, interfaces, Vila Central | GLM |
+| src/server/Profile/ | Selos e perfil de sessão; DataStore pendente | GLM |
+| src/server/Ember/ | Arena, combate, vitória e retorno | CODEX |
+| src/server/Dragons/ | Varkhion e interação de santuário | CODEX |
+| src/server/Latunia/Codex/ | Layout, viagens, Deserto e Vulcânica | CODEX |
+| Start, Diagnostics, Rojo, workflows, tools, tests | Integração/qualidade/releases | CODEX |
 
-Rojo inclui os scripts no Place. O servidor cria a cena de hub e Ember no mesmo Place ao iniciar. Para inspecionar o cenário atual no Studio, abra o `.rbxlx` e pressione Play.
+Ember é autoridade de vitória. Profile deduplica recompensa por jogador/selo;
+Hub reflete estado individual. Conversar com Varkhion e viajar não concedem selo.
+Partner builders recebem Content/anchorCFrame e não montam bootstrap concorrente.
 
-## Contrato de jogo a implementar
+## Geometria
 
-Ember determina no servidor se o encontro foi concluído. O módulo de perfil e selos recebe o resultado validado e garante que a concessão seja idempotente. Dados vindos do cliente podem expressar ações do jogador. A confirmação de vitória e a recompensa pertencem ao servidor. Antes de editar a interface compartilhada, os agentes registram os caminhos envolvidos e combinam quem fará a alteração.
+Mundo gerado no servidor; abrir rbxlx sem Play mostra scripts, não prova mapa.
+Latúnia separada em (2400,24,0), cinco slots, três detalhados; Gelo e Selva são
+desembarques provisórios. Gate de teste em (24,4.5,8), dez prompts de viagem.
+Geometria estática determinística atual mantida; bake só com medição/benefício,
+sem reescrever arquitetura por semelhança com referência externa.
 
-## Build e publicação
+## Qualidade, identidade e release
 
-1. A CI verifica a sintaxe dos scripts e gera o artefato `mythragon-pilot`.
-2. A validação jogável confirma que os portais e os sistemas funcionam no cliente Roblox.
-3. O workflow `publish-staging.yml` está configurado para Universe `10777026486` e Place `135004978091658`. Antes do primeiro envio, confirme no Creator Dashboard que esse destino é a experiência privada de teste. Após integrar o PR, rode o workflow na `main` com o ID da execução CI bem-sucedida do commit atual. Rode primeiro com a opção de publicação desmarcada para verificar a relação entre IDs e o artefato.
-4. Registre o Universe ID e o Place ID de cada destino em configuração versionada após conferir os valores no Creator Dashboard. Os IDs identificam o alvo. A credencial é armazenada nos GitHub Actions Secrets como `ROBLOX_OPEN_CLOUD_API_KEY`.
-5. Na primeira fase, dê à chave acesso de escrita somente à experiência de teste. Para a Assets API do Open Cloud, confira as operações Read e Write da permissão `assets` nessa experiência. O envio exige marcar a opção de publicação e digitar o Place ID de teste. Reserve produção para uma aprovação e credencial próprias.
-6. O workflow registra commit, SHA-256 do artefato, destino e operação retornada pela API, além da revisão quando informada. Confira que o build inclui toda a cena antes de aprovar a substituição de um Place existente.
+CI executa sintaxe, quatro specs CLI, contratos Python, LSP com definições Roblox
+em cinco módulos puros e todas as referências Enum; engine adapters ainda têm
+tipagem incremental. Testes negativos provam rejeição de sintaxe/tipos/artefato/
+destino incorretos. Dependências fixadas e downloads Luau/LSP com checksum.
 
-[Roblox Open Cloud — publicação de Places](https://create.roblox.com/docs/cloud/guides/usage-place-publishing) · [Decisões versionadas](docs/decisions/README.md)
+BuildInfo é substituído no CI com SHA completo/build run. Duas compilações Rojo
+devem ser idênticas. Manifesto confere Source de todos os scripts incluídos,
+hash SHA-256, módulos/asset refs e testes. PREVIEW não publica.
+
+Push integrado na main → CI aprovado → PUBLISH staging experimental.
+Seleção automática do artefato exato, validação de origem/SHA/destino, rejeição de
+main obsoleta, concurrency por Place e journal GitHub Deployments antes do PATCH.
+Não repetir PATCH em timeout; consultar operação. Exigir destino, revisão e
+isPublished; guardar resposta/recibo/evidência como artefato.
+
+Staging único: Universe 10777026486 / Place 135004978091658. Environment GitHub
+staging deve restringir branch main, sem revisão humana rotineira.
+Produção não configurada nem publicável por estes scripts.
+
+Inspeção Luau Execution Open Cloud: revisão específica, comparação Source persistida,
+bootstrap explícito e raios de piso/contratos de cena. Essa API não executa física,
+servidor/cliente automaticamente. Não equivale a servidor normal nem playtest.
+Sem acesso registrar PENDING_ACCESS; engine FAIL gera falha de verificação, embora
+o candidato já esteja publicado. Corrigir por PR/release nova, sem esconder o fato.
+
+Saúde em ReplicatedStorage.MythragonHealth; logs estruturados incluem SHA, IDs,
+PlaceVersion, JobId e erros. UI discreta somente staging mostra SHA/revisão/estado.
+Segredos nunca entram no build ou interface.
+
+Ver [contrato operacional](AGENTS.md), [fila](docs/agents/TASK_QUEUE.md),
+[orquestração](docs/engineering/ORCHESTRATION.md) e [releases](docs/releases/README.md).

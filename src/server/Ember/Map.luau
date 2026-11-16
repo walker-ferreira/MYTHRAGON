@@ -1,6 +1,61 @@
 local Ember = {}
 local arenaCenter = Vector3.new(0, 0, 150)
 
+local function addFloatingPlatform(parent)
+    local origin = arenaCenter + Vector3.new(17, 1, -5)
+
+    local guide = Instance.new("Part")
+    guide.Name = "LiftGuide"
+    guide.Size = Vector3.one
+    guide.Position = origin
+    guide.Transparency = 1
+    guide.CanCollide = false
+    guide.CanTouch = false
+    guide.CanQuery = false
+    guide.Anchored = true
+    guide.Parent = parent
+
+    local platform = Instance.new("Part")
+    platform.Name = "EmberFloatingPlatform"
+    platform.Size = Vector3.new(10, 1.5, 10)
+    platform.Position = origin
+    platform.Material = Enum.Material.Neon
+    platform.Color = Color3.fromRGB(255, 160, 58)
+    platform.Parent = parent
+
+    local railAttachment = Instance.new("Attachment")
+    railAttachment.Axis = Vector3.yAxis
+    railAttachment.SecondaryAxis = Vector3.xAxis
+    railAttachment.Parent = guide
+
+    local platformAttachment = railAttachment:Clone()
+    platformAttachment.Parent = platform
+
+    local lift = Instance.new("PrismaticConstraint")
+    lift.Attachment0 = railAttachment
+    lift.Attachment1 = platformAttachment
+    lift.ActuatorType = Enum.ActuatorType.Servo
+    lift.LimitsEnabled = true
+    lift.LowerLimit = 0
+    lift.UpperLimit = 12
+    lift.Speed = 3
+    lift.ServoMaxForce = 100000
+    lift.Parent = guide
+    platform:SetNetworkOwner(nil)
+
+    task.spawn(function()
+        while platform.Parent do
+            lift.TargetPosition = 12
+            task.wait(6)
+            if not platform.Parent then
+                break
+            end
+            lift.TargetPosition = 0
+            task.wait(7)
+        end
+    end)
+end
+
 function Ember.build(parent)
     local model = Instance.new("Model")
     model.Name = "Ember"
@@ -31,6 +86,8 @@ function Ember.build(parent)
     pedestal.Position = arenaCenter + Vector3.new(0, 0.5, 0)
     pedestal.Material = Enum.Material.CrackedLava
     pedestal.Parent = model
+
+    addFloatingPlatform(model)
 
     return function(player)
         local character = player.Character

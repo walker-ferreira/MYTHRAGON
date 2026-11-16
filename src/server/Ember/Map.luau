@@ -1,5 +1,7 @@
 local Ember = {}
+local Combat = require(script.Parent.Combat)
 local arenaCenter = Vector3.new(0, 0, 150)
+local encounters = setmetatable({}, { __mode = "k" })
 
 local function addFloatingPlatform(parent)
     local origin = arenaCenter + Vector3.new(17, 1, -5)
@@ -56,7 +58,7 @@ local function addFloatingPlatform(parent)
     end)
 end
 
-function Ember.build(parent)
+function Ember.build(parent, onVictory)
     local model = Instance.new("Model")
     model.Name = "Ember"
     model.Parent = parent
@@ -89,11 +91,34 @@ function Ember.build(parent)
 
     addFloatingPlatform(model)
 
+    -- Original basalt colonnade and broken arch; no imported assets or scripts.
+    for index = 0, 9 do
+        local angle = index * math.pi * 2 / 10
+        local column = Instance.new("Part")
+        column.Name = "RuinedBasaltColumn"
+        column.Anchored = true
+        column.Size = Vector3.new(3, 5 + index % 3 * 2, 3)
+        column.Position = arenaCenter + Vector3.new(math.cos(angle) * 25,
+            column.Size.Y / 2, math.sin(angle) * 21)
+        column.Material = Enum.Material.Basalt
+        column.Color = Color3.fromRGB(47, 43, 48)
+        column.Parent = model
+    end
+    for _, side in ipairs({ -1, 1 }) do
+        local lintel = Instance.new("Part")
+        lintel.Name = "BrokenArch"
+        lintel.Anchored = true
+        lintel.Size = Vector3.new(7, 2, 3)
+        lintel.CFrame = CFrame.new(arenaCenter + Vector3.new(side * 4, 8, -21))
+            * CFrame.Angles(0, 0, math.rad(side * 12))
+        lintel.Material = Enum.Material.Basalt
+        lintel.Color = Color3.fromRGB(47, 43, 48)
+        lintel.Parent = model
+    end
+    local encounter = Combat.new(model, arenaCenter, onVictory)
+    encounters[parent] = encounter
     return function(player)
-        local character = player.Character
-        if character then
-            character:PivotTo(CFrame.new(arenaCenter + Vector3.new(0, 4, 12)))
-        end
+        return encounter:enter(player)
     end
 end
 
@@ -110,8 +135,18 @@ function Ember.connectReturn(parent, onReturn)
     local prompt = Instance.new("ProximityPrompt")
     prompt.ActionText = "Voltar"
     prompt.ObjectText = "Hub"
+    prompt.RequiresLineOfSight = false
+    prompt.MaxActivationDistance = 10
     prompt.Parent = portal
-    prompt.Triggered:Connect(onReturn)
+    local encounter = assert(encounters[parent], "Build Ember before connecting return")
+    encounter.onReturn = onReturn
+    prompt.Triggered:Connect(function(player)
+        local character = player.Character
+        local root = character and character:FindFirstChild("HumanoidRootPart")
+        if root and (root.Position - portal.Position).Magnitude <= 10 then
+            encounter:returnPlayer(player)
+        end
+    end)
 end
 
 return Ember

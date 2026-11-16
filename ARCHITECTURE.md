@@ -21,9 +21,9 @@ Ember determina no servidor se o encontro foi concluído. O módulo de perfil e 
 
 1. A CI verifica a sintaxe dos scripts e gera o artefato `mythragon-pilot`.
 2. A validação jogável confirma que os portais e os sistemas funcionam no cliente Roblox.
-3. A publicação Open Cloud ainda precisa de um workflow e dos destinos. Planeje enviar o artefato validado a uma experiência privada de teste antes de habilitar produção.
+3. O workflow `publish-staging.yml` está configurado para Universe `10777026486` e Place `135004978091658`. Antes do primeiro envio, confirme no Creator Dashboard que esse destino é a experiência privada de teste. Após integrar o PR, rode o workflow na `main` com o ID da execução CI bem-sucedida do commit atual. Rode primeiro com a opção de publicação desmarcada para verificar a relação entre IDs e o artefato.
 4. Registre o Universe ID e o Place ID de cada destino em configuração versionada após conferir os valores no Creator Dashboard. Os IDs identificam o alvo. A credencial é armazenada nos GitHub Actions Secrets como `ROBLOX_OPEN_CLOUD_API_KEY`.
-5. Na primeira fase, dê à chave acesso de escrita somente à experiência de teste. Para o endpoint Place Publishing, confira a permissão `universe-places` com a operação Write nessa experiência. Reserve produção para uma aprovação e credencial próprias.
-6. O workflow deverá registrar commit, artefato, destino e versão retornada pela API. Confira que o build inclui toda a cena antes de aprovar a substituição de um Place existente.
+5. Na primeira fase, dê à chave acesso de escrita somente à experiência de teste. Para a Assets API do Open Cloud, confira as operações Read e Write da permissão `assets` nessa experiência. O envio exige marcar a opção de publicação e digitar o Place ID de teste. Reserve produção para uma aprovação e credencial próprias.
+6. O workflow registra commit, SHA-256 do artefato, destino e operação retornada pela API, além da revisão quando informada. Confira que o build inclui toda a cena antes de aprovar a substituição de um Place existente.
 
 [Roblox Open Cloud — publicação de Places](https://create.roblox.com/docs/cloud/guides/usage-place-publishing) · [Decisões versionadas](docs/decisions/README.md)

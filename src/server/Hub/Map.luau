@@ -7,7 +7,7 @@
 -- Direção 3D desta rodada: builds procedurais próprios inspirados em
 -- referências de portal rúnico, pedras entalhadas e ilha flutuante;
 -- nenhum modelo externo importado. Fontes e regras em
--- docs/decisions/0002-selos-perfil-e-visual-do-hub.md.
+-- docs/decisions/0003-selos-perfil-e-visual-do-hub.md.
 
 local Players = game:GetService("Players")
 

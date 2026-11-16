@@ -1,23 +1,14 @@
-name: Publicar mapa de teste
+name: PUBLISH staging experimental
 on:
-  workflow_dispatch:
-    inputs:
-      build_run_id:
-        description: ID da execução bem-sucedida de CI na main
-        required: true
-        type: string
-      publish:
-        description: Publicar o artefato no Roblox
-        type: boolean
-        required: true
-        default: false
-      confirm_place_id:
-        description: Para publicar, digite o Place ID para confirmar a substituição do mapa
-        type: string
-        required: false
+  workflow_run:
+    workflows: ['Validar e compilar mapa']
+    types: [completed]
+    branches: [main]
 
 permissions:
+  contents: read
   actions: read
+  deployments: write
 
 concurrency:
   group: roblox-staging-135004978091658
@@ -25,78 +16,57 @@ concurrency:
 
 jobs:
   staging:
-    if: github.ref == 'refs/heads/main'
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == 'main' &&
+      github.event.workflow_run.head_repository.full_name == github.repository
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    environment: staging
+    timeout-minutes: 20
     env:
-      UNIVERSE_ID: '10777026486'
-      PLACE_ID: '135004978091658'
+      BUILD_SHA: ${{ github.event.workflow_run.head_sha }}
+      BUILD_RUN_ID: ${{ github.event.workflow_run.id }}
+      GH_TOKEN: ${{ github.token }}
     steps:
-      - name: Verificar origem do build e destino
-        env:
-          GH_TOKEN: ${{ github.token }}
-          BUILD_RUN_ID: ${{ inputs.build_run_id }}
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Reject obsolete candidate before downloading
         run: |
-          set -euo pipefail
-          [[ "$BUILD_RUN_ID" =~ ^[1-9][0-9]*$ ]]
-          gh api "repos/$GITHUB_REPOSITORY/actions/runs/$BUILD_RUN_ID" |
-            jq -e --arg sha "$GITHUB_SHA" '
-              .path == ".github/workflows/ci.yml" and
-              .event == "push" and .conclusion == "success" and
-              .head_branch == "main" and .head_sha == $sha'
-          curl -fsS --max-time 20 "https://apis.roblox.com/universes/v1/places/$PLACE_ID/universe" |
-            jq -e --arg universe "$UNIVERSE_ID" '(.universeId | tostring) == $universe'
+          test "$(gh api "repos/$GITHUB_REPOSITORY/commits/main" --jq .sha)" = "$BUILD_SHA"
       - uses: actions/download-artifact@v4
         with:
           name: mythragon-pilot
           path: dist
-          run-id: ${{ inputs.build_run_id }}
+          run-id: ${{ github.event.workflow_run.id }}
           github-token: ${{ github.token }}
-      - name: Registrar artefato
-        run: |
-          set -euo pipefail
-          test -s dist/mythragon.rbxlx
-          {
-            echo "### MYTHRAGON · teste"
-            echo "Commit: $GITHUB_SHA"
-            echo "Universe ID: $UNIVERSE_ID"
-            echo "Place ID: $PLACE_ID"
-            sha256sum dist/mythragon.rbxlx
-          } >> "$GITHUB_STEP_SUMMARY"
-      - name: Publicar e verificar resultado
-        if: inputs.publish
+      - name: Verify exact CI artifact and manifest
+        run: python tools/release.py verify
+      - name: Publish (mandatory, never a preview)
         env:
           ROBLOX_OPEN_CLOUD_API_KEY: ${{ secrets.ROBLOX_OPEN_CLOUD_API_KEY }}
-          CONFIRM_PLACE_ID: ${{ inputs.confirm_place_id }}
+        run: python tools/publish.py
+      - name: Inspect exact persisted revision and isolated engine bootstrap
+        env:
+          ROBLOX_OPEN_CLOUD_API_KEY: ${{ secrets.ROBLOX_OPEN_CLOUD_API_KEY }}
+        run: python tools/verify_cloud.py
+      - name: Release evidence summary
+        if: always()
         run: |
-          set -euo pipefail
-          if [[ "$CONFIRM_PLACE_ID" != "$PLACE_ID" || -z "$ROBLOX_OPEN_CLOUD_API_KEY" ]]; then
-            echo "::error::Confirme o Place ID e configure ROBLOX_OPEN_CLOUD_API_KEY."
-            exit 1
+          if test -f dist/receipt.json; then
+            echo '### Experimental staging receipt (NOT a client playtest)' >> "$GITHUB_STEP_SUMMARY"
+            cat dist/receipt.json >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo 'No confirmed publication receipt. This is NOT a published release.' >> "$GITHUB_STEP_SUMMARY"
           fi
-
-          request=$(jq -nc --argjson id "$PLACE_ID" '{assetId: $id, assetType: "Place", published: true}')
-          base=https://apis.roblox.com/assets/v1
-          result=$(curl -fsS --max-time 90 --request PATCH "$base/assets/$PLACE_ID" \
-            --header "x-api-key: $ROBLOX_OPEN_CLOUD_API_KEY" \
-            --form-string "request=$request" \
-            --form 'fileContent=@dist/mythragon.rbxlx;type=application/xml')
-          operation=$(jq -er '.path | select(test("^operations/[A-Za-z0-9_-]+$"))' <<< "$result")
-          echo "Operação Roblox: $operation" >> "$GITHUB_STEP_SUMMARY"
-
-          for attempt in {1..36}; do
-            result=$(curl -fsS --retry 2 --retry-max-time 20 --max-time 15 "$base/$operation" \
-              --header "x-api-key: $ROBLOX_OPEN_CLOUD_API_KEY")
-            if jq -e '.done == true' >/dev/null <<< "$result"; then
-              if ! jq -e '.error == null and (.response | type == "object")' >/dev/null <<< "$result"; then
-                echo "::error::O Roblox encerrou a operação com erro."
-                exit 1
-              fi
-              jq -r '"Publicação confirmada. Revisão: " + ((.response.revisionId // .response.versionNumber // "(não informada)") | tostring)' \
-                <<< "$result" >> "$GITHUB_STEP_SUMMARY"
-              exit 0
-            fi
-            sleep 5
-          done
-          echo "::error::Tempo limite aguardando a Roblox. Confira a operação antes de tentar novamente."
-          exit 1
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: staging-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: dist/
+          if-no-files-found: error
+          retention-days: 90

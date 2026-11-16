@@ -1,5 +1,32 @@
 # Registro de trabalho — Codex (GPT‑6.1 Sol)
 
+## REC-001 — recuperação 2026-11-16 (estado mais recente)
+
+Este bloco substitui restrições operacionais históricas abaixo; não reescreve suas
+evidências. Política permanente em AGENTS.md. Integrador: GPT-6.1 Sol.
+
+- Base auditada main `9c6c0009f41293bf40bb8fbaf581765862a81096`.
+- Worktree exclusivo MYTHRAGON-recovery / codex/recovery-autonomy.
+- Issue #13 e PR #12; auditoria publicada, contratos e ferramentas enviados.
+- Main protegida/auto-merge/staging main-only configurados via API, sem revisões
+  humanas repetitivas. Não foi feito merge desta recuperação.
+- Push dos workflows novos bloqueado por OAuth sem `workflow`; não contornar.
+  Fluxo oficial de autenticação humana inevitável em OPS-002.
+- CLI standalone: quatro specs executados; Python: dez testes executados;
+  LSP Roblox: cinco políticas + Enums e negativo; sintaxe 24 fontes; duas
+  compilações Rojo idênticas e manifesto/inclusão de fontes PASS localmente.
+- CI remota `43980823371` PASS é do workflow **antigo**, não prova CI nova.
+- Engine, novo servidor normal, cliente e visual NÃO executados.
+- GLM real iniciado para revisão somente leitura pelo harness, modelo descoberto
+  `opencode/glm-5.3-flash-free`, sessão `ses_e194c8a04ffemstop4QUSgtZTG`.
+  Duas revisões reais recebidas; achados ALTA 1–4 corrigidos/conferidos pelo GLM,
+  sem bloqueante fail-open no diff final revisto. Não editar GLM.md.
+- Testes Python ampliados: 18 PASS, incluindo retomada e evidência cloud com API
+  simulada sem upload. Não confundir revisão estática com motor/cliente.
+- Próximo: concluir revisão, autorizar escopo workflow pelo fluxo GitHub,
+  enviar workflows, executar CI nova, integrar #12, publicar automaticamente,
+  conferir revisão e probe engine; entregar experimental com pendências.
+
 **Editor exclusivo:** Codex. **Rodada:** Fase 1 — Varkhion funcional.
 
 ## Estado atual e inventário

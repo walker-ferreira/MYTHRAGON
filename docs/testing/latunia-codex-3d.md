@@ -2,6 +2,10 @@
 
 **Editor:** Codex. **Branch:** `codex/latunia-3d`. **Base:** `6f8a82190e3213e281dffbfd90445852d2ca652c`.
 
+## Candidato experimental solicitado para teste do dono
+
+Depois do relatório de pendências, o dono pediu **“publica para min testar”**. Autorizado este envio do PR #10 somente no Place de teste, sem transformar as pendências de cliente/revisão em aprovações. PR #9 não é incluído: material inválido e ajustes de elevadores/acesso ainda abertos. Vila/Gelo/Selva continuam bases provisórias; dirigíveis estáticos e transporte por teleporte são limitações declaradas. A execução real e o SHA final serão registrados no PR depois de aguardar a API. Todos os casos jogáveis abaixo continuam pendentes.
+
 ## Escopo real
 
 Deserto e Vulcânica construídos com geometria nativa; atlas físico 3D na área de desembarque da Vila; organização N=-Z, Gelo/norte, Deserto/leste, Selva/oeste e Vulcânica/sul. Centro global em (2400,24,0), separado do piloto existente. Nenhum SpawnLocation novo, mudança de Lighting global, Terrain:Clear ou alteração em Ember/Profile/Hub.

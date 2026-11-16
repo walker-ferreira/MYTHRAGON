@@ -34,3 +34,7 @@ Leia este arquivo no início de cada sessão. O usuário identifica o agente com
 - GPT‑6.1 Sol edita `src/server/Ember/`.
 - GLM 5.3 edita `src/server/Hub/`. Novos módulos de perfil e selos podem ficar em `src/server/Profile/`.
 - `src/server/Start.server.luau`, `default.project.json`, `rokit.toml` e `.github/workflows/` são arquivos de integração. Defina com o usuário um único editor para qualquer tarefa que precise mexer neles.
+
+## Documentação para cada sessão
+
+Leia o [GDD](GDD.md), a [arquitetura](ARCHITECTURE.md) e as [decisões versionadas](docs/decisions/README.md) relacionadas à tarefa antes de implementar. Registre novas decisões e correções verificadas no mesmo PR da alteração, com o teste ou evidência correspondente. Defina um editor para os documentos compartilhados quando os agentes trabalharem em paralelo.

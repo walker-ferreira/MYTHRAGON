@@ -229,6 +229,6 @@
     <g transform="translate(760,1096)"><circle r="14" fill="#2b2724" stroke="#c9a227" stroke-width="3"/><text y="6" text-anchor="middle" font-size="15" font-weight="bold" fill="#ffcf7d">3</text><text x="26" y="7">Praça da Torre-Relógio — cume da vila</text></g>
     <g transform="translate(760,1146)"><circle r="14" fill="#2b2724" stroke="#c9a227" stroke-width="3"/><text y="6" text-anchor="middle" font-size="15" font-weight="bold" fill="#ffcf7d">4</text><text x="26" y="7">Elevador a Vapor — liga docas, oficinas e praça</text></g>
     <g transform="translate(1210,1096)"><circle r="14" fill="#2b2724" stroke="#c9a227" stroke-width="3"/><text y="6" text-anchor="middle" font-size="15" font-weight="bold" fill="#ffcf7d">5</text><text x="26" y="7">Bairro das Oficinas — nível intermediário</text></g>
-    <g transform="translate(1210,1146)"><text y="7" font-size="15" font-style="italic" fill="#c9a99a">Rotas: docas → escadarias/elevador → oficinas → praça.</text></g>
+    <g transform="translate(1210,1146)"><text y="7" font-size="15" font-style="italic" fill="#c9a99a">Rotas: docas → escadas/elevador → oficinas → praça.</text></g>
   </g>
 </svg>

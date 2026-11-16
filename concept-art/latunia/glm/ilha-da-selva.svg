@@ -1,9 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1200" viewBox="0 0 1600 1200">
   <defs>
     <linearGradient id="ceus" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#26332e"/>
-      <stop offset="0.6" stop-color="#4e6a52"/>
-      <stop offset="1" stop-color="#a8b98a"/>
+      <stop offset="0" stop-color="#1c2622"/>
+      <stop offset="0.45" stop-color="#2e4438"/>
+      <stop offset="0.8" stop-color="#52705a"/>
+      <stop offset="1" stop-color="#7d9471"/>
     </linearGradient>
     <linearGradient id="rios" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#2e4a4e"/>
@@ -83,6 +84,15 @@
     <ellipse cx="1068" cy="909" rx="26" ry="9" fill="#dfeef2" opacity="0.45" filter="url(#brilhos)"/>
   </g>
 
+    <g opacity="0.9">
+      <use href="#arvore" transform="translate(700,585) scale(1.15)"/>
+      <use href="#arvore" transform="translate(780,600) scale(0.9)"/>
+      <use href="#arvore" transform="translate(950,590)"/>
+      <use href="#arvore" transform="translate(1030,610) scale(1.2)"/>
+      <g stroke="#27482a" stroke-width="3" opacity="0.8" fill="none">
+        <path d="M640 660 q60 -12 130 -8 M900 655 q70 -10 150 -6 M480 640 q50 -10 110 -6"/>
+      </g>
+    </g>
   <!-- DOCA DA CASCATA (1) -->
   <g transform="translate(760,948)">
     <path d="M-190 0 h140 v-14 h-140 Z M40 0 h160 v-14 h-160 Z" fill="#6e5a44" stroke="#24301f" stroke-width="2.5"/>
@@ -205,6 +215,6 @@
     <g transform="translate(760,1096)"><circle r="14" fill="#2b2724" stroke="#c9a227" stroke-width="3"/><text y="6" text-anchor="middle" font-size="15" font-weight="bold" fill="#ffcf7d">3</text><text x="26" y="7">Elevador das Copas — hidráulico, do chão à passarela</text></g>
     <g transform="translate(760,1146)"><circle r="14" fill="#2b2724" stroke="#c9a227" stroke-width="3"/><text y="6" text-anchor="middle" font-size="15" font-weight="bold" fill="#ffcf7d">4</text><text x="26" y="7">Passarela de Cobre — liga estufas e copas</text></g>
     <g transform="translate(1210,1096)"><circle r="14" fill="#2b2724" stroke="#c9a227" stroke-width="3"/><text y="6" text-anchor="middle" font-size="15" font-weight="bold" fill="#ffcf7d">5</text><text x="26" y="7">Ruínas Hidráulicas — engenhos tomados por raízes</text></g>
-    <g transform="translate(1210,1146)"><text y="7" font-size="15" font-style="italic" fill="#b6c49a">Rotas: doca → canos/elevador → estufa → passarela → ruínas.</text></g>
+    <g transform="translate(1210,1146)"><text y="7" font-size="15" font-style="italic" fill="#b6c49a">Rotas: doca → elevador → estufa → passarela → ruínas.</text></g>
   </g>
 </svg>

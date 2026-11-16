@@ -98,7 +98,7 @@ end
 local function createTree(parent, name, base, trunkHeight)
 	local trunk = part(parent, name .. "Trunk", Vector3.new(trunkHeight, 1.4, 1.4),
 		CFrame.new(base + Vector3.new(0, trunkHeight / 2, 0)) * CFrame.Angles(0, 0, math.rad(90)),
-		Enum.Material.DarkWood, Color3.fromRGB(46, 36, 58))
+		Enum.Material.Wood, Color3.fromRGB(46, 36, 58))
 	trunk.Shape = Enum.PartType.Cylinder
 	local canopyA = part(parent, name .. "CanopyA", Vector3.new(6.5, 6.5, 6.5),
 		CFrame.new(base + Vector3.new(0, trunkHeight + 2.2, 0)),
@@ -213,8 +213,14 @@ local function ensurePanel(player)
 	local frame = Instance.new("Frame")
 	frame.Name = "Panel"
 	frame.AnchorPoint = Vector2.new(1, 0)
-	frame.Position = UDim2.new(1, -16, 0, 16)
-	frame.Size = UDim2.new(0, 230, 0, 136)
+	frame.Position = UDim2.new(1, -12, 0, 60)
+	-- GLM-R002.B: largura responsiva com piso de 145 studs-pixel; em
+	-- 320×568 os dois painéis (12..157 e 163..308) não se sobrepõem.
+	frame.Size = UDim2.new(0.34, 0, 0, 136)
+	local frameSize = Instance.new("UISizeConstraint")
+	frameSize.MinSize = Vector2.new(145, 136)
+	frameSize.MaxSize = Vector2.new(230, 136)
+	frameSize.Parent = frame
 	frame.BackgroundColor3 = Color3.fromRGB(20, 16, 28)
 	frame.BackgroundTransparency = 0.2
 	frame.BorderSizePixel = 0
@@ -225,7 +231,11 @@ local function ensurePanel(player)
 	title.Size = UDim2.new(1, 0, 0, 28)
 	title.BackgroundTransparency = 1
 	title.Font = Enum.Font.GothamBold
-	title.TextSize = 14
+	title.TextScaled = true
+	title.TextWrapped = true
+	local titleSize = Instance.new("UITextSizeConstraint")
+	titleSize.MaxTextSize = 14
+	titleSize.Parent = title
 	title.TextColor3 = Color3.fromRGB(235, 226, 245)
 	title.Text = "Selos · sessão"
 	title.Parent = frame
@@ -238,7 +248,11 @@ local function ensurePanel(player)
 		row.Size = UDim2.new(1, -20, 0, 24)
 		row.BackgroundTransparency = 1
 		row.Font = Enum.Font.Gotham
-		row.TextSize = 14
+		row.TextScaled = true
+		row.TextWrapped = true
+		local rowSize = Instance.new("UITextSizeConstraint")
+		rowSize.MaxTextSize = 14
+		rowSize.Parent = row
 		row.TextXAlignment = Enum.TextXAlignment.Left
 		row.TextColor3 = Color3.fromRGB(150, 142, 168)
 		row.Text = "○ " .. sealTitle .. " · bloqueado"
@@ -311,13 +325,16 @@ function Hub.notify(player, text)
 	gui.Parent = playerGui
 
 	local label = Instance.new("TextLabel")
+	-- GLM-R002.B: aviso no rodapé central, fora dos painéis (topo) e fora
+	-- do botão de pulo (canto inferior direito); em 640×360 fica em y 256..304.
 	label.Size = UDim2.new(0, 300, 0, 44)
-	label.Position = UDim2.new(0.5, -150, 0, 24)
+	label.Position = UDim2.new(0.5, -150, 1, -60)
 	label.BackgroundColor3 = Color3.fromRGB(20, 16, 28)
 	label.BackgroundTransparency = 0.25
 	label.TextColor3 = Color3.fromRGB(255, 214, 90)
 	label.Font = Enum.Font.GothamBold
 	label.TextSize = 17
+	label.TextWrapped = true
 	label.Text = text
 	label.Parent = gui
 
@@ -360,8 +377,14 @@ local function ensureObjectives(player)
 	local frame = Instance.new("Frame")
 	frame.Name = "Panel"
 	frame.AnchorPoint = Vector2.new(0, 0)
-	frame.Position = UDim2.new(0, 16, 0, 16)
-	frame.Size = UDim2.new(0, 250, 0, 110)
+	frame.Position = UDim2.new(0, 12, 0, 60)
+	-- GLM-R002.B: largura responsiva com piso de 145 studs-pixel; em
+	-- 320×568 os dois painéis (12..157 e 163..308) não se sobrepõem.
+	frame.Size = UDim2.new(0.34, 0, 0, 110)
+	local frameSize = Instance.new("UISizeConstraint")
+	frameSize.MinSize = Vector2.new(145, 110)
+	frameSize.MaxSize = Vector2.new(250, 110)
+	frameSize.Parent = frame
 	frame.BackgroundColor3 = Color3.fromRGB(20, 16, 28)
 	frame.BackgroundTransparency = 0.2
 	frame.BorderSizePixel = 0
@@ -372,7 +395,11 @@ local function ensureObjectives(player)
 	title.Size = UDim2.new(1, 0, 0, 28)
 	title.BackgroundTransparency = 1
 	title.Font = Enum.Font.GothamBold
-	title.TextSize = 14
+	title.TextScaled = true
+	title.TextWrapped = true
+	local titleSize = Instance.new("UITextSizeConstraint")
+	titleSize.MaxTextSize = 14
+	titleSize.Parent = title
 	title.TextColor3 = Color3.fromRGB(235, 226, 245)
 	title.Text = "Guardião do Éter · objetivos"
 	title.Parent = frame
@@ -385,7 +412,11 @@ local function ensureObjectives(player)
 		row.Size = UDim2.new(1, -20, 0, 24)
 		row.BackgroundTransparency = 1
 		row.Font = Enum.Font.Gotham
-		row.TextSize = 14
+		row.TextScaled = true
+		row.TextWrapped = true
+		local rowSize = Instance.new("UITextSizeConstraint")
+		rowSize.MaxTextSize = 14
+		rowSize.Parent = row
 		row.TextXAlignment = Enum.TextXAlignment.Left
 		row.TextColor3 = Color3.fromRGB(150, 142, 168)
 		row.Text = "○ " .. objective.text

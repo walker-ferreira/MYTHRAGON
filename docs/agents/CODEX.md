@@ -19,9 +19,9 @@ evidências. Política permanente em AGENTS.md. Integrador: GPT-6.1 Sol.
 - Engine, novo servidor normal, cliente e visual NÃO executados.
 - GLM real iniciado para revisão somente leitura pelo harness, modelo descoberto
   `opencode/glm-5.3-flash-free`, sessão `ses_e194c8a04ffemstop4QUSgtZTG`.
-  Primeira revisão recebida com achados de recuperação/status; corrigidos
-  localmente, segunda revisão solicitada. Não presumir aprovação nem editar GLM.md.
-- Testes Python ampliados: 13 PASS, incluindo retomada de operação com API
+  Duas revisões reais recebidas; achados ALTA 1–4 corrigidos/conferidos pelo GLM,
+  sem bloqueante fail-open no diff final revisto. Não editar GLM.md.
+- Testes Python ampliados: 18 PASS, incluindo retomada e evidência cloud com API
   simulada sem upload. Não confundir revisão estática com motor/cliente.
 - Próximo: concluir revisão, autorizar escopo workflow pelo fluxo GitHub,
   enviar workflows, executar CI nova, integrar #12, publicar automaticamente,

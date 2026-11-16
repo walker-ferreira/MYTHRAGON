@@ -91,7 +91,9 @@ return HttpService:JSONEncode({ git_sha = info.gitSha, universe_id = tostring(ga
             raise
         receipt["verification"]["persisted"] = "PENDING_ACCESS"
         receipt["verification"]["engine_bootstrap"] = "PENDING_ACCESS"
-        receipt["pending"].append("Roblox Luau Execution API access: HTTP " + str(exc.code))
+        pending = "Roblox Luau Execution API access: HTTP " + str(exc.code)
+        if pending not in receipt["pending"]:
+            receipt["pending"].append(pending)
         save("receipt.json", receipt)
         print("EXPERIMENTAL PUBLISHED; engine/persisted inspection PENDING_ACCESS, not PASS.")
 

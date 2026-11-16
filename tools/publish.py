@@ -133,7 +133,18 @@ def main():
         m = recover_receipt(api, previous, m)
         save("receipt.json", m)
         print("RESUMING prior operation; no upload will be sent")
-        poll_operation(m, key)
+        status_path = f"/deployments/{m['deployment_id']}/statuses"
+        log = f"https://github.com/{repo}/actions/runs/{os.environ['GITHUB_RUN_ID']}"
+        try:
+            api(status_path, {"state": "in_progress", "log_url": log,
+                              "description": "Resuming accepted operation; no new upload",
+                              "auto_inactive": False}, "POST")
+            poll_operation(m, key)
+        except Exception:
+            api(status_path, {"state": "failure", "log_url": log,
+                              "description": "Resume failed; inspect prior operation, never duplicate upload",
+                              "auto_inactive": False}, "POST")
+            raise
         return
     # The persistent GitHub deployment is a fail-closed fence if the runner dies mid-upload.
     deployment = api("/deployments", {"ref": sha, "environment": "staging",

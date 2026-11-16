@@ -51,7 +51,14 @@ mas NÃO aprovou instalação/release/runtime. Achados corrigidos localmente:
   como ModuleScripts inertes e engine/cliente continuam pendentes.
 - Treze testes Python PASS (inclui retomada com API simulada, não publicação real).
 
-Segunda revisão das correções solicitada; resultado ainda pendente. Condição de
+Segunda revisão GLM recebida: nenhum bloqueante fail-open no diff; ALTA 1–4
+fechados por inspeção independente. Observações adicionais tratadas: falha na
+retomada atualiza deployment; teste mockado cobre recuperação feliz do recibo;
+PENDING_ACCESS não acumula duplicatas idênticas. Dezoito testes Python PASS,
+incluindo COMPLETE com error, Universe incorreto, 403 vs 404 e isolamento de
+runtime normal. Esses testes são mocks, não execução Roblox.
+
+Condição de
 merge explícita: código e workflows completos juntos, CI nova aprovada. Não
 integrar PR #12 parcial nem acionar publisher antigo para contornar OPS-002.
 

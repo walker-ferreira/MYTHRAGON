@@ -29,6 +29,7 @@ AWAITING_OWNER. Estados de certificação são separados (AGENTS.md).
 
 - Responsável: GLM. Revisão REC-001 recebida pela sessão real
   `ses_e194c8a04ffemstop4QUSgtZTG`; correções enviadas à segunda revisão.
+  Segunda revisão recebida sem bloqueante fail-open; engine/playtest não aprovados.
   Conteúdo Gelo/Selva **não atribuído a um executor nesta sessão**. Estado: REVIEW
   para recuperação; AVAILABLE para conteúdo futuro.
 - Base/branch: selecionar main atual ao claim, registrar SHA completo no PR.

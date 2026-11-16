@@ -1,4 +1,5 @@
 from pathlib import Path
+import json
 import sys
 import unittest
 from unittest.mock import patch
@@ -13,7 +14,8 @@ class PublishGateTests(unittest.TestCase):
         m = {"git_sha": "a" * 40, "operation": "operations/accepted"}
         result = {"done": True, "response": {
             "path": "assets/" + PLACE, "revisionId": "42", "isPublished": True}}
-        with patch.object(publish, "request", return_value=result) as request, patch.object(publish, "save"):
+        with patch.object(publish, "request", return_value=result) as request, patch.object(
+                publish, "save"), patch("builtins.print"):
             publish.poll_operation(m, "test-not-secret")
             self.assertEqual(m["state"], "PUBLISHED")
             self.assertEqual(m["revision"], "42")
@@ -31,6 +33,28 @@ class PublishGateTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             publish.recover_receipt(None, [{"id": 42, "payload": {"sha256": "other"}}],
                                     {"sha256": "reviewed", "build_run_id": "1"})
+
+    def test_recover_matching_receipt_from_prior_artifact(self):
+        candidate = {"git_sha": "a" * 40, "build_run_id": "1", "sha256": "reviewed",
+                     "place_id": PLACE, "universe_id": UNIVERSE}
+        prior = dict(candidate, deployment_id=42, operation="operations/accepted")
+        deployment = {"id": 42, "payload": {"sha256": "reviewed", "build_run_id": "1"}}
+
+        def api(path):
+            if path == "/deployments/42/statuses":
+                return [{"log_url": "https://github.com/walker-ferreira/MYTHRAGON/actions/runs/123"}]
+            if path == "/actions/runs/123/artifacts?per_page=100":
+                return {"artifacts": [{"id": 9, "name": "staging-evidence-123-1", "expired": False}]}
+            self.fail("Unexpected path " + path)
+
+        def download(cmd, **kwargs):
+            self.assertEqual(cmd[:4], ["gh", "run", "download", "123"])
+            (Path(cmd[-1]) / "receipt.json").write_text(json.dumps(prior))
+
+        with patch.dict(publish.os.environ, {"GITHUB_REPOSITORY": "walker-ferreira/MYTHRAGON"}), patch.object(
+                publish.subprocess, "run", side_effect=download) as cli:
+            self.assertEqual(publish.recover_receipt(api, [deployment], candidate), prior)
+            cli.assert_called_once()
 
     def attempt(self, *, current=None, workflow=None, universe=None, previous=None):
         sha = "a" * 40

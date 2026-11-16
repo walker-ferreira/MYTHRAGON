@@ -220,18 +220,33 @@ function Map.build(parent, onReturn, partnerBuilders)
         local anchor = B.part(slot, "BuildAnchor", Vector3.one, CFrame.new(at), B.colors.iron, nil, false)
         anchor.Transparency = 1
         local content = B.model(slot, "Content")
-        if id == "Deserto" then
-            Islands.desert(content, at)
-        elseif id == "Vulcanica" then
-            Islands.volcanic(content, at)
-        elseif partnerBuilders and partnerBuilders[id] then
-            partnerBuilders[id](content, anchor.CFrame)
-        else
+        local function reservedLanding()
             -- Temporary landing only, explicitly NOT the partner's finished island.
             local base = B.part(content, "ReservedLanding", Vector3.new(220, 20, 220),
                 CFrame.new(at-Vector3.new(0, 10, 0)), B.colors.basalt, Enum.Material.Slate)
-            B.label(base, def.name.."\nDesembarque provisório · mapa 3D do GLM pendente",
+            B.label(base, def.name.."
+Desembarque provisório · mapa 3D do GLM pendente",
                 Vector3.new(0, 25, 0), 220)
+        end
+        -- Endurecimento GLM-R008 (autorização do dono): uma ilha que falha em
+        -- runtime não pode derrubar o arquipélago inteiro nem o portão do hub.
+        local okIsland, errIsland = true, nil
+        if id == "Deserto" then
+            okIsland, errIsland = pcall(Islands.desert, content, at)
+        elseif id == "Vulcanica" then
+            okIsland, errIsland = pcall(Islands.volcanic, content, at)
+        elseif partnerBuilders and partnerBuilders[id] then
+            okIsland, errIsland = pcall(partnerBuilders[id], content, anchor.CFrame)
+        else
+            okIsland = false -- sem construtor: landing provisório
+        end
+        if not okIsland then
+            if errIsland then
+                warn("[Latunia] ilha " .. id .. " falhou; landing provisório: " .. tostring(errIsland))
+            end
+            if not content:FindFirstChild("ReservedLanding") then
+                reservedLanding()
+            end
         end
     end
     atlas(root, self.origins.Central)

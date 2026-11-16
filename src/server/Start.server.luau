@@ -44,12 +44,16 @@ local anchor = hubModel and hubModel:FindFirstChild("VarkhionAnchor")
 if dragonsFolder then
 	assert(anchor, "Aetheria must create Hub.VarkhionAnchor before mounting Varkhion")
 	local Varkhion = require(dragonsFolder.Varkhion)
-	Varkhion.mount(map, anchor, function(player, speciesId)
+	local okVarkhion, errVarkhion = pcall(Varkhion.mount, map, anchor, function(player, speciesId)
 		assert(speciesId == "Varkhion", "Unexpected sanctuary species")
 		-- VX-002: callback síncrono, sem yield e idempotente; conclui
 		-- apenas o objetivo inicial do santuário. Nenhum selo ou posse.
 		Hub.completeObjective(player, "santuario")
 	end)
+	if not okVarkhion then
+		-- GLM-R008: falha do Varkhion nao pode impedir a montagem da Latúnia.
+		warn("[Start] Varkhion nao montou; Hub/Ember preservados: " .. tostring(errVarkhion))
+	end
 elseif not dragonsFolder then
 	warn("[Start] pasta Dragons ausente: Varkhion nao montado (aguardando integracao do PR #6)")
 end

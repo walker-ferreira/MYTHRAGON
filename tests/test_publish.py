@@ -9,6 +9,29 @@ from release import PLACE, UNIVERSE
 
 
 class PublishGateTests(unittest.TestCase):
+    def test_resume_polls_operation_without_upload(self):
+        m = {"git_sha": "a" * 40, "operation": "operations/accepted"}
+        result = {"done": True, "response": {
+            "path": "assets/" + PLACE, "revisionId": "42", "isPublished": True}}
+        with patch.object(publish, "request", return_value=result) as request, patch.object(publish, "save"):
+            publish.poll_operation(m, "test-not-secret")
+            self.assertEqual(m["state"], "PUBLISHED")
+            self.assertEqual(m["revision"], "42")
+            self.assertEqual(request.call_count, 1)
+            self.assertEqual(request.call_args.args[0],
+                             "https://apis.roblox.com/assets/v1/operations/accepted")
+
+    def test_resume_rejects_untrusted_operation_path(self):
+        with patch.object(publish, "request") as request:
+            with self.assertRaises(ValueError):
+                publish.poll_operation({"operation": "https://untrusted"}, "test")
+            request.assert_not_called()
+
+    def test_duplicate_journal_cannot_resume_another_artifact(self):
+        with self.assertRaises(ValueError):
+            publish.recover_receipt(None, [{"id": 42, "payload": {"sha256": "other"}}],
+                                    {"sha256": "reviewed", "build_run_id": "1"})
+
     def attempt(self, *, current=None, workflow=None, universe=None, previous=None):
         sha = "a" * 40
         calls = []

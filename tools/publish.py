@@ -3,7 +3,9 @@ import json
 import os
 from pathlib import Path
 import re
+import subprocess
 import sys
+import tempfile
 import time
 import urllib.error
 import urllib.request
@@ -48,6 +50,63 @@ def publication_response(result):
     return revision
 
 
+def poll_operation(m, key):
+    operation = m.get("operation", "")
+    if not re.fullmatch(r"operations/[A-Za-z0-9_-]+", operation):
+        raise ValueError("Missing valid operation; inspect prior upload, never resend blindly")
+    deadline = time.monotonic() + 360
+    while time.monotonic() < deadline:
+        result = request("https://apis.roblox.com/assets/v1/" + operation, key)
+        save("operation.json", result)
+        if result.get("done") is True:
+            m["revision"] = publication_response(result)
+            m["state"] = "PUBLISHED"
+            save("receipt.json", m)
+            print(f"PUBLISHED experimental staging: {m['git_sha']}, revision {m['revision']}, {operation}")
+            return
+        time.sleep(5)
+    raise TimeoutError("Operation not definitive; resume GET polling, never duplicate PATCH")
+
+
+def recover_receipt(api, deployments, candidate):
+    """Recover an earlier attempt's accepted operation, not another upload."""
+    if len(deployments) != 1:
+        raise ValueError("Ambiguous deployment journal; investigate before resuming")
+    deployment = deployments[0]
+    payload = deployment.get("payload", {})
+    if isinstance(payload, str):
+        payload = json.loads(payload)
+    if payload.get("sha256") != candidate["sha256"] or str(payload.get("build_run_id")) != candidate["build_run_id"]:
+        raise ValueError("Prior deployment has a different artifact/build")
+    statuses = api(f"/deployments/{deployment['id']}/statuses")
+    repo = re.escape(os.environ["GITHUB_REPOSITORY"])
+    for status in statuses:
+        match = re.fullmatch(rf"https://github.com/{repo}/actions/runs/([0-9]+)", status.get("log_url", ""))
+        if not match:
+            continue
+        run_id = match[1]
+        artifacts = api(f"/actions/runs/{run_id}/artifacts?per_page=100")["artifacts"]
+        for artifact in sorted(artifacts, key=lambda a: a["id"], reverse=True):
+            if not artifact["name"].startswith("staging-evidence-") or artifact["expired"]:
+                continue
+            with tempfile.TemporaryDirectory() as d:
+                subprocess.run(["gh", "run", "download", run_id, "--repo", os.environ["GITHUB_REPOSITORY"],
+                                "--name", artifact["name"], "--dir", d], check=True, capture_output=True)
+                path = Path(d) / "receipt.json"
+                if not path.exists():
+                    continue
+                prior = json.loads(path.read_text(encoding="utf-8"))
+                for field in ("git_sha", "build_run_id", "sha256", "place_id", "universe_id"):
+                    if str(prior.get(field)) != str(candidate[field]):
+                        raise ValueError("Prior receipt identity mismatch: " + field)
+                if prior.get("deployment_id") != deployment["id"]:
+                    raise ValueError("Prior receipt belongs to another deployment")
+                if not re.fullmatch(r"operations/[A-Za-z0-9_-]+", prior.get("operation", "")):
+                    continue
+                return prior
+    raise ValueError("Deployment exists without recoverable operation receipt; inspect prior upload. No duplicate PATCH.")
+
+
 def main():
     sha, run = os.environ["BUILD_SHA"], os.environ["BUILD_RUN_ID"]
     m = verify_manifest(OUT, sha, run)
@@ -71,13 +130,18 @@ def main():
     save("target.json", target)
     previous = api(f"/deployments?sha={sha}&environment=staging&per_page=100")
     if previous:
-        raise ValueError("Deployment journal already exists for this SHA. Inspect prior receipt/operation; no duplicate upload.")
+        m = recover_receipt(api, previous, m)
+        save("receipt.json", m)
+        print("RESUMING prior operation; no upload will be sent")
+        poll_operation(m, key)
+        return
     # The persistent GitHub deployment is a fail-closed fence if the runner dies mid-upload.
     deployment = api("/deployments", {"ref": sha, "environment": "staging",
                      "auto_merge": False, "required_contexts": [], "production_environment": False,
                      "description": "MYTHRAGON experimental staging",
                      "payload": {"build_run_id": run, "sha256": m["sha256"]}}, "POST")
     dep_id = deployment["id"]
+    m["deployment_id"] = dep_id
     save("deployment.json", {"id": dep_id, "sha": sha})
     status_path = f"/deployments/{dep_id}/statuses"
     log = f"https://github.com/{repo}/actions/runs/{os.environ['GITHUB_RUN_ID']}"
@@ -103,22 +167,11 @@ def main():
             raise ValueError("Unexpected operation path; inspect upload-response, do not resend")
         m["operation"] = operation
         save("receipt.json", m)
-        deadline = time.monotonic() + 360
-        while time.monotonic() < deadline:
-            result = request("https://apis.roblox.com/assets/v1/" + operation, key)
-            save("operation.json", result)
-            if result.get("done") is True:
-                m["revision"] = publication_response(result)
-                m["state"] = "PUBLISHED"
-                save("receipt.json", m)
-                api(status_path, {"state": "success", "log_url": log,
-                                 "environment_url": f"https://www.roblox.com/games/{PLACE}",
-                                 "description": "Published experimental revision " + m["revision"],
-                                 "auto_inactive": True}, "POST")
-                print(f"PUBLISHED experimental staging: {sha}, revision {m['revision']}, {operation}")
-                return
-            time.sleep(5)
-        raise TimeoutError("Operation not definitive; resume GET polling, never duplicate PATCH")
+        poll_operation(m, key)
+        api(status_path, {"state": "in_progress", "log_url": log,
+                          "environment_url": f"https://www.roblox.com/games/{PLACE}",
+                          "description": "Published revision " + m["revision"] + "; verification pending",
+                          "auto_inactive": False}, "POST")
     except Exception:
         api(status_path, {"state": "failure", "log_url": log,
                          "description": "Inspect operation/receipt before any retry", "auto_inactive": False}, "POST")
@@ -132,3 +185,6 @@ if __name__ == "__main__":
         # Do not dump request headers or credentials.
         save("api-error.json", {"status": exc.code, "body": exc.read(4000).decode(errors="replace")})
         sys.exit(f"Publication API HTTP {exc.code}; evidence preserved; no automatic upload retry")
+    except (urllib.error.URLError, TimeoutError) as exc:
+        save("transport-error.json", {"type": type(exc).__name__, "message": str(exc)})
+        sys.exit("Publication transport failure; inspect saved operation/intent before retry")

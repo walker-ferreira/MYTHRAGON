@@ -35,5 +35,25 @@ Workflow local inicial: 048195a. Backup integral inicial: codex/recovery-full-ba
 Recibos remotos de progresso: issue #13. Revisões finais do código podem mudar
 esses SHAs, sem invalidar a natureza limitada das evidências registradas.
 
+## Revisão GLM e autocorreção (mesma sessão)
+
+Revisão independente real recebida de GLM 5.3 Flash, sessão
+`ses_e194c8a04ffemstop4QUSgtZTG`. Confirmou parser/gates/honestidade da evidência,
+mas NÃO aprovou instalação/release/runtime. Achados corrigidos localmente:
+
+- Deployment success passa a ocorrer só depois da tentativa de verificação,
+  distinguindo candidato experimental sem acesso de bootstrap engine aprovado.
+- Rerun recupera recibo pelo artefato anterior e retoma GET da operação sem PATCH;
+  identidade diferente ou operação irrecuperável bloqueia, nunca duplica envio.
+- 404 não vira PENDING_ACCESS; COMPLETE com erro/resultado inválido falha;
+  identidade Universe/Place/revisão e quantidade de scripts conferidas.
+- Conexão de perfil rastreada para cleanup do Core; specs embarcados declarados
+  como ModuleScripts inertes e engine/cliente continuam pendentes.
+- Treze testes Python PASS (inclui retomada com API simulada, não publicação real).
+
+Segunda revisão das correções solicitada; resultado ainda pendente. Condição de
+merge explícita: código e workflows completos juntos, CI nova aprovada. Não
+integrar PR #12 parcial nem acionar publisher antigo para contornar OPS-002.
+
 O commit que contém cada registro é consultável por `git log -- <arquivo>`;
 não inserir SHA autorreferencial fictício. Resultados posteriores entram abaixo.

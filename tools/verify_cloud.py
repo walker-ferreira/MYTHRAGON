@@ -28,6 +28,11 @@ for path, source in pairs(expected) do
     assert(string.gsub(at.Source, "\\r\\n", "\\n") == source, "Persisted source differs: " .. path)
     count += 1
 end
+local actualCount = 0
+for _, value in game.ServerScriptService.Mythragon:GetDescendants() do
+    if value:IsA("LuaSourceContainer") then actualCount += 1 end
+end
+assert(actualCount == count, "Unexpected persisted script modules")
 local info = require(game.ServerScriptService.Mythragon.Diagnostics.BuildInfo)
 assert(info.gitSha == %s, "Wrong build identity")
 assert(tostring(game.GameId) == %s and tostring(game.PlaceId) == %s, "Wrong engine destination")
@@ -59,15 +64,20 @@ return HttpService:JSONEncode({ git_sha = info.gitSha, universe_id = tostring(ga
             save("engine-task.json", result)
             state = result.get("state")
             if state == "COMPLETE":
+                if result.get("error"):
+                    raise ValueError("Engine COMPLETE contains error")
+                values = result.get("output", {}).get("results")
+                if not isinstance(values, list) or len(values) != 1 or not isinstance(values[0], str):
+                    raise ValueError("Engine COMPLETE without a single serialized evidence object")
                 evidence = json.loads(result["output"]["results"][0])
                 save("engine-evidence.json", evidence)
-                if (evidence["git_sha"], evidence["revision"], evidence["place_id"]) != (
-                        sha, receipt["revision"], PLACE) or not evidence["persisted_ok"]:
+                if (evidence["git_sha"], evidence["revision"], evidence["place_id"], evidence["universe_id"]) != (
+                        sha, receipt["revision"], PLACE, UNIVERSE) or evidence["persisted_ok"] is not True:
                     raise ValueError("Persisted identity mismatch")
                 receipt["verification"]["persisted"] = "PASS"
-                receipt["verification"]["engine_bootstrap"] = "PASS" if evidence["bootstrap_ok"] else "FAIL"
+                receipt["verification"]["engine_bootstrap"] = "PASS" if evidence["bootstrap_ok"] is True else "FAIL"
                 save("receipt.json", receipt)
-                if not evidence["bootstrap_ok"]:
+                if evidence["bootstrap_ok"] is not True:
                     raise ValueError("Published candidate bootstrap FAILED; read engine-evidence")
                 print("PERSISTED_OK + isolated engine bootstrap PASS. Normal runtime/physics/client remain PENDING.")
                 return
@@ -77,7 +87,7 @@ return HttpService:JSONEncode({ git_sha = info.gitSha, universe_id = tostring(ga
         raise TimeoutError("Engine verification timed out; task evidence retained")
     except urllib.error.HTTPError as exc:
         save("engine-api-error.json", {"status": exc.code, "body": exc.read(4000).decode(errors="replace")})
-        if exc.code not in (401, 403, 404):
+        if exc.code not in (401, 403):
             raise
         receipt["verification"]["persisted"] = "PENDING_ACCESS"
         receipt["verification"]["engine_bootstrap"] = "PENDING_ACCESS"
@@ -86,5 +96,31 @@ return HttpService:JSONEncode({ git_sha = info.gitSha, universe_id = tostring(ga
         print("EXPERIMENTAL PUBLISHED; engine/persisted inspection PENDING_ACCESS, not PASS.")
 
 
+def finalize_deployment(state, description):
+    path = OUT / "receipt.json"
+    if not path.exists():
+        return
+    receipt = json.loads(path.read_text())
+    deployment_id = receipt.get("deployment_id")
+    if not isinstance(deployment_id, int):
+        raise ValueError("Receipt missing deployment journal")
+    repo = os.environ["GITHUB_REPOSITORY"]
+    url = f"https://api.github.com/repos/{repo}/deployments/{deployment_id}/statuses"
+    request(url, os.environ["GH_TOKEN"], {
+        "state": state, "description": description,
+        "log_url": f"https://github.com/{repo}/actions/runs/{os.environ['GITHUB_RUN_ID']}",
+        "environment_url": f"https://www.roblox.com/games/{PLACE}", "auto_inactive": state == "success"
+    }, "POST", github=True)
+
+
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+        receipt = json.loads((OUT / "receipt.json").read_text())
+        verified = receipt["verification"]["engine_bootstrap"] == "PASS"
+        finalize_deployment("success", "Experimental published; isolated engine PASS, playtest pending"
+                            if verified else "Experimental published; engine PENDING_ACCESS, NOT certified")
+    except Exception as exc:
+        save("verification-error.json", {"type": type(exc).__name__, "message": str(exc)})
+        finalize_deployment("failure", "Published candidate verification failed; inspect evidence")
+        raise

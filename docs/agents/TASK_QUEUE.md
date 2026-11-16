@@ -18,13 +18,19 @@ AWAITING_OWNER. Estados de certificação são separados (AGENTS.md).
   ainda precisa ser testado; não presume executor externo GLM/Codex instalado.
 - Aceite: sem publicação fantasma, build/SHA/destino/revisão rastreáveis,
   testes disponíveis executados, saúde do mundo e pendências verdadeiras.
-- Estado: IMPLEMENTING. A auditado; B/C em andamento; D–G seguintes; H planejado.
-- Próximo checkpoint: registrar auditoria no GitHub e validar ferramentas/contratos.
+- Estado: BLOCKED (OPS-002: OAuth workflow). A auditado; B aplicado com bloqueio
+  residual; C exercitado com GLM real/lease; D/E implementados e testados localmente;
+  F motor pendente; G sem publicação; H planejado.
+- Próximo checkpoint: autenticação oficial workflow pelo proprietário, push dos
+  workflows, CI nova, revisão final, integração conjunta e staging experimental.
 - Evidência: docs/engineering/AUDIT-2026-11-16.md.
 
 ## LAT-GLM-001 — Gelo/Selva e revisão independente da recuperação
 
-- Responsável: GLM; recebimento **não confirmado**. Estado: AVAILABLE.
+- Responsável: GLM. Revisão REC-001 recebida pela sessão real
+  `ses_e194c8a04ffemstop4QUSgtZTG`; correções enviadas à segunda revisão.
+  Conteúdo Gelo/Selva **não atribuído a um executor nesta sessão**. Estado: REVIEW
+  para recuperação; AVAILABLE para conteúdo futuro.
 - Base/branch: selecionar main atual ao claim, registrar SHA completo no PR.
 - Caminhos: módulos próprios Gelo/Selva em src/server/Hub/ ou caminho acordado;
   docs/agents/GLM.md e testes próprios; revisão somente leitura de REC-001.

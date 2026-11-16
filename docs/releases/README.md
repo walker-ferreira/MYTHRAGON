@@ -10,7 +10,9 @@ O histórico GitHub Deployments registra SHA/hash/build antes do envio, bloquean
 novo upload do mesmo SHA se o runner morrer. Revisão só é aceita com destino exato,
 `isPublished=true` e `revisionId` numérico. Falha/timeout não dispara novo PATCH.
 
-Recuperação: baixar evidências, consultar operation por GET, atualizar diagnóstico.
+Recuperação automática de rerun: recuperar recibo do artefato da execução anterior,
+conferir SHA/build/hash/Place/deployment e retomar **somente GET** da operação.
+Sem recibo/operação recuperável: bloquear, baixar evidências e investigar, sem PATCH.
 Se upload foi rejeitado definitivamente, corrigir e produzir novo SHA/build; se
 aceito, não reenviar. Falha engine após publicação é release publicada **com falha**,
 não release não publicada. Corrigir por PR e publicar novo candidato.
@@ -20,6 +22,10 @@ explicitamente em instância isolada. Não inicia scripts automaticamente nem si
 física/jogadores; **não** equivale a RUNTIME_OK/PLAYTEST_OK em servidor normal.
 Sem permissão Luau Execution, registrar PENDING_ACCESS e entregar experimental,
 nunca PASS fictício. Produção não é destino suportado por estes scripts.
+Somente 401/403 são falta de acesso; 404/COMPLETE com error/retorno inválido falham
+a verificação. Deployment success só é emitido após a tentativa de inspeção e sua
+descrição distingue engine PASS de PENDING_ACCESS. Publicação confirmada permanece
+no recibo mesmo se uma inspeção posterior falhar.
 
 Rollback preferido: PR revertendo apenas a alteração problemática, checks, merge e
 nova publicação de staging. Preservar recibo anterior e vincular ambos os SHAs.

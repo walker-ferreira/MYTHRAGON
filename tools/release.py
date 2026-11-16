@@ -99,7 +99,9 @@ def manifest(sha, run):
             "verification": {"persisted": "PENDING", "engine_bootstrap": "PENDING",
                              "runtime_new_server": "PENDING", "client": "PENDING", "visual": "PENDING"},
             "pending": ["Fresh normal server runtime", "Physics/client/mobile/multiplayer playtest",
-                        "Owner visual evaluation", "Gelo/Selva detailed content"]}
+                        "Owner visual evaluation", "Gelo/Selva detailed content",
+                        "Engine inspection specs are shipped as inert ModuleScripts, not automatic tests",
+                        "Studio engine specs and isolated cloud probe share contracts; no player simulation"]}
 
 
 def verify_manifest(folder, sha, run):

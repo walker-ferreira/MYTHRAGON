@@ -11,6 +11,7 @@ function Bootstrap.run()
 	local parent = script.Parent.Parent
 	local Players = game:GetService("Players")
 	local Hub, Profile, map, returnToHub
+	local profileConnection
 	local coreOk = health:stage("Core", function()
 		assert(not workspace:FindFirstChild("MythragonMap"), "Unowned existing map")
 		Hub = require(parent.Hub.Map)
@@ -32,9 +33,10 @@ function Bootstrap.run()
 		returnToHub = Hub.build(map, enterEmber)
 		assert(type(returnToHub) == "function", "Hub return contract")
 		Ember.connectReturn(map, returnToHub)
-		Players.PlayerRemoving:Connect(function(player) Profile.clearSession(player) end)
 		assert(map:FindFirstChild("Hub"), "Hub did not mount")
+		profileConnection = Players.PlayerRemoving:Connect(function(player) Profile.clearSession(player) end)
 	end, function()
+		if profileConnection then profileConnection:Disconnect() end
 		if map then map:Destroy() end
 	end)
 	if coreOk then

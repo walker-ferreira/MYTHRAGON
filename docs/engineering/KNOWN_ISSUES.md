@@ -12,3 +12,4 @@
 | AGENT-001 | executor não interativo de GLM/Codex externo não comprovado | Investigar; CODEX |
 | DATA-001 | Profile mantém só sessão | Conhecido; fora do escopo desta recuperação |
 | OPS-002 | Push que altera workflows recusado: OAuth sem escopo workflow | BLOQUEADO por autenticação humana; não contornar |
+| REL-003 | Não mesclar código novo sem workflows: publisher antigo continua disponível em main | Bloqueio de integração de #12 até OAuth/CI nova; CODEX |

@@ -12,6 +12,9 @@
 ## Publicação ambígua
 
 Consultar recibo/operação antes de novo PATCH. Timeout não significa rejeição.
+Rerun novo recupera receipt.json pelo artefato da execução anterior, valida
+SHA/build/hash/destino/deployment e retoma GET da operação. Sem recibo recuperável,
+bloqueia para investigação técnica; não faz upload às cegas.
 Não repetir upload automaticamente. Preservar artefato e hash; uma correção é novo
 commit/build. Rollback é revert por PR da mudança de conteúdo, novos checks e nova
 publicação serializada; nunca inventar que revisão antiga foi restaurada.

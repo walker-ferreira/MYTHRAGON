@@ -204,11 +204,6 @@ function Hub.setSealEarned(player, index)
 	applyEarned(panel, index)
 end
 
--- Feedback por jogador: aviso exclusivo no PlayerGui, sem tocar no cliente.
-function Hub.notifySealEarned(player, title)
-	Hub.notify(player, title .. " conquistado!")
-end
-
 -- Aviso genérico por jogador (PlayerGui é exclusivo de quem o recebe).
 function Hub.notify(player, text)
 	local playerGui = player:FindFirstChildOfClass("PlayerGui")

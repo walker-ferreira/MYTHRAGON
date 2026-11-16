@@ -36,6 +36,6 @@ Specs puras cobrem alcance, cooldown, vida, entradas não finitas, callback pend
 
 O módulo manual `Varkhion.engine.spec.luau` oferece verificações de geometria/montagem/ciclo de vida para o servidor do Studio, sem autoexecução ou concessão. Está compilado, mas ainda não foi executado no motor; instruções no checklist.
 
-O mapeamento Rojo existente (`$path: src/server`) já inclui o novo diretório: sem editar configuração ou autoexecutar demo. O Start foi ligado pelo editor Codex autorizado, na branch combinada com `glm/aetheria-fase-1@47501c1`. **Isso não comprova execução no motor:** `Enum.Material.DarkWood` no Hub interrompe sua construção antes de criar o mount. Corrigir no arquivo do GLM; não contornar com segundo bootstrap, remoção de árvores em runtime ou alias de Enum.
+O mapeamento Rojo existente (`$path: src/server`) já inclui o novo diretório: sem editar configuração ou autoexecutar demo. O Start foi ligado pelo editor Codex autorizado, na branch combinada com `glm/aetheria-fase-1@2e72b54`. **Isso não comprova execução no motor:** `Enum.Material.DarkWood` no Hub interrompe sua construção antes de criar a âncora. Corrigir no arquivo do GLM; não contornar com segundo bootstrap, remoção de árvores em runtime ou alias de Enum.
 
 Regressão de Ember: conservar os quatro arquivos exatamente como na base, incluindo função da plataforma 0–12 studs. Manter `Ember.build`, `connectReturn`, callback de vitória e perfil individual. Checklist de evidências e bloqueios em [docs/testing/varkhion-fase1.md](../testing/varkhion-fase1.md).

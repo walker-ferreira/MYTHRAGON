@@ -615,21 +615,22 @@ function Hub.build(parent, onEnterEmber)
 	-- Ala oeste explorável: deck, trajeto de pedras, vegetação, ruínas,
 	-- cristais, Guardiões do Éter e santuário de Varkhion. Builds
 	-- procedurais próprios; referências em docs/decisions/0004-aetheria-fase-1.md.
-	part(model, "AetheriaWestDeck", Vector3.new(58, 2, 56),
-		CFrame.new(-62, -1, 2), Enum.Material.Slate, Color3.fromRGB(48, 45, 72))
+	part(model, "AetheriaWestDeck", Vector3.new(66, 2, 60),
+		CFrame.new(-66, -1, 2), Enum.Material.Slate, Color3.fromRGB(48, 45, 72))
 
 	local wingRocks = {
-		{ Vector3.new(16, 9, 12), CFrame.new(-62, -6, 14) * CFrame.Angles(0, 0, math.rad(5)) },
-		{ Vector3.new(14, 8, 11), CFrame.new(-70, -6.5, -14) * CFrame.Angles(0, 0, math.rad(-6)) },
-		{ Vector3.new(12, 7, 10), CFrame.new(-84, -6, 4) * CFrame.Angles(0, 0, math.rad(7)) },
+		{ Vector3.new(16, 9, 12), CFrame.new(-70, -6, 16) * CFrame.Angles(0, 0, math.rad(5)) },
+		{ Vector3.new(14, 8, 11), CFrame.new(-78, -6.5, -16) * CFrame.Angles(0, 0, math.rad(-6)) },
+		{ Vector3.new(12, 7, 10), CFrame.new(-92, -6, 8) * CFrame.Angles(0, 0, math.rad(7)) },
 	}
 	for index, spec in ipairs(wingRocks) do
 		part(model, "AetheriaRock" .. index, spec[1], spec[2],
 			Enum.Material.Rock, Color3.fromRGB(36, 33, 52))
 	end
 
-	-- Trajeto claro do spawn à ala oeste (os Guardiões ficam às margens).
-	for index = 1, 12 do
+	-- Trajeto claro do spawn à ala oeste (os Guardiões ficam às margens;
+	-- o trajeto termina na borda dos degraus do santuário).
+	for index = 1, 10 do
 		local offset = (index % 2 == 0) and 0.6 or -0.6
 		part(model, "AetherPathStone" .. index, Vector3.new(3.6, 0.4, 3),
 			CFrame.new(-4 - (index - 1) * 5, 0.2, 14 + offset),
@@ -638,15 +639,15 @@ function Hub.build(parent, onEnterEmber)
 
 	createTree(model, "AetherTree1", Vector3.new(18, 0, 21), 7)
 	createTree(model, "AetherTree2", Vector3.new(-14, 0, 22), 6)
-	createTree(model, "AetherTree3", Vector3.new(-70, 0, 25), 8)
+	createTree(model, "AetherTree3", Vector3.new(-70, 0, 30), 8)
 	createTree(model, "AetherTree4", Vector3.new(-50, 0, 24), 6)
-	createTree(model, "AetherTree5", Vector3.new(-86, 0, -14), 7)
+	createTree(model, "AetherTree5", Vector3.new(-90, 0, -20), 7)
 	createTree(model, "AetherTree6", Vector3.new(-44, 0, -18), 7)
 
 	createCrystalCluster(model, "AetherCrystals1", Vector3.new(24, 0, 18), ETHER_BLUE)
 	createCrystalCluster(model, "AetherCrystals2", Vector3.new(-46, 0, -10), VIOLET_CANOPY)
-	createCrystalCluster(model, "AetherCrystals3", Vector3.new(-66, 0, 22), ETHER_BLUE)
-	createCrystalCluster(model, "AetherCrystals4", Vector3.new(-88, 0, 20), VIOLET_CANOPY)
+	createCrystalCluster(model, "AetherCrystals3", Vector3.new(-58, 0, 28), ETHER_BLUE)
+	createCrystalCluster(model, "AetherCrystals4", Vector3.new(-94, 0, 24), VIOLET_CANOPY)
 	createCrystalCluster(model, "AetherCrystals5", Vector3.new(8, 0, -21), ETHER_BLUE)
 	createCrystalCluster(model, "AetherCrystals6", Vector3.new(-8, 0, -21), VIOLET_CANOPY)
 
@@ -680,22 +681,23 @@ function Hub.build(parent, onEnterEmber)
 	local guardians = {
 		{ Vector3.new(-16, 0, 10), -90 },
 		{ Vector3.new(-38, 0, 18), -90 },
-		{ Vector3.new(-56, 0, 9), -90 },
+		{ Vector3.new(-42, 0, 10), -90 },
 	}
 	for index, spec in ipairs(guardians) do
 		createGuardianStatue(model, "AetherGuardian" .. index, spec[1], spec[2])
 	end
 
 	-- Santuário de Varkhion (oeste): dais de mármore, anel de pilares de
-	-- obsidiana com faixas douradas, runas etéreas, feixe de luz e ponto
-	-- de montagem para o módulo do Codex.
-	local sanctuaryCenter = Vector3.new(-78, 0, 12)
+	-- obsidiana com faixas douradas, runas etéreas, feixe de luz e âncora
+	-- de montagem para o módulo do Codex. Dimensões conforme VX-001:
+	-- folga ≥ 36×34 studs, 18 de altura livre e 12 de aproximação frontal.
+	local sanctuaryCenter = Vector3.new(-72, 0, 2)
 
-	local steps = part(model, "SanctuarySteps", Vector3.new(0.6, 30, 30),
+	local steps = part(model, "SanctuarySteps", Vector3.new(0.6, 54, 54),
 		CFrame.new(sanctuaryCenter + Vector3.new(0, 0.3, 0)) * CFrame.Angles(0, 0, math.rad(90)),
 		Enum.Material.Slate, AETHER_STONE)
 	steps.Shape = Enum.PartType.Cylinder
-	local dais = part(model, "SanctuaryDais", Vector3.new(1.2, 24, 24),
+	local dais = part(model, "SanctuaryDais", Vector3.new(1.2, 48, 48),
 		CFrame.new(sanctuaryCenter + Vector3.new(0, 0.6, 0)) * CFrame.Angles(0, 0, math.rad(90)),
 		Enum.Material.Marble, Color3.fromRGB(64, 60, 94))
 	dais.Shape = Enum.PartType.Cylinder
@@ -703,7 +705,7 @@ function Hub.build(parent, onEnterEmber)
 	for index = 0, 5 do
 		local angle = index * math.pi / 3
 		local radial = Vector3.new(math.cos(angle), 0, math.sin(angle))
-		local pillarPos = sanctuaryCenter + radial * 9
+		local pillarPos = sanctuaryCenter + radial * 20
 		part(model, "SanctuaryPillar" .. index, Vector3.new(2.2, 7, 2.2),
 			CFrame.new(pillarPos + Vector3.new(0, 1.2 + 3.5, 0)),
 			Enum.Material.Basalt, OBSIDIAN_COLOR)
@@ -715,17 +717,27 @@ function Hub.build(parent, onEnterEmber)
 			Enum.Material.Neon, ETHER_BLUE)
 	end
 
-	-- Contrato com o Codex (GLM-R001): ponto de montagem do Varkhion.
-	-- Caminho: workspace.MythragonMap.Hub.VarkhionMount — Part invisível,
-	-- ancorada, sem colisão, olhando para leste (em direção ao portal).
+	for index = 0, 11 do
+		local angle = index * math.pi / 6
+		local radial = Vector3.new(math.cos(angle), 0, math.sin(angle))
+		part(model, "SanctuaryGoldMark" .. index, Vector3.new(1.6, 0.3, 0.8),
+			CFrame.new(sanctuaryCenter + radial * 22.5 + Vector3.new(0, 1.35, 0))
+				* CFrame.Angles(0, -angle + math.rad(90), 0),
+			Enum.Material.Neon, AETHER_GOLD)
+	end
+
+	-- Contrato VX-001 (resposta GLM em docs/agents/GLM.md): âncora do
+	-- Varkhion. Caminho: workspace.MythragonMap.Hub.VarkhionAnchor —
+	-- Part ancorada, invisível, sem colisão, piso do dais, marca de 36×34,
+	-- frente (-Z) para leste (em direção ao portal) com aproximação livre.
 	local mount = Instance.new("Part")
-	mount.Name = "VarkhionMount"
+	mount.Name = "VarkhionAnchor"
 	mount.Anchored = true
 	mount.CanCollide = false
 	mount.Transparency = 1
-	mount.Size = Vector3.new(6, 1, 6)
-	mount.CFrame = CFrame.lookAt(sanctuaryCenter + Vector3.new(0, 1.8, 0),
-		sanctuaryCenter + Vector3.new(10, 1.8, 0))
+	mount.Size = Vector3.new(36, 0.4, 34)
+	mount.CFrame = CFrame.lookAt(sanctuaryCenter + Vector3.new(0, 1.4, 0),
+		sanctuaryCenter + Vector3.new(10, 1.4, 0))
 	mount.Parent = model
 
 	local sanctuaryLight = Instance.new("PointLight")
@@ -736,17 +748,20 @@ function Hub.build(parent, onEnterEmber)
 	sanctuaryLight.Parent = mount
 
 	local beam = part(model, "SanctuaryBeam", Vector3.new(0.7, 26, 0.7),
-		CFrame.new(sanctuaryCenter + Vector3.new(0, 1.2 + 13, 0)),
+		CFrame.new(sanctuaryCenter + Vector3.new(-15.9, 1.2 + 13, -15.9)),
 		Enum.Material.Neon, ETHER_BLUE)
 	beam.Transparency = 0.5
 	beam.CanCollide = false
 
 	local sanctuaryStone = part(model, "SanctuaryRuneStone", Vector3.new(2, 3.8, 1.5),
-		CFrame.new(sanctuaryCenter + Vector3.new(13.6, 1.9, 0)),
+		CFrame.new(sanctuaryCenter + Vector3.new(22.5, 3.1, 0)),
 		Enum.Material.Slate, Color3.fromRGB(50, 47, 72))
 	part(model, "SanctuaryRuneMark", Vector3.new(0.4, 2.2, 0.15),
-		CFrame.new(sanctuaryCenter + Vector3.new(13.6, 1.9, 0.85)),
+		CFrame.new(sanctuaryCenter + Vector3.new(22.5, 3.1, 0.85)),
 		Enum.Material.Neon, AETHER_GOLD)
+	-- VX-002: a conversa validada com o Varkhion (callback em Start) também
+	-- conclui o objetivo; a pedra fica como marco da entrada e rota de
+	-- fallback enquanto o módulo Dragons não estiver na árvore integrada.
 	observePrompt(sanctuaryStone, "Santuário de Varkhion", "santuario")
 
 	-- Travessia por jogador: evita reentrada durante a viagem e limpa ao

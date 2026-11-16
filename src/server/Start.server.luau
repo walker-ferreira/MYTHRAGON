@@ -7,7 +7,6 @@ local Players = game:GetService("Players")
 local Hub = require(script.Parent.Hub.Map)
 local Ember = require(script.Parent.Ember.Map)
 local Profile = require(script.Parent.Profile.Profile)
-local Varkhion = require(script.Parent.Dragons.Varkhion)
 
 local map = Instance.new("Folder")
 map.Name = "MythragonMap"
@@ -35,14 +34,25 @@ local enterEmber = Ember.build(map, onVictory)
 local returnToHub = Hub.build(map, enterEmber)
 Ember.connectReturn(map, returnToHub)
 
--- GLM-R001: o Hub cria o mount uma vez, orientado para leste (-Z local).
--- Completar santuario novamente retorna false: duplicata legítima, não erro.
-local mount = assert(map.Hub:FindFirstChild("VarkhionMount"),
-	"Aetheria must create Hub.VarkhionMount before mounting Varkhion")
-Varkhion.mount(map.Hub, mount, function(player, speciesId)
-	assert(speciesId == "Varkhion", "Unexpected sanctuary species")
-	Hub.completeObjective(player, "santuario")
-end)
+-- Varkhion (respostas VX-001/VX-002 em docs/agents/GLM.md): montagem
+-- única, após a construção de Aetheria. O módulo do Codex vive em
+-- src/server/Dragons (PR #6); enquanto a pasta não existir na árvore
+-- integrada, o hub segue funcional sem o dragão.
+local dragonsFolder = script.Parent:FindFirstChild("Dragons")
+local hubModel = map:FindFirstChild("Hub")
+local anchor = hubModel and hubModel:FindFirstChild("VarkhionAnchor")
+if dragonsFolder then
+	assert(anchor, "Aetheria must create Hub.VarkhionAnchor before mounting Varkhion")
+	local Varkhion = require(dragonsFolder.Varkhion)
+	Varkhion.mount(map, anchor, function(player, speciesId)
+		assert(speciesId == "Varkhion", "Unexpected sanctuary species")
+		-- VX-002: callback síncrono, sem yield e idempotente; conclui
+		-- apenas o objetivo inicial do santuário. Nenhum selo ou posse.
+		Hub.completeObjective(player, "santuario")
+	end)
+elseif not dragonsFolder then
+	warn("[Start] pasta Dragons ausente: Varkhion nao montado (aguardando integracao do PR #6)")
+end
 
 Players.PlayerRemoving:Connect(function(player)
 	Profile.clearSession(player)

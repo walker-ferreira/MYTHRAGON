@@ -26,7 +26,8 @@ O workflow atual verifica sintaxe e build; **não executa as specs**. Não conta
 
 - GLM: implementação `9320b1d`, documentação `47501c14ec823b0bf19cd7c348918e1678f6a3c4`; [CI 43794254570](https://github.com/walker-ferreira/MYTHRAGON/actions/runs/43794254570) PASS, reaproveitada, sem disparar outra execução na branch do parceiro.
 - Codex combinou `47501c1` por merge normal **somente em `codex/varkhion-fase1`**, preservando autoria. O dono transferiu exclusivamente Start para Codex nesta continuação; Hub e documentos GLM não foram editados por Codex.
-- Start requer Dragons.Varkhion, encontra `Hub.VarkhionMount`, monta uma vez e liga conversa validada a `Hub.completeObjective(player, "santuario")`. false por objetivo já concluído é duplicata legítima; Ember/Profile continuam donos da vitória/selo.
+- Na releitura antes de encerrar surgiram `db6da8f`/`2e72b54`: âncora renomeada para `VarkhionAnchor`, santuário ampliado e montagem condicional do GLM. Incorporados em novo merge normal; conflito em Start resolvido pelo editor Codex, sem duplicar chamadas nem descartar a lógica condicional do parceiro.
+- Start detecta Dragons.Varkhion, exige `Hub.VarkhionAnchor` quando o módulo existe, monta uma vez em `map` e liga conversa validada a `Hub.completeObjective(player, "santuario")`. false por objetivo já concluído é duplicata legítima; Ember/Profile continuam donos da vitória/selo. Modelo montado fica em `workspace.MythragonMap.Varkhion`.
 - Registro Codex renumerado para `0005-varkhion-interacao.md`, preservando o `0004-aetheria-fase-1.md` do parceiro e seu índice. Respostas/revisão detalhada: GLM-R001/002/003 em CODEX.md.
 - Verificações locais da árvore combinada (Windows, Luau 0.744 / Rojo 7.6.1): **PASS** na compilação de 13 fontes, nas três specs puras (Ember/Profile/InteractionState) e no build `mythragon-aetheria-varkhion.rbxlx` em pasta temporária fora do Git.
 - Comparações automatizadas: **PASS**, Ember completo (inclui plataforma), Profile, Rojo e workflows idênticos à main; Hub e registros do GLM idênticos a `47501c1`. Start só ganhou a ligação autorizada e o comentário de editor.
@@ -37,7 +38,7 @@ O workflow atual verifica sintaxe e build; **não executa as specs**. Não conta
 
 1. **Inicialização:** `Hub/Map.luau:createTree` usa `Enum.Material.DarkWood`. A [lista oficial](https://create.roblox.com/docs/reference/engine/enums/Material) não contém esse membro; deve ser Wood/WoodPlanks. O Hub tenta criar a árvore antes de criar VarkhionMount/terminar Hub.build. Isso impede o percurso antes de a ligação de Varkhion poder executar. Sintaxe e build não validam Enum.
 2. **Mobile:** painéis de largura fixa (250 + 230 + margens) no mesmo Y se sobrepõem; em largura 320, os intervalos X=[16,266] e [74,304] se cruzam em 192 px. Resultado de cálculo do layout, **não observação em emulador/cliente**. GLM precisa ajustar responsividade/textos antes do aceite mobile.
-3. **Santuário:** colunata de raio 9 intercepta a cauda natural; origem Y=1,8 não corresponde ao piso Y=1,2. Requer ajustar espaço/piso ou acordar escala com Codex; inspeção visual no motor ainda pendente.
+3. **Santuário — atualizado:** a colisão de geometria apontada em `47501c1` foi afastada no código de `db6da8f` (colunas raio 20, dais Ø48, deck 66×60, nova âncora). Inspeção visual de asas/cauda/pés continua pendente, inclusive 0,2 stud entre centro da âncora e topo do dais. Não manter o achado antigo como defeito ainda não corrigido, nem confundir correção estática com teste no cliente.
 
 Correções de Hub foram solicitadas ao seu editor, GLM, com caminho, mudança esperada e critério de teste. Nenhuma correção silenciosa, override em runtime ou mudança de autoria foi feita. Não confundir revisão solicitando mudanças com aprovação cruzada.
 
@@ -57,7 +58,7 @@ Cria e limpa um fixture temporário afastado do mapa. Verifica montagem única, 
 
 | Caso exigido | Evidência necessária | Estado |
 | --- | --- | --- |
-| Aetheria → Varkhion | Spawn seguro, santuário acessível, silhueta/escamas/olhos/chifres/asas/marcas legíveis | Ligação pronta; bloqueado: correções GLM-R002 A/C |
+| Aetheria → Varkhion | Spawn seguro, santuário acessível, silhueta/escamas/olhos/chifres/asas/marcas legíveis | Ligação atualizada pronta; bloqueado: material GLM-R002 A; encaixe C pendente no cliente |
 | Primeira interação, teclado | E abre resposta individual e atualiza objetivo uma única vez | Implementada/ligada; execução no cliente pendente |
 | Primeira interação, toque | Prompt acionável; diálogo legível sem encobrir controles | Pendente: mobile |
 | Repetição / respawn | Diálogo repete; objetivo não duplica e persiste durante a sessão | Pendente |
@@ -75,6 +76,7 @@ Cria e limpa um fixture temporário afastado do mapa. Verifica montagem única, 
 ## Revisão cruzada e publicação
 
 - Revisão GLM da entrega Codex: solicitada, pendente (VX-003).
+- Atualização `2e72b54`: GLM registrou revisão de contrato/docs/CI **parcial**, com bloqueio de permissão para ler fontes do PR #6. Falta concluir a revisão de código após liberar esse acesso; não registrar como aprovação.
 - Revisão Codex da entrega GLM: PR #7 revisado em `47501c1`, **correções solicitadas**, GLM-R002 em CODEX.md. Não substituir por aprovação dos PRs antigos #2/#3.
 - **Não publicar esta fase** enquanto qualquer caso obrigatório, revisão cruzada ou CI ficar pendente.
 - Alvo único futuro: Universe `10777026486`, Place `135004978091658`.

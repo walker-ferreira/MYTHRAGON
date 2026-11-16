@@ -38,3 +38,10 @@ Leia este arquivo no início de cada sessão. O usuário identifica o agente com
 ## Documentação para cada sessão
 
 Leia o [GDD](GDD.md), a [arquitetura](ARCHITECTURE.md) e as [decisões versionadas](docs/decisions/README.md) relacionadas à tarefa antes de implementar. Registre novas decisões e correções verificadas no mesmo PR da alteração, com o teste ou evidência correspondente. Defina um editor para os documentos compartilhados quando os agentes trabalharem em paralelo.
+
+## Coordenação entre Codex e GLM
+
+- Leia [o registro do Codex](docs/agents/CODEX.md) e [o registro do GLM](docs/agents/GLM.md) antes de editar e antes de encerrar a tarefa. Cada agente mantém seu próprio arquivo e consulta o do parceiro para pedidos, respostas, dependências e decisões.
+- Use os registros para consolidar escolhas e andamento por assunto. Vincule decisões aceitas e duradouras ao histórico em `docs/decisions/`. O `AGENTS.md` reúne regras permanentes de trabalho. Conversas e pedidos entre agentes ficam nos registros correspondentes.
+- Finalize cada entrega com um resumo do que o parceiro está fazendo, indicando a fonte e o que ainda precisa ser confirmado. Termine com as próximas tarefas ordenadas e seus responsáveis.
+- Codex trabalha sozinho por padrão. Use no máximo um subagente por vez, só quando a delegação for autorizada e resolver uma tarefa isolada sem duplicar a leitura ou o trabalho do GLM. Reaproveite os registros e limite cada leitura aos arquivos relevantes para poupar créditos e cota.

@@ -141,7 +141,7 @@ function Combat:enter(player)
     character:PivotTo(CFrame.new(self.center + Vector3.new(0, 4, 12)))
     self:message("Guardião 100/100 · aproxime-se e ataque [E / toque]\nAfaste-se da área laranja!")
     task.spawn(function()
-        while self.session == s and s.rules.result == "active" do
+        while self.session == s do
             task.wait(2)
             if self.session ~= s then break end
             if not self:valid(player) then
@@ -154,11 +154,19 @@ function Combat:enter(player)
                 self:returnPlayer(player)
                 break
             end
+            if s.rules.result == "victory" then
+                if os.clock() - s.wonAt >= 30 then
+                    self:returnPlayer(player)
+                    break
+                end
+                continue
+            end
             self.warning.Transparency = 0.35
             self:message("SOPRO! Saia da área laranja · Guardião " .. s.rules.health .. "/100")
             task.wait(1.2)
-            if self.session ~= s or s.rules.result ~= "active" then break end
+            if self.session ~= s then break end
             self.warning.Transparency = 1
+            if s.rules.result ~= "active" then continue end
             local valid = self:valid(player)
             -- Keep the entire damage radius inside the 22-stud warning square.
             if valid and (root.Position - self.body.Position).Magnitude <= 11 then
@@ -183,8 +191,9 @@ function Combat:attack(player)
     end
     self:message("-20 · Guardião " .. s.rules.health .. "/100 · Você " .. math.ceil(s.humanoid.Health))
     if s.rules.result == "victory" then
+        s.wonAt = os.clock()
         self.warning.Transparency = 1
-        self:message("VITÓRIA! · Use o portal roxo para voltar ao hub")
+        self:message("VITÓRIA! · Portal roxo para o hub\nRetorno automático em 30 s")
         -- Set terminal state BEFORE calling the reward owner. Never accept a client victory.
         if self.onVictory then
             local ok, err = pcall(self.onVictory, player, s.id)

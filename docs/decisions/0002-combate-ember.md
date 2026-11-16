@@ -16,6 +16,8 @@ Uma arena atende um jogador de cada vez para evitar atribuição ambígua de dan
 
 O feedback usa texto sobre o guardião e área laranja no chão. A plataforma laranja preserva integralmente a função `addFloatingPlatform` da base `81c1b72` e da branch `release/teste-plataforma-81c1b72`: curso 0–12 studs, tamanho, cor, origem, força, velocidade e tempos sem alterações.
 
+**Correção na revisão cruzada:** GLM identificou que o monitor originalmente encerrava na vitória, deixando a arena reservada se o vencedor não usasse o portal. O monitor agora continua após a vitória, resgata quem sai dos limites e retorna automaticamente ao hub após 30 s (na próxima verificação periódica de até 2 s). Não há mais dano após vitória. Verificado por revisão do controle de fluxo e compilação; confirmação no cliente pendente. `Humanoid:TakeDamage` respeita ForceField; considerar a proteção inicial no teste de derrota.
+
 ## Direção visual e referências
 
 Referências consultadas em 15/11/2026, somente como direção; **nenhum asset, mesh, textura ou script foi importado**:

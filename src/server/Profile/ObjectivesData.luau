@@ -2,7 +2,7 @@
 -- same record as the Ember seal via monotonic UpdateAsync merges.
 local ProgressData = require("./ProgressData")
 local ObjectivesData = {}
-local allowed = { guardioes = true, santuario = true, portal = true }
+local allowed = { guardioes = true, santuario = true, portal = true, latunia = true }
 
 function ObjectivesData.allowed(id)
     return allowed[id] == true

@@ -58,6 +58,7 @@ end
 function ObjectivesStore.start(Hub)
     local active = true
     local connections = {}
+    local arrivalRecorded = {}
 
     local function load(player)
         task.spawn(function()
@@ -81,7 +82,13 @@ function ObjectivesStore.start(Hub)
                 return
             end
             for objective, completed in pairs(done) do
-                if completed then Hub.restoreObjective(player, objective) end
+                if completed then
+                    if objective == "latunia" then
+                        arrivalRecorded[player] = true
+                    else
+                        Hub.restoreObjective(player, objective)
+                    end
+                end
             end
         end)
     end
@@ -93,6 +100,9 @@ function ObjectivesStore.start(Hub)
         end
     end)
 
+    table.insert(connections, Players.PlayerRemoving:Connect(function(player)
+        arrivalRecorded[player] = nil
+    end))
     table.insert(connections, Players.PlayerAdded:Connect(load))
     for _, player in ipairs(Players:GetPlayers()) do load(player) end
     if RunService:IsRunning() then
@@ -106,6 +116,16 @@ function ObjectivesStore.start(Hub)
     end
 
     return {
+        recordArrival = function(_, player, islandId)
+            if not active or islandId ~= "Central" or player.Parent ~= Players
+                or type(player.UserId) ~= "number" or player.UserId <= 0 then
+                return false
+            end
+            if arrivalRecorded[player] then return false end
+            arrivalRecorded[player] = true
+            schedule(player.UserId, "latunia")
+            return true
+        end,
         stop = function()
             active = false
             Hub.setObjectiveCompletionHandler(nil)

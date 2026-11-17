@@ -6,6 +6,13 @@ Claim por branch/PR, nunca dois escritores no mesmo worktree.
 Estados de trabalho: AVAILABLE, ASSIGNED, IMPLEMENTING, REVIEW, BLOCKED, INTEGRATED,
 AWAITING_OWNER. Estados de certificação são separados (AGENTS.md).
 
+## MOBILE-HUD-001 — liberar controles nativos e mostrar a lista completa
+
+- Responsável: CODEX. Base: `f007ea62ab0e36c1e77e1df61ebd19c841d7b271`. Branch: `codex/mobile-hud-clear-controls`.
+- Caminhos: `src/client/{CommandPanel,OwnerFlight,LatuniaTravelUi}.client.luau`, `src/server/Profile/ExplorationPanel.luau` e roteiro final.
+- Aceite: controles por toque abaixo da faixa de revisão, selos e pulo desobstruídos e listas roláveis em paisagem.
+- Próximo checkpoint: CI, staging e confirmação do HUD no cliente móvel.
+
 ## LATUNIA-CANCEL-NOTICE-001 — indicar cancelamento da travessia
 
 - Responsável: CODEX. Base: `e985890e35052ef7669233ec703ab610fec20246`. Branch: `codex/latunia-travel-cancel-notice`.

@@ -57,12 +57,25 @@ speedText.TextSize = 12
 speedText.TextWrapped = true
 speedText.Parent = gui
 
+local touch = UserInputService.TouchEnabled
+if touch then
+    toggle.AnchorPoint = Vector2.new(0.5, 0)
+    toggle.Position = UDim2.new(0.5, -90, 0, 24)
+    toggle.Size = UDim2.fromOffset(64, 34)
+    up.AnchorPoint = Vector2.new(0.5, 1)
+    up.Position = UDim2.new(0.5, -46, 1, -14)
+    up.Size = UDim2.fromOffset(80, 40)
+    down.AnchorPoint = Vector2.new(0.5, 1)
+    down.Position = UDim2.new(0.5, 46, 1, -14)
+    down.Size = UDim2.fromOffset(88, 40)
+end
+
 local flying, upHeld, downHeld = false, false, false
 local speed = 45
 local stick = Vector2.zero
 local function update()
     toggle.Text = flying and "Parar voo" or "Voar"
-    up.Visible, down.Visible, speedText.Visible = flying, flying, flying
+    up.Visible, down.Visible, speedText.Visible = flying, flying, flying and not touch
     speedText.Text = ("Velocidade %d\nScroll +/-"):format(speed)
 end
 update()

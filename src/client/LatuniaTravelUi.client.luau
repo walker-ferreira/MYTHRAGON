@@ -2,6 +2,8 @@
 -- Uses GLM-R012's six destination labels and visual direction.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local UserInputService = game:GetService("UserInputService")
+local touch = UserInputService.TouchEnabled
 local player = Players.LocalPlayer
 local remote = ReplicatedStorage:WaitForChild("LatuniaTravelRemote", 25)
 if not remote or not remote:IsA("RemoteEvent") then return end
@@ -45,6 +47,11 @@ open.Name = "OpenTravel"
 open.AnchorPoint = Vector2.new(1, 1)
 open.Position = UDim2.new(1, -140, 1, -14)
 open.Size = UDim2.fromOffset(102, 42)
+if touch then
+    open.AnchorPoint = Vector2.new(0.5, 0)
+    open.Position = UDim2.new(0.5, -14, 0, 24)
+    open.Size = UDim2.fromOffset(76, 34)
+end
 open.Font = Enum.Font.GothamBold
 open.TextSize = 14
 open.Text = "VIAGEM"
@@ -58,6 +65,11 @@ menu.Name = "TravelMenu"
 menu.AnchorPoint = Vector2.new(1, 1)
 menu.Position = UDim2.new(1, -114, 1, -62)
 menu.Size = UDim2.new(1, -126, 1, -74)
+if touch then
+    menu.AnchorPoint = Vector2.new(0.5, 0)
+    menu.Position = UDim2.new(0.5, 0, 0, 64)
+    menu.Size = UDim2.new(1, -24, 1, -132)
+end
 menu.CanvasSize = UDim2.new(1, 0, 0, 310)
 menu.ScrollingDirection = Enum.ScrollingDirection.Y
 menu.ScrollBarThickness = 5

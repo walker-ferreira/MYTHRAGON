@@ -438,7 +438,7 @@ function Latunia.build(parent, anchorCFrame)
 	end
 	for _, spec in ipairs({ { -8, -21 }, { 14, -21 } }) do
 		part(model, "VasoPraca" .. spec[1] .. "_" .. spec[2], Vector3.new(3, 1.6, 3),
-			A(CFrame.new(spec[1], 8.8, spec[2])), Enum.Material.Terracotta,
+			A(CFrame.new(spec[1], 8.8, spec[2])), Enum.Material.ClayRoofTiles,
 			Color3.fromRGB(140, 92, 62))
 		part(model, "VasoArvore" .. spec[1] .. "_" .. spec[2], Vector3.new(2.2, 2.4, 2.2),
 			A(CFrame.new(spec[1], 10.6, spec[2])), Enum.Material.Grass, GREEN_FOLIAGE)

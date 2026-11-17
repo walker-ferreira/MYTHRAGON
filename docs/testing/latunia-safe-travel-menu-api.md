@@ -22,3 +22,7 @@ Este PR **não ativa um novo menu** nem modifica o PR do GLM; apenas prepara a i
 ## Falha durante a travessia
 
 Em um servidor de teste, injete um erro no ponto de chamada de `PivotTo` durante uma viagem válida. Confirme que o personagem continua na origem, o destino não é registrado como descoberta e a interface orienta a tentar novamente. Restaure o teleporte e repita pelo mesmo portal após o intervalo normal de 3 segundos. Teste tanto o trajeto Aetheria → Vila Central quanto a volta de uma ilha à Vila Central. Confira também que a recuperação de uma queda pode ser tentada novamente após uma falha.
+
+## Cancelamento antes do embarque
+
+Solicite uma viagem pelo portal ou pelo menu **VIAGEM** e afaste-se imediatamente antes de completar 1,2 segundo. O aviso deve mudar para **Travessia cancelada**. Confira que o personagem fica na origem e que nenhuma descoberta é concedida. Volte ao portal e tente novamente após o intervalo normal. Se o personagem morrer ou for substituído durante a preparação, o bilhete antigo deve ser encerrado sem mover o novo personagem.

@@ -44,6 +44,13 @@ assert(Profile.recordVictory(c, "ReinoInexistente", "enc-x") == "unknown",
 	"reino desconhecido devolve unknown")
 assert(not Profile.hasSeal(c, "Ember"), "unknown não concede")
 
+-- Invalid encounter identifiers must never grant a seal or create a session reward.
+local invalid = newPlayer("Invalid")
+assert(Profile.recordVictory(invalid, "Ember", "") == "unknown")
+assert(Profile.recordVictory(invalid, "Ember", nil) == "unknown")
+assert(Profile.recordVictory(invalid, "Ember", 42) == "unknown")
+assert(not Profile.hasSeal(invalid, "Ember"), "invalid victories cannot grant a seal")
+
 -- 5) clearSession: sem persistência; sessão nova pode conquistar de novo.
 Profile.clearSession(a)
 assert(not Profile.hasSeal(a, "Ember"), "sessão limpa")

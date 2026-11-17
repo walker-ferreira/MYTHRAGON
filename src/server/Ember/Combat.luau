@@ -1,6 +1,7 @@
 local Players = game:GetService("Players")
 local HttpService = game:GetService("HttpService")
 local State = require(script.Parent.EncounterState)
+local DodgeState = require(script.Parent.DodgeState)
 
 local Combat = {}
 Combat.__index = Combat
@@ -91,6 +92,20 @@ function Combat.new(model, center, onVictory)
     attack.Triggered:Connect(function(player)
         self:attack(player)
     end)
+    local dodgePrompt = Instance.new("ProximityPrompt")
+    dodgePrompt.Name = "Dodge"
+    dodgePrompt.ActionText = "Esquivar · 3 s"
+    dodgePrompt.ObjectText = "Desviar do sopro"
+    dodgePrompt.KeyboardKeyCode = Enum.KeyCode.Q
+    dodgePrompt.GamepadKeyCode = Enum.KeyCode.ButtonB
+    dodgePrompt.ClickablePrompt = true
+    dodgePrompt.MaxActivationDistance = 13
+    dodgePrompt.RequiresLineOfSight = false
+    dodgePrompt.HoldDuration = 0
+    dodgePrompt.Parent = self.body
+    dodgePrompt.Triggered:Connect(function(player)
+        self:dodge(player)
+    end)
     self.removing = Players.PlayerRemoving:Connect(function(player)
         if self.session and self.session.player == player then
             self:close("abandoned")
@@ -150,7 +165,8 @@ function Combat:enter(player)
     end
     local s = {
         player = player, character = character, humanoid = humanoid,
-        rules = State.new(), id = HttpService:GenerateGUID(false),
+        rules = State.new(), dodge = DodgeState.new(),
+        id = HttpService:GenerateGUID(false),
     }
     self.session = s
     s.death = humanoid.Died:Connect(function()
@@ -162,7 +178,7 @@ function Combat:enter(player)
         end
     end)
     character:PivotTo(CFrame.new(self.center + Vector3.new(0, 4, 12)))
-    self:message("Guardião 100/100 · aproxime-se e ataque [E / toque]\nAfaste-se da área laranja!")
+    self:message("Guardião 100/100 · E atacar / Q esquivar\nControle B · toque nos comandos")
     task.spawn(function()
         while self.session == s do
             task.wait(2)
@@ -189,8 +205,11 @@ function Combat:enter(player)
             self.warning.Transparency = 1
             if s.rules.result ~= "active" then continue end
             local valid = self:valid(player)
-            -- Keep the entire damage radius inside the 22-stud warning square.
-            if valid and (root.Position - self.body.Position).Magnitude <= 11 then
+            -- The actual hitbox matches the orange 22×22 telegraph, not a sphere.
+            local delta = root.Position - self.warning.Position
+            local inWarning = math.abs(delta.X) <= 11 and math.abs(delta.Z) <= 11
+                and math.abs(delta.Y) <= 8
+            if valid and inWarning then
                 humanoid:TakeDamage(25)
                 if self.session == s then
                     self:message("-25 PV · Você " .. math.ceil(humanoid.Health)
@@ -201,6 +220,25 @@ function Combat:enter(player)
             end
         end
     end)
+    return true
+end
+
+function Combat:dodge(player)
+    local s = self:valid(player)
+    if not s or s.rules.result ~= "active" then return false end
+    local root = s.character:FindFirstChild("HumanoidRootPart")
+    if not root then return false end
+    local relative = root.Position - self.body.Position
+    local horizontal = Vector3.new(relative.X, 0, relative.Z)
+    if horizontal.Magnitude > 13 or math.abs(relative.Y) > 10 then return false end
+    local direction = horizontal.Magnitude > 0.1 and horizontal.Unit or Vector3.new(0, 0, 1)
+    local shift = direction * 11
+    local target = root.Position + shift
+    if (target - self.center).Magnitude > 48 then return false end
+    if not s.dodge:use(os.clock()) then return false end
+    root.AssemblyLinearVelocity = Vector3.zero
+    s.character:PivotTo(s.character:GetPivot() + shift)
+    self:message("ESQUIVA! · Guardião " .. s.rules.health .. "/100")
     return true
 end
 

@@ -6,6 +6,14 @@ Claim por branch/PR, nunca dois escritores no mesmo worktree.
 Estados de trabalho: AVAILABLE, ASSIGNED, IMPLEMENTING, REVIEW, BLOCKED, INTEGRATED,
 AWAITING_OWNER. Estados de certificação são separados (AGENTS.md).
 
+## CHECKPOINT DE INTEGRAÇÃO — GLM-R009 e DATASTORE-RETRY-001
+
+- **PR #34:** melhorias GLM em Gelo, Selva e Vila Central integradas após correção `Enum.Material.Terracotta` → `ClayRoofTiles` e CI aprovada. A implantação visual foi integrada sem descartar a geometria base Codex.
+- **PR #39:** Bootstrap usa `Vila.partnerBuilders` (Central, Gelo e Selva). O engine probe exige cenários-base e overlays GLM simultaneamente; staging **revisão 33** confirmou `PERSISTED_OK` e inicialização isolada PASS no commit `c814eb29bb031c8aabce4ef2ca6ac791df4087c8`.
+- **PR #40:** repete periodicamente gravações pendentes de selo/objetivos após esgotar a janela inicial de tentativas de DataStore. O estado do código foi integrado; verificar a revisão publicada específica no workflow antes de declarar `PUBLISHED` para essa correção.
+- **Limites:** motor isolado não comprova câmera, física, experiência mobile, movimento real, salvamento de conta e multiplayer. DATASTORE_OK, RUNTIME_OK e PLAYTEST_OK continuam pendentes.
+- **Próximo checkpoint:** entrar em servidor Roblox novo; conferir versão e READY, visitar Gelo/Selva/Vila, confirmar marcos GLM e pisos, testar combate, retorno, salvamento e reconexão em duas contas. Guardar screenshots e logs F9 para corrigir apenas falhas comprovadas. NPCs permanecem na biblioteca, não montados.
+
 ## CHECKPOINT INTEGRADOR — JOURNEY-001/002 e COMBAT-002
 
 - **Integrados:** #32 registra primeira viagem validada do Hub à Vila Central como descoberta persistente; #33 adiciona esquiva no combate de Ember (Q/controle B/toque) com cooldown de 3 segundos, verificação de obstáculos e dano alinhado ao quadrado de aviso; #35 expande descoberta persistente para cinco ilhas. Base de referência: commit `2b396acfe98ba38307525781c32ba1506b04181e`.

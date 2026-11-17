@@ -6,6 +6,15 @@ Claim por branch/PR, nunca dois escritores no mesmo worktree.
 Estados de trabalho: AVAILABLE, ASSIGNED, IMPLEMENTING, REVIEW, BLOCKED, INTEGRATED,
 AWAITING_OWNER. Estados de certificação são separados (AGENTS.md).
 
+## STATUS ATUAL — Fase 1 após PRs #18 a #24
+
+- **Integrados em main:** recuperação/staging (18), retorno Ember (19), retorno Latúnia (20), Gelo/Selva inicial (21), comandos de Studio sincronizados (22), biblioteca de 10 NPCs não montada (23), correção de coordenadas de Vila Central (24).
+- **Evidência:** revisão 18 (PR21) PUBLISHED/PERSISTED_OK e engine isolado PASS. PR24 integrado com CI PASS, inspeção/staging da correção de coordenadas ainda deve ter resultado confirmado em run posterior.
+- **Não concluído:** RUNTIME_OK, PLAYTEST_OK, mobilidade/combate em cliente real, multiplayer, desempenho mobile, persistência de perfil, NPCs instalados, mecânica real de dirigíveis e ferrovias, economia.
+- **Regra:** não voltar a implementar Gelo/Selva como desembarques vazios; são cenários iniciais. Conservar os sistemas existentes e o trabalho dos outros agentes.
+- **Próximo checkpoint:** inspeção de motor para verificar deslocamento de Vila Central; teste visual/físico de jogador e toque em servidor novo; aceitar correções reais por branch/PR. Biblioteca de NPCs permanece desligada até autorização do proprietário.
+- **Coordenação:** registros históricos abaixo preservados, inclusive estados passados que já não são o estado atual.
+
 ## REC-001 — recuperar autonomia e releases
 
 - Responsável: CODEX/integrador GPT-6.1 Sol.

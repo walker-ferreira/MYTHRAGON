@@ -53,6 +53,8 @@ function Bootstrap.run()
 			current.varkhion = Varkhion.mount(map, anchor, function(player, speciesId)
 				assert(speciesId == "Varkhion", "Unexpected sanctuary species")
 				Hub.completeObjective(player, "santuario")
+			end, function(player)
+				return Profile.hasSeal(player, "Ember")
 			end)
 		end, function()
 			if current.varkhion then current.varkhion:destroy() end

@@ -19,6 +19,7 @@
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Map = require(script.Parent.Parent.Latunia.Codex.Map)
 
 -- This command is for Studio tests only; published servers use validated
@@ -60,6 +61,27 @@ local function notify(player, message)
 		gui:Destroy()
 	end)
 end
+
+-- The GUI sends only a destination ID. Every request is authorized in Studio
+-- by this server script and routed through the existing map controller.
+local remote = Instance.new("RemoteEvent")
+remote.Name = "MythragonStudioCommand"
+remote.Parent = ReplicatedStorage
+
+local lastRemote = {}
+remote.OnServerEvent:Connect(function(player, key)
+    if not RunService:IsStudio() or player.Parent ~= Players
+        or type(key) ~= "string" or not DESTINOS[key] then return end
+    local now = os.clock()
+    if now - (lastRemote[player] or -math.huge) < 0.75 then return end
+    lastRemote[player] = now
+    if not Map.debugWarp(workspace, player, DESTINOS[key]) then
+        notify(player, "Viagem indisponível: confira o personagem e Latúnia READY.")
+    end
+end)
+Players.PlayerRemoving:Connect(function(player)
+    lastRemote[player] = nil
+end)
 
 local function viajar(player, key)
     local destino = DESTINOS[key]

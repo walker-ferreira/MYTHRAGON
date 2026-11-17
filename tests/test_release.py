@@ -34,6 +34,28 @@ class ReleaseTests(unittest.TestCase):
         self.assertEqual(release.instance_path("Hub/Latunia.luau"),
                          "ServerScriptService/Mythragon/Hub/Latunia")
 
+    def test_client_script_is_tracked_and_tamper_detected(self):
+        self.assertEqual(release.instance_path("client/CommandPanel.client.luau"),
+                         "StarterPlayer/StarterPlayerScripts/CommandPanel")
+        with self.assertRaises(ValueError):
+            release.instance_path("client/CommandPanel.luau")
+        xml = """<roblox><Item class="StarterPlayer"><Properties>
+        <string name="Name">StarterPlayer</string></Properties>
+        <Item class="StarterPlayerScripts"><Properties>
+        <string name="Name">StarterPlayerScripts</string></Properties>
+        <Item class="LocalScript"><Properties><string name="Name">CommandPanel</string>
+        <ProtectedString name="Source">print(1)</ProtectedString></Properties>
+        </Item></Item></Item></roblox>"""
+        with tempfile.TemporaryDirectory() as folder:
+            path = Path(folder) / "ui.rbxlx"
+            path.write_text(xml)
+            expected = {"client/CommandPanel.client.luau": "print(1)"}
+            release.verify_sources(path, expected)
+            with self.assertRaisesRegex(ValueError, "changed="):
+                release.verify_sources(path, {"client/CommandPanel.client.luau": "print(2)"})
+            with self.assertRaisesRegex(ValueError, "extra="):
+                release.verify_sources(path, {})
+
     def test_wrong_destination_and_tamper(self):
         with tempfile.TemporaryDirectory() as d:
             p = Path(d)

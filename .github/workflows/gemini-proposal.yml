@@ -1,0 +1,58 @@
+name: Gemini code proposal
+on:
+  workflow_dispatch:
+    inputs:
+      task:
+        description: Narrow code change requested by owner
+        required: true
+        type: string
+      target_file:
+        description: Existing file under src/client or src/server
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: gemini-proposal
+  cancel-in-progress: false
+
+jobs:
+  propose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Check API key
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          test -n "$GEMINI_API_KEY" || { echo "::error::Configure GEMINI_API_KEY repository secret"; exit 1; }
+      - name: Generate and validate a single-file change
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_TASK: ${{ inputs.task }}
+          GEMINI_TARGET_FILE: ${{ inputs.target_file }}
+        run: python3 scripts/agents/gemini_proposal.py
+      - name: Open draft pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TARGET_FILE: ${{ inputs.target_file }}
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- "$TARGET_FILE"; then
+            echo "::error::Gemini did not propose a file change."
+            exit 1
+          fi
+          branch="gemini/proposal-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$branch"
+          git add -- "$TARGET_FILE"
+          git commit -m "chore(gemini): propose scoped change"
+          git -c http.extraheader="AUTHORIZATION: basic $(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)" push "https://github.com/${GITHUB_REPOSITORY}.git" "HEAD:refs/heads/$branch"
+          gh pr create --draft --base main --head "$branch" --title "Gemini proposal: scoped code change" --body "Automated single-file Gemini proposal. Not tested in Roblox. Review diff, ownership, CI and staging rules before merge. Source workflow run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"

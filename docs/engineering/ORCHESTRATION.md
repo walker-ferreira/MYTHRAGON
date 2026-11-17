@@ -36,3 +36,17 @@ O lease local não resolve execução distribuída nem dispara um modelo. O exec
 do harness pode ler tarefa, claim, trabalhar, registrar checkpoint, submeter PR e
 disparar revisão real; GitHub checks e pipeline assumem validação/publicação.
 Nenhum polling em loop ou documentação é rotulado como agente autônomo.
+
+## Execução exercitada na recuperação
+
+Sessão GLM `ses_e194c8a04ffemstop4QUSgtZTG` realizou revisões reais do pipeline,
+journal e inspeção; achados levaram a correções testadas. Ao ocorrer erro
+`Compaction summary did not match the required template`, a tarefa de revisão
+foi reatribuída à sessão nova `ses_e192465baffe2R3yxtYwxk7Xy9`, que leu o fix
+de Varkhion e confirmou aceite limitado de código/CI. Não registrar erro de executor
+como review concluído.
+
+Contribuição GLM externa também apareceu no PR #15; integrador enviou feedback
+técnico em comentários reais e preservou a branch. Isso é comunicação observável,
+não garantia de que qualquer sessão desktop futura foi notificada. O pipeline
+oficial integrou #12/#14/#16/#17 após checks; revisão14 publicada e inspecionada.

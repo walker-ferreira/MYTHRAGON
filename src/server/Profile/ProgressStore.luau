@@ -94,7 +94,7 @@ function ProgressStore.start(Profile, Hub)
     table.insert(connections, Players.PlayerAdded:Connect(load))
     for _, player in ipairs(Players:GetPlayers()) do load(player) end
 
-    table.insert(connections, game:BindToClose(function()
+    game:BindToClose(function()
         -- Pending wins may outlive a Player object; save from UserId snapshots.
         -- Bounded shutdown flush: no destructive rollback of saved progress.
         local ids = {}
@@ -102,7 +102,7 @@ function ProgressStore.start(Profile, Hub)
         for _, id in ipairs(ids) do
             if save(id) then pending[id] = nil end
         end
-    end))
+    end)
 
     return {
         recordSeal = function(_, player, sealId)

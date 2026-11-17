@@ -115,6 +115,20 @@ function ObjectivesStore.start(Hub)
     table.insert(connections, Players.PlayerAdded:Connect(load))
     for _, player in ipairs(Players:GetPlayers()) do load(player) end
     if RunService:IsRunning() then
+        -- Keep retrying confirmed but unsaved objectives after a temporary
+        -- DataStore outage, including objectives of players who disconnected.
+        task.spawn(function()
+            while active do
+                task.wait(60)
+                if not active then break end
+                for userId, entries in pairs(pending) do
+                    if not working[userId] then
+                        local objective = next(entries)
+                        if objective then schedule(userId, objective) end
+                    end
+                end
+            end
+        end)
         game:BindToClose(function()
             for id, entries in pairs(pending) do
                 for objective in pairs(entries) do

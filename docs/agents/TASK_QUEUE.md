@@ -8,12 +8,20 @@ AWAITING_OWNER. Estados de certificação são separados (AGENTS.md).
 
 ## GATE FINAL — Fase 1 candidata, revisão 51 (PENDING PLAYTEST)
 
-- Responsável: CODEX/integrador. Base `da50ac3ec6d93b0021d9250676b18845e62bc808`; PRs #57–#62 integrados; código de dez marcos, menu VIAGEM seguro, mural de missões e quatro selos narrativos.
+- Responsável: CODEX/integrador. Base `da50ac3ec6d93b0021d9250676b18845e62bc808`; PRs #57–#63 integrados (PR63 aguarda sua própria inspeção de staging); código de dez marcos, menu VIAGEM seguro, mural de missões e quatro selos narrativos.
 - Evidência: GitHub Actions CI `44097438927` e staging `44097503800` concluídos; revisão **51**, `PERSISTED_OK + isolated engine bootstrap PASS`. A revisão 50 havia sido publicada, mas a inspeção falhou; corrigido pelos PRs #61/#62 e verificado na 51.
 - **Não certificado:** testes reais de servidor/cliente, 2 jogadores, joystick mobile, desempenho e DataStore entre servidores. Estado `AWAITING_OWNER` para evidência, **não** `PLAYTEST_OK`, `RUNTIME_OK`, `DATASTORE_OK` ou produção.
 - Próximo checkpoint: executar [gate de aceitação](../testing/phase1-final-acceptance.md) em servidor novo e registrar revisão, logs F9 e evidências (sem dados pessoais). Corrigir problemas reproduzidos em PR separado.
 - Coordenação: GLM PR #45 continua bloqueado por teleporte direto e não deve substituir o menu seguro PR #58. Os 10 NPCs permanecem desativados. Histórico abaixo é preservado, mesmo quando marcado como REVIEW no passado.
 
+
+## EMBER-RETURN-PERSIST-001 — validar vitória no retorno e enfileirar salvamento antes da interface
+
+- Responsável: CODEX. Base: `b0699ba0b05636a96975049a491a7f9f94f95e5f`. Branch: `codex/ember-seal-save-order`.
+- Caminhos: `src/server/{Diagnostics/Bootstrap,Ember/Combat,Profile/ProgressStore,Profile/ObjectivesStore}.luau` e `docs/testing/ember-return-milestone.md`.
+- Dependências: resultado de encontro emitido pelo controlador Ember e DataStore monotônico existente.
+- Aceite: saída de encontro abandonado não registra retorno, mesmo com selo antigo. Selos e marcos entram na fila de gravação antes da atualização visual. Erro no marco após o deslocamento não invalida o retorno físico.
+- Estado: REVIEW. Próximo checkpoint: inspecionar staging e validar o fluxo de vitória e reconexão com um cliente Roblox.
 
 ## LATUNIA-TRAVEL-RECOVERY-001 — confirmar chegada antes de atualizar a viagem
 

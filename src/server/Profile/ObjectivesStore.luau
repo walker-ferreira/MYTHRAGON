@@ -64,18 +64,29 @@ function ObjectivesStore.start(Hub)
     local function load(player)
         ExplorationPanel.attach(player)
         task.spawn(function()
+            -- DataStore may be unavailable for longer than the first retry
+            -- window. Keep trying at a low cadence only while the player stays.
             local raw
             local loaded = false
-            for attempt = 1, 3 do
-                local ok, value = pcall(function()
-                    return store():GetAsync(userKey(player.UserId))
-                end)
-                if ok then
-                    raw, loaded = value, true
-                    break
+            while active and player.Parent == Players and not loaded do
+                for attempt = 1, 3 do
+                    if not active or player.Parent ~= Players then return end
+                    local ok, value = pcall(function()
+                        return store():GetAsync(userKey(player.UserId))
+                    end)
+                    if ok then
+                        raw, loaded = value, true
+                        break
+                    end
+                    warn("[ObjectivesStore] load failed for " .. tostring(player.UserId)
+                        .. ": " .. tostring(value))
+                    if attempt < 3 then task.wait(attempt * 2) end
                 end
-                warn("[ObjectivesStore] load failed for " .. tostring(player.UserId) .. ": " .. tostring(value))
-                if attempt < 3 then task.wait(attempt * 2) end
+                if not loaded then
+                    warn("[ObjectivesStore] retrying saved objectives load in 60s for "
+                        .. tostring(player.UserId))
+                    task.wait(60)
+                end
             end
             if not loaded or not active or player.Parent ~= Players then return end
             local ok, done = pcall(Data.read, raw)

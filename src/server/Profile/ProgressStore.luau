@@ -61,19 +61,29 @@ function ProgressStore.start(Profile, Hub)
 
     local function load(player)
         task.spawn(function()
+            -- Retry read outages after the initial three tries. A successful
+            -- read is applied additively, never resetting a seal won meanwhile.
             local raw
             local success = false
-            for attempt = 1, 3 do
-                local ok, value = pcall(function()
-                    return dataStore():GetAsync(key(player.UserId))
-                end)
-                if ok then
-                    raw = value
-                    success = true
-                    break
+            while not closed and player.Parent == Players and not success do
+                for attempt = 1, 3 do
+                    if closed or player.Parent ~= Players then return end
+                    local ok, value = pcall(function()
+                        return dataStore():GetAsync(key(player.UserId))
+                    end)
+                    if ok then
+                        raw, success = value, true
+                        break
+                    end
+                    warn("[ProgressStore] load failed for " .. tostring(player.UserId)
+                        .. ": " .. tostring(value))
+                    if attempt < 3 then task.wait(attempt * 2) end
                 end
-                warn("[ProgressStore] load failed for " .. tostring(player.UserId) .. ": " .. tostring(value))
-                if attempt < 3 then task.wait(attempt * 2) end
+                if not success then
+                    warn("[ProgressStore] retrying saved seal load in 60s for "
+                        .. tostring(player.UserId))
+                    task.wait(60)
+                end
             end
             if not success or closed or player.Parent ~= Players then return end
             local ok, snapshot = pcall(Data.read, raw)

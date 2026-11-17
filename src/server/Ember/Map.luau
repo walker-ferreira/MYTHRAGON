@@ -58,6 +58,32 @@ local function addFloatingPlatform(parent)
     end)
 end
 
+-- Floating rock layers reinforce the island silhouette without changing arena physics.
+local function buildIslandRock(parent)
+    local rockLayers = {
+        { Vector3.new(0, -10, 0), Vector3.new(55, 12, 43), 4 },
+        { Vector3.new(-5, -14, 3), Vector3.new(40, 10, 34), -10 },
+        { Vector3.new(4, -20, -3), Vector3.new(29, 10, 24), 14 },
+        { Vector3.new(-1, -26, 2), Vector3.new(17, 9, 15), -12 },
+        { Vector3.new(-20, -15, 7), Vector3.new(16, 14, 18), 26 },
+        { Vector3.new(19, -14, -11), Vector3.new(16, 12, 19), -26 },
+    }
+    for index, layer in ipairs(rockLayers) do
+        local rock = Instance.new("Part")
+        rock.Name = "FloatingBasalt" .. index
+        rock.Size = layer[2]
+        rock.CFrame = CFrame.new(arenaCenter + layer[1])
+            * CFrame.Angles(math.rad(layer[3] / 2), math.rad(layer[3]), math.rad(layer[3]))
+        rock.Anchored = true
+        rock.CanCollide = false
+        rock.CanTouch = false
+        rock.CanQuery = false
+        rock.Material = Enum.Material.Basalt
+        rock.Color = Color3.fromRGB(43 + index * 2, 37 + index, 41 + index)
+        rock.Parent = parent
+    end
+end
+
 function Ember.build(parent, onVictory)
     local model = Instance.new("Model")
     model.Name = "Ember"
@@ -80,6 +106,7 @@ function Ember.build(parent, onVictory)
     rim.Material = Enum.Material.Neon
     rim.Color = Color3.fromRGB(245, 72, 24)
     rim.Parent = model
+    buildIslandRock(model)
 
     local pedestal = Instance.new("Part")
     pedestal.Name = "EncounterMarker"

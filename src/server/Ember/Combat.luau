@@ -45,12 +45,13 @@ function Combat.new(model, center, onVictory)
     self.warning.Transparency = 1
 
     local board = Instance.new("BillboardGui")
-    board.Size = UDim2.fromOffset(370, 100)
+    board.Size = UDim2.fromOffset(270, 92)
     board.StudsOffset = Vector3.new(0, 7, 0)
-    board.AlwaysOnTop = true
+    board.MaxDistance = 55
+    board.AlwaysOnTop = false
     board.Parent = self.body
     local text = Instance.new("TextLabel")
-    text.Size = UDim2.fromScale(1, 1)
+    text.Size = UDim2.new(1, 0, 0.73, 0)
     text.BackgroundTransparency = 0.25
     text.BackgroundColor3 = Color3.fromRGB(30, 18, 22)
     text.TextColor3 = Color3.fromRGB(255, 224, 178)
@@ -58,6 +59,24 @@ function Combat.new(model, center, onVictory)
     text.TextWrapped = true
     text.Parent = board
     self.text = text
+    local textLimit = Instance.new("UITextSizeConstraint")
+    textLimit.MaxTextSize = 18
+    textLimit.MinTextSize = 12
+    textLimit.Parent = text
+    local healthBackground = Instance.new("Frame")
+    healthBackground.Name = "BossHealthBackground"
+    healthBackground.Size = UDim2.new(0.9, 0, 0.14, 0)
+    healthBackground.Position = UDim2.new(0.05, 0, 0.8, 0)
+    healthBackground.BackgroundColor3 = Color3.fromRGB(26, 18, 22)
+    healthBackground.BorderSizePixel = 0
+    healthBackground.Parent = board
+    local healthFill = Instance.new("Frame")
+    healthFill.Name = "BossHealthFill"
+    healthFill.Size = UDim2.fromScale(1, 1)
+    healthFill.BackgroundColor3 = Color3.fromRGB(227, 97, 46)
+    healthFill.BorderSizePixel = 0
+    healthFill.Parent = healthBackground
+    self.healthFill = healthFill
     self:message("Guardião de Ember\nEntre pelo portal do hub")
 
     local attack = Instance.new("ProximityPrompt")
@@ -86,6 +105,10 @@ end
 
 function Combat:message(message)
     self.text.Text = message
+    if self.healthFill then
+        local health = self.session and self.session.rules.health or 100
+        self.healthFill.Size = UDim2.fromScale(math.clamp(health / 100, 0, 1), 1)
+    end
 end
 
 function Combat:valid(player)

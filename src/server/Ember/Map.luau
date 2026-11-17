@@ -142,7 +142,7 @@ function Ember.build(parent, onVictory)
         lintel.Color = Color3.fromRGB(47, 43, 48)
         lintel.Parent = model
     end
-    local encounter = Combat.new(model, arenaCenter, onVictory)
+    local encounter = Combat.new(model, arenaCenter, arena.Size / 2, onVictory)
     encounters[parent] = encounter
     local function enter(player)
         return encounter:enter(player)

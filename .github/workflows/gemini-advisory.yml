@@ -1,0 +1,33 @@
+name: Gemini advisory review
+on:
+  workflow_dispatch:
+    inputs:
+      task:
+        description: Specific review task
+        required: true
+        type: string
+permissions:
+  contents: read
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Check Gemini API key
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          test -n "$GEMINI_API_KEY" || { echo "::error::Configure GEMINI_API_KEY repository secret"; exit 1; }
+      - name: Generate advisory report
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_TASK: ${{ inputs.task }}
+        run: python3 scripts/agents/gemini_advisory.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gemini-advisory-report
+          path: gemini-review.md
+          retention-days: 14

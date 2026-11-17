@@ -111,6 +111,7 @@ function Controller:request(player, point, from, to)
             or "\nMapa explorável em desenvolvimento · sem missão/recompensa nova."
         self:notify(player, Layout.islands[to].name..extra)
     end)
+    return true
 end
 
 -- Test commands in Studio or staging. Keep the character and travel state
@@ -151,6 +152,10 @@ function Controller:debugWarp(player, to)
 end
 
 function Controller:prompt(point, from, to, action)
+    -- Register only real world portals. A menu can request an existing
+    -- portal interaction, but cannot invent remote routes or bypass proximity.
+    self.portalPoints[from] = self.portalPoints[from] or {}
+    self.portalPoints[from][to] = point
     local prompt = Instance.new("ProximityPrompt")
     prompt.Name = "LatuniaTravel"
     prompt.ActionText = action
@@ -260,6 +265,7 @@ function Map.build(parent, onReturn, partnerBuilders, onArrival, onDebugArrival)
         root = root, parent = parent, onReturn = onReturn, onArrival = onArrival,
         onDebugArrival = onDebugArrival, travel = TravelState.new(),
         current = {}, origins = {}, slots = {}, notices = {}, connections = {}, playerConns = {},
+        portalPoints = {},
     }, Controller)
     mounted[parent] = self
     local ok, err = xpcall(function()
@@ -366,6 +372,22 @@ function Map.build(parent, onReturn, partnerBuilders, onArrival, onDebugArrival)
         error(err, 0)
     end
     return self
+end
+
+-- Public server entry point for an on-screen travel menu. This intentionally
+-- uses the SAME portal, distance, tickets and route validation as the prompt.
+-- It does not teleport a player, grant discoveries or accept client results.
+function Map.requestTravel(parent, player, to)
+    if not game:GetService("RunService"):IsServer() then return false end
+    local controller = mounted[parent]
+    if not controller or controller.destroyed or not player or type(to) ~= "string" then
+        return false
+    end
+    local from = controller.current[player] or "Hub"
+    local points = controller.portalPoints[from]
+    local point = points and points[to]
+    if not point then return false end
+    return controller:request(player, point, from, to) == true
 end
 
 function Map.debugWarp(parent, player, to)

@@ -2,6 +2,7 @@ local Players = game:GetService("Players")
 local HttpService = game:GetService("HttpService")
 local State = require(script.Parent.EncounterState)
 local DodgeState = require(script.Parent.DodgeState)
+local BreathPattern = require(script.Parent.BreathPattern)
 
 local Combat = {}
 Combat.__index = Combat
@@ -198,17 +199,29 @@ function Combat:enter(player)
             if won then
                 continue
             end
+            -- Lock the target at the start of the 1.2s wind-up. The warning
+            -- stays in place so dodging or walking away always avoids damage.
+            local aimX, aimZ = BreathPattern.target(
+                self.center.X, self.center.Z, position.X, position.Z)
+            if not aimX then
+                self.warning.Transparency = 1
+                continue
+            end
+            self.warning.Position = Vector3.new(aimX, self.center.Y + 0.15, aimZ)
             self.warning.Transparency = 0.35
-            self:message("SOPRO! Saia da área laranja · Guardião " .. s.rules.health .. "/100")
+            self:message("SOPRO MIRANDO VOCÊ! Saia da área laranja · Guardião "
+                .. s.rules.health .. "/100")
             task.wait(1.2)
             if self.session ~= s then break end
             self.warning.Transparency = 1
             if s.rules.result ~= "active" then continue end
             local valid = self:valid(player)
-            -- The actual hitbox matches the orange 22×22 telegraph, not a sphere.
-            local delta = root.Position - self.warning.Position
-            local inWarning = math.abs(delta.X) <= 11 and math.abs(delta.Z) <= 11
-                and math.abs(delta.Y) <= 8
+            -- Same frozen position and dimensions as the visible 22x22
+            -- telegraph; all coordinates are measured on the server.
+            local at = root.Position
+            local zone = self.warning.Position
+            local inWarning = BreathPattern.hits(
+                zone.X, zone.Z, at.X, at.Z, at.Y - zone.Y)
             if valid and inWarning then
                 humanoid:TakeDamage(25)
                 if self.session == s then

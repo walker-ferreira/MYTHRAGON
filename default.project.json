@@ -19,6 +19,13 @@
       "$properties": {
         "ClockTime": 17
       }
+    },
+    "StarterPlayer": {
+      "$className": "StarterPlayer",
+      "StarterPlayerScripts": {
+        "$className": "StarterPlayerScripts",
+        "$path": "src/client"
+      }
     }
   }
 }

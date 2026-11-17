@@ -221,7 +221,7 @@ local function ensurePanel(player)
 	-- 320×568 os dois painéis (12..157 e 163..308) não se sobrepõem.
 	frame.Size = UDim2.new(0.34, 0, 0, 136)
 	local frameSize = Instance.new("UISizeConstraint")
-	frameSize.MinSize = Vector2.new(145, 136)
+	frameSize.MinSize = Vector2.new(145, 36)
 	frameSize.MaxSize = Vector2.new(230, 136)
 	frameSize.Parent = frame
 	frame.BackgroundColor3 = Color3.fromRGB(20, 16, 28)
@@ -263,6 +263,24 @@ local function ensurePanel(player)
 		labels[index] = row
 	end
 
+
+	-- Keep the world unobstructed on phones; tapping the header expands details.
+	local expanded = false
+	local fullHeight = frame.Size.Y.Offset
+	local function setExpanded(value)
+		expanded = value
+		frame.Size = UDim2.new(0.34, 0, 0, expanded and fullHeight or 36)
+		for _, label in pairs(labels) do label.Visible = expanded end
+	end
+	local toggle = Instance.new("TextButton")
+	toggle.Name = "ToggleDetails"
+	toggle.Size = UDim2.new(1, 0, 0, 36)
+	toggle.BackgroundTransparency = 1
+	toggle.Text = ""
+	toggle.ZIndex = 3
+	toggle.Parent = frame
+	toggle.Activated:Connect(function() setExpanded(not expanded) end)
+	setExpanded(false)
 	local panel = { gui = gui, labels = labels, earned = {} }
 	panels[player] = panel
 	return panel
@@ -385,7 +403,7 @@ local function ensureObjectives(player)
 	-- 320×568 os dois painéis (12..157 e 163..308) não se sobrepõem.
 	frame.Size = UDim2.new(0.34, 0, 0, 110)
 	local frameSize = Instance.new("UISizeConstraint")
-	frameSize.MinSize = Vector2.new(145, 110)
+	frameSize.MinSize = Vector2.new(145, 36)
 	frameSize.MaxSize = Vector2.new(250, 110)
 	frameSize.Parent = frame
 	frame.BackgroundColor3 = Color3.fromRGB(20, 16, 28)
@@ -427,6 +445,24 @@ local function ensureObjectives(player)
 		rows[objective.id] = row
 	end
 
+
+	-- Keep the world unobstructed on phones; tapping the header expands details.
+	local expanded = false
+	local fullHeight = frame.Size.Y.Offset
+	local function setExpanded(value)
+		expanded = value
+		frame.Size = UDim2.new(0.34, 0, 0, expanded and fullHeight or 36)
+		for _, label in pairs(rows) do label.Visible = expanded end
+	end
+	local toggle = Instance.new("TextButton")
+	toggle.Name = "ToggleDetails"
+	toggle.Size = UDim2.new(1, 0, 0, 36)
+	toggle.BackgroundTransparency = 1
+	toggle.Text = ""
+	toggle.ZIndex = 3
+	toggle.Parent = frame
+	toggle.Activated:Connect(function() setExpanded(not expanded) end)
+	setExpanded(false)
 	state = { gui = gui, rows = rows, done = {} }
 	objectivePanels[player] = state
 	return state

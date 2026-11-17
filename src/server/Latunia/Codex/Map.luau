@@ -77,8 +77,15 @@ function Controller:request(player, point, from, to)
             and point:IsDescendantOf(workspace) and (root.Position-point.Position).Magnitude <= 14
         if not self.travel:finish(player, ticket) or not valid then return end
         if to == "Hub" then
+            -- Keep the controller's travel state if returning to Aetheria fails.
+            -- The player can then activate the return prompt again.
+            local ok, err = pcall(self.onReturn, player)
+            if not ok then
+                warn("[Latunia] retorno a Aetheria falhou: " .. tostring(err))
+                self:notify(player, "Não foi possível voltar a Aetheria. Tente novamente no portal.")
+                return
+            end
             self:forget(player)
-            self.onReturn(player)
             return
         end
         if not self.playerConns[player] then

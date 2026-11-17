@@ -3,6 +3,11 @@ on:
   pull_request:
   push:
     branches: [main, 'setup/**']
+    # PRs validate all changes. Only content/composition changes produce a release.
+    paths:
+      - 'src/**'
+      - 'assets/**'
+      - 'default.project.json'
   workflow_dispatch:
 
 permissions:
@@ -11,28 +16,40 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
+    env:
+      BUILD_SHA: ${{ github.sha }}
+      BUILD_RUN_ID: ${{ github.run_id }}
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
       - uses: CompeyDev/setup-rokit@v0.2.1
-      - name: Verificar sintaxe Luau
-        shell: bash
+      - name: Install pinned official Luau and Roblox LSP
         run: |
-          set -euo pipefail
-          tmp="$(mktemp -d)"
-          curl -fsSL --retry 3 https://github.com/luau-lang/luau/releases/download/0.744/luau-ubuntu.zip -o "$tmp/luau.zip"
-          echo "6506f0852c623aaffcb28494aac16c26dc04a269ea0e16cc0aafc8c8ac79f3ec  $tmp/luau.zip" | sha256sum -c -
-          unzip -q "$tmp/luau.zip" -d "$tmp"
-          chmod +x "$tmp/luau-compile"
-          while IFS= read -r -d '' source; do
-            "$tmp/luau-compile" --null "$source"
-          done < <(find src -type f \( -name '*.luau' -o -name '*.lua' \) -print0)
-      - name: Compilar o mapa
+          bash tools/install-luau.sh
+          bash tools/install-lsp.sh
+      - name: Syntax, standalone unit and contract tests
+        run: python tools/validate.py
+      - name: Roblox-aware static analysis
+        run: python tools/static_gate.py
+      - name: Embed build identity
+        run: python tools/release.py prepare
+      - name: Reproducible Rojo build and source inclusion
         run: |
-          mkdir -p dist
+          rojo --version
           rojo build default.project.json -o dist/mythragon.rbxlx
+          rojo build default.project.json -o dist/repro.rbxlx
+          cmp dist/mythragon.rbxlx dist/repro.rbxlx
+          rm dist/repro.rbxlx
+          python tools/release.py manifest
+          python tools/release.py verify
+      - name: PREVIEW only (no publication)
+        run: echo "PREVIEW_OK - build $BUILD_RUN_ID / $BUILD_SHA. Engine/client/visual NOT certified." >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         with:
           name: mythragon-pilot
-          path: dist/mythragon.rbxlx
+          path: dist/
           if-no-files-found: error
+          retention-days: 30

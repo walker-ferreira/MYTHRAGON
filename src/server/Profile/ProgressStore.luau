@@ -94,15 +94,17 @@ function ProgressStore.start(Profile, Hub)
     table.insert(connections, Players.PlayerAdded:Connect(load))
     for _, player in ipairs(Players:GetPlayers()) do load(player) end
 
-    game:BindToClose(function()
-        -- Pending wins may outlive a Player object; save from UserId snapshots.
-        -- Bounded shutdown flush: no destructive rollback of saved progress.
-        local ids = {}
-        for id in pairs(pending) do table.insert(ids, id) end
-        for _, id in ipairs(ids) do
-            if save(id) then pending[id] = nil end
-        end
-    end)
+    -- Open Cloud isolated engine checks are not a running game server.
+    if game:GetService("RunService"):IsRunning() then
+        game:BindToClose(function()
+            -- Pending wins may outlive the Player object; use UserId snapshots.
+            local ids = {}
+            for id in pairs(pending) do table.insert(ids, id) end
+            for _, id in ipairs(ids) do
+                if save(id) then pending[id] = nil end
+            end
+        end)
+    end
 
     return {
         recordSeal = function(_, player, sealId)

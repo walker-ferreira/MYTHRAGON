@@ -105,6 +105,36 @@ function Controller:request(player, point, from, to)
     end)
 end
 
+-- Studio-only helper used by debug chat commands. Keep navigation state consistent
+-- with the actual character position; this does not award objectives or rewards.
+function Controller:debugWarp(player, to)
+    if self.destroyed or player.Parent ~= Players then return false end
+    local character = player.Character
+    local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+    local root = character and character:FindFirstChild("HumanoidRootPart")
+    if not root or not humanoid or humanoid.Health <= 0 then return false end
+    self.travel:remove(player)
+    if to == "Hub" then
+        local ok, err = pcall(self.onReturn, player)
+        if not ok then
+            warn("[Latunia] retorno debug falhou: " .. tostring(err))
+            return false
+        end
+        self:forget(player)
+        return true
+    end
+    if not self.origins[to] then return false end
+    if not self.playerConns[player] then
+        self.playerConns[player] = player.CharacterRemoving:Connect(function()
+            self:forget(player)
+        end)
+    end
+    self.current[player] = to
+    root.AssemblyLinearVelocity, root.AssemblyAngularVelocity = Vector3.zero, Vector3.zero
+    character:PivotTo(self:arrival(to))
+    return true
+end
+
 function Controller:prompt(point, from, to, action)
     local prompt = Instance.new("ProximityPrompt")
     prompt.Name = "LatuniaTravel"
@@ -318,6 +348,14 @@ function Map.build(parent, onReturn, partnerBuilders)
         error(err, 0)
     end
     return self
+end
+
+function Map.debugWarp(parent, player, to)
+    local RunService = game:GetService("RunService")
+    if not RunService:IsStudio() or not RunService:IsServer() then return false end
+    local controller = mounted[parent]
+    if not controller then return false end
+    return controller:debugWarp(player, to)
 end
 
 return Map

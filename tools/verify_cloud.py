@@ -29,8 +29,13 @@ for path, source in pairs(expected) do
     count += 1
 end
 local actualCount = 0
-for _, value in game.ServerScriptService.Mythragon:GetDescendants() do
-    if value:IsA("LuaSourceContainer") then actualCount += 1 end
+for _, root in {
+    game.ServerScriptService.Mythragon,
+    game.StarterPlayer.StarterPlayerScripts,
+} do
+    for _, value in root:GetDescendants() do
+        if value:IsA("LuaSourceContainer") then actualCount += 1 end
+    end
 end
 assert(actualCount == count, "Unexpected persisted script modules")
 local info = require(game.ServerScriptService.Mythragon.Diagnostics.BuildInfo)

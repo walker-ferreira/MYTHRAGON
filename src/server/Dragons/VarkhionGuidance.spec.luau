@@ -1,27 +1,18 @@
 local Guide = require("./VarkhionGuidance")
 
--- Testes básicos existentes
+-- Guidance is selected only for a server-confirmed boolean seal.
 assert(Guide.forSeal(false) == Guide.EMBER)
 assert(Guide.forSeal(nil) == Guide.EMBER)
 assert(Guide.forSeal(true) == Guide.LATUNIA)
 assert(Guide.EMBER ~= Guide.LATUNIA)
 assert(string.find(Guide.LATUNIA, "Latúnia", 1, true))
 
--- Verificações de entradas inválidas e estados inesperados
-local success, err = pcall(function()
-	return Guide.forSeal("invalid_type")
-end)
-assert(not success or err ~= nil, "Deveria lidar com tipo de entrada inválido")
+-- Invalid and unexpected values must never grant the Latunia guidance.
+for _, invalid in ipairs({ "true", "invalid_type", 1, 0, -1, {}, { hasEmber = true }, function() end }) do
+    assert(Guide.forSeal(invalid) == Guide.EMBER, "Only boolean true may unlock Latunia guidance")
+end
 
-local successNum, errNum = pcall(function()
-	return Guide.forSeal(123)
-end)
-assert(not successNum or errNum ~= nil, "Deveria lidar com números como entradas inválidas")
-
--- Comportamento esperado estendido
-assert(type(Guide.EMBER) == "string", "Constante EMBER deve ser string")
-assert(type(Guide.LATUNIA) == "string", "Constante LATUNIA deve ser string")
-assert(#Guide.EMBER > 0, "Constante EMBER não deve estar vazia")
-assert(#Guide.LATUNIA > 0, "Constante LATUNIA não deve estar vazia")
+assert(type(Guide.EMBER) == "string" and #Guide.EMBER > 0, "EMBER guidance must be nonempty text")
+assert(type(Guide.LATUNIA) == "string" and #Guide.LATUNIA > 0, "LATUNIA guidance must be nonempty text")
 
 print("Varkhion story guidance: PASS")

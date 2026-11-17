@@ -56,8 +56,8 @@ round(open, 8)
 local menu = Instance.new("Frame")
 menu.Name = "TravelMenu"
 menu.AnchorPoint = Vector2.new(1, 1)
-menu.Position = UDim2.new(1, -140, 1, -62)
-menu.Size = UDim2.fromOffset(225, 330)
+menu.Position = UDim2.new(1, -114, 1, -62)
+menu.Size = UDim2.fromOffset(190, 310)
 menu.BackgroundColor3 = Color3.fromRGB(28, 25, 42)
 menu.BorderSizePixel = 0
 menu.Visible = false
@@ -68,7 +68,7 @@ label(menu, "Hint", "Vá até o portal ou cais de embarque para viajar.", 36, 30
 for i, entry in ipairs(destinations) do
     local button = Instance.new("TextButton")
     button.Name = "Go" .. entry[2]
-    button.Position = UDim2.fromOffset(10, 70 + (i - 1) * 40)
+    button.Position = UDim2.fromOffset(10, 67 + (i - 1) * 38)
     button.Size = UDim2.new(1, -20, 0, 34)
     button.BackgroundColor3 = Color3.fromRGB(139, 101, 64)
     button.TextColor3 = Color3.fromRGB(255, 245, 220)

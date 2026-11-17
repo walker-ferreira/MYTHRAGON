@@ -685,9 +685,9 @@ function Hub.build(parent, onEnterEmber)
 
 	local sign = Instance.new("BillboardGui")
 	sign.Name = "PortalSign"
-	sign.Size = UDim2.fromOffset(260, 70)
+	sign.Size = UDim2.fromOffset(190, 52)
 	sign.StudsOffset = Vector3.new(0, 7.2, 0)
-	sign.MaxDistance = 32
+	sign.MaxDistance = 20
 	sign.Parent = portal
 
 	local signText = Instance.new("TextLabel")

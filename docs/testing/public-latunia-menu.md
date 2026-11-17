@@ -14,3 +14,7 @@ No servidor, `TravelMenu.server.luau` aceita apenas IDs da lista `TravelMenuPoli
 - Falhas de DataStore não podem marcar salvos falsos. Nunca permitir menu público de teleporte livre.
 
 **Nota de colaboração:** o PR GLM #45 permanece não integrado por ter `PivotTo` direto e RemoteEvent sem autorização; o visual pode ser adaptado a este gateway. Não substituir o cenário do GLM, nem instalar os dez NPCs. CI e motor isolado não são testes reais de cliente.
+
+## Painel em telas baixas
+
+Abra **VIAGEM** com a tela em 320×568 e 640×360. O título e as instruções devem aparecer dentro da área segura. Em uma área útil de 320 px de altura, role até **Ilha Vulcânica** e confirme que o último botão pode ser acionado. Feche e reabra para conferir que o painel volta ao topo da lista. Repita com toque e controle em cliente Roblox.

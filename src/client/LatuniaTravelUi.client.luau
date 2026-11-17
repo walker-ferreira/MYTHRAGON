@@ -53,11 +53,17 @@ open.TextColor3 = Color3.fromRGB(255, 229, 179)
 open.Parent = gui
 round(open, 8)
 
-local menu = Instance.new("Frame")
+local menu = Instance.new("ScrollingFrame")
 menu.Name = "TravelMenu"
 menu.AnchorPoint = Vector2.new(1, 1)
 menu.Position = UDim2.new(1, -114, 1, -62)
-menu.Size = UDim2.fromOffset(190, 310)
+menu.Size = UDim2.new(1, -126, 1, -74)
+menu.CanvasSize = UDim2.new(1, 0, 0, 310)
+menu.ScrollingDirection = Enum.ScrollingDirection.Y
+menu.ScrollBarThickness = 5
+local menuSize = Instance.new("UISizeConstraint")
+menuSize.MaxSize = Vector2.new(190, 310)
+menuSize.Parent = menu
 menu.BackgroundColor3 = Color3.fromRGB(28, 25, 42)
 menu.BorderSizePixel = 0
 menu.Visible = false
@@ -86,6 +92,7 @@ for i, entry in ipairs(destinations) do
 end
 open.Activated:Connect(function()
     menu.Visible = not menu.Visible
+    if menu.Visible then menu.CanvasPosition = Vector2.zero end
     open.Text = menu.Visible and "FECHAR" or "VIAGEM"
 end)
 

@@ -46,6 +46,13 @@ class CloudEvidenceTests(unittest.TestCase):
         evidence.update(changes)
         return {"state": "COMPLETE", "output": {"results": [json.dumps(evidence)]}}
 
+    def test_inspection_counts_client_scripts_as_well_as_server_scripts(self):
+        import inspect
+        script_builder = inspect.getsource(verify_cloud.main)
+        self.assertIn("game.StarterPlayer.StarterPlayerScripts", script_builder)
+        self.assertIn("game.ServerScriptService.Mythragon", script_builder)
+        self.assertIn('Unexpected persisted script modules', script_builder)
+
     def test_complete_with_error_is_not_success(self):
         result = self.complete()
         result["error"] = {"message": "engine failed"}

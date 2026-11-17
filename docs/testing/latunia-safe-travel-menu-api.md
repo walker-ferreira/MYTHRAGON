@@ -18,3 +18,7 @@ Rotas oficiais: Hub → Vila Central; Vila Central → Hub/Gelo/Selva/Deserto/Vu
 CI e engine probe verificam o registro das dez rotas físicas, mas testes com jogadores ainda precisam cobrir: duas contas, tentativa fora do cais, personagem morto, cliques repetidos, teleporte normal vs. debug, reconexão, mobile e portal de retorno. Não declarar PLAYTEST_OK por aprovação da CI.
 
 Este PR **não ativa um novo menu** nem modifica o PR do GLM; apenas prepara a integração segura para preservar seu trabalho.
+
+## Falha durante a travessia
+
+Em um servidor de teste, injete um erro no ponto de chamada de `PivotTo` durante uma viagem válida. Confirme que o personagem continua na origem, o destino não é registrado como descoberta e a interface orienta a tentar novamente. Restaure o teleporte e repita pelo mesmo portal após o intervalo normal de 3 segundos. Teste tanto o trajeto Aetheria → Vila Central quanto a volta de uma ilha à Vila Central. Confira também que a recuperação de uma queda pode ser tentada novamente após uma falha.

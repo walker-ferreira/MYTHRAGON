@@ -6,6 +6,13 @@ Claim por branch/PR, nunca dois escritores no mesmo worktree.
 Estados de trabalho: AVAILABLE, ASSIGNED, IMPLEMENTING, REVIEW, BLOCKED, INTEGRATED,
 AWAITING_OWNER. Estados de certificação são separados (AGENTS.md).
 
+## LATUNIA-TRAVEL-RECOVERY-001 — confirmar chegada antes de atualizar a viagem
+
+- Responsável: CODEX. Base: `600316ca927aa5c0c10765db3605964ce661865e`. Branch: `codex/latunia-travel-recovery`.
+- Caminhos: `src/server/Latunia/Codex/Map.luau` e `docs/testing/latunia-safe-travel-menu-api.md`. Depende das rotas e bilhetes existentes no controlador de Latúnia.
+- Aceite: falha de teleporte preserva a origem e a descoberta pode ser concedida somente após uma travessia bem-sucedida. O resgate após queda pode tentar novamente.
+- Estado: REVIEW. Próximo checkpoint: conferir a revisão após a publicação experimental e testar o fluxo no cliente.
+
 ## COMBAT-003 — sopro direcionado e esquiva no impacto
 
 - Responsável: CODEX. Base da main: `e6cd00352d29b089e4320da1f06a1d66ad523e4e` (PR #54). Branch: `codex/ember-breath-dodge-fix`.

@@ -91,11 +91,20 @@ function Combat.new(model, center, arenaHalfSize, onVictory)
     attack.MaxActivationDistance = 13
     attack.RequiresLineOfSight = false
     attack.KeyboardKeyCode = Enum.KeyCode.E
+    attack.GamepadKeyCode = Enum.KeyCode.ButtonX
+    attack.ClickablePrompt = true
+    attack.Exclusivity = Enum.ProximityPromptExclusivity.AlwaysShow
     attack.HoldDuration = 0
     attack.Parent = self.body
     attack.Triggered:Connect(function(player)
         self:attack(player)
     end)
+    -- Separate adornee keeps the two touch buttons visually distinct.
+    -- AlwaysShow avoids one prompt hiding the other on mobile.
+    local dodgeAnchor = Instance.new("Attachment")
+    dodgeAnchor.Name = "DodgePromptAnchor"
+    dodgeAnchor.Position = Vector3.new(1.5, 0, 0)
+    dodgeAnchor.Parent = self.body
     local dodgePrompt = Instance.new("ProximityPrompt")
     dodgePrompt.Name = "Dodge"
     dodgePrompt.ActionText = "Esquivar · 3 s"
@@ -103,10 +112,11 @@ function Combat.new(model, center, arenaHalfSize, onVictory)
     dodgePrompt.KeyboardKeyCode = Enum.KeyCode.Q
     dodgePrompt.GamepadKeyCode = Enum.KeyCode.ButtonB
     dodgePrompt.ClickablePrompt = true
+    dodgePrompt.Exclusivity = Enum.ProximityPromptExclusivity.AlwaysShow
     dodgePrompt.MaxActivationDistance = 13
     dodgePrompt.RequiresLineOfSight = false
     dodgePrompt.HoldDuration = 0
-    dodgePrompt.Parent = self.body
+    dodgePrompt.Parent = dodgeAnchor
     dodgePrompt.Triggered:Connect(function(player)
         self:dodge(player)
     end)

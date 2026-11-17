@@ -30,9 +30,9 @@ end
 function B.label(parent, text, offset, distance)
     local gui = Instance.new("BillboardGui")
     gui.Name = "LandmarkSign"
-    gui.Size = UDim2.fromOffset(270, 72)
+    gui.Size = UDim2.fromOffset(190, 52)
     gui.StudsOffsetWorldSpace = offset or Vector3.new(0, 6, 0)
-    gui.MaxDistance = math.min(distance or 130, 36)
+    gui.MaxDistance = math.min(distance or 130, 18)
     gui.Parent = parent
     local label = Instance.new("TextLabel")
     label.Size = UDim2.fromScale(1, 1)

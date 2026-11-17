@@ -18,6 +18,7 @@ def select_model():
         raise SystemExit(
             f"Gemini model discovery HTTP {exc.code}; verify API key, API enablement, and quota"
         ) from exc
+    print(f"Gemini model discovery returned {len(available)} models", flush=True)
     supported = [
         m["name"] for m in available
         if "generateContent" in m.get("supportedGenerationMethods", [])
@@ -26,9 +27,12 @@ def select_model():
     preferred = ("models/gemini-2.5-flash", "models/gemini-2.0-flash")
     for model in preferred:
         if model in supported:
+            print(f"Gemini selected model: {model}", flush=True)
             return model
     if supported:
-        return sorted(supported)[0]
+        selected = sorted(supported)[0]
+        print(f"Gemini selected model: {selected}", flush=True)
+        return selected
     raise SystemExit("No Gemini generateContent model available to this API key")
 
 root = Path(__file__).resolve().parents[2]
@@ -58,7 +62,7 @@ try:
     with request.urlopen(req, timeout=90) as response:
         result = json.load(response)
 except error.HTTPError as exc:
-    raise SystemExit(f"Gemini API HTTP {exc.code}; check key, quota and model access") from exc
+    raise SystemExit(f"Gemini generateContent HTTP {exc.code}; selected model may not support this API version or key") from exc
 candidates = result.get("candidates") or []
 parts = candidates[0].get("content", {}).get("parts", []) if candidates else []
 output = "\n".join(p.get("text", "") for p in parts if p.get("text"))

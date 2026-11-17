@@ -42,7 +42,7 @@ for _, root in {
     end
 end
 if actualCount ~= count then
-    error(("Unexpected persisted script modules: expected=%d actual=%d paths=%s")
+    error(("Unexpected persisted script modules: expected=%%d actual=%%d paths=%%s")
         :format(count, actualCount, HttpService:JSONEncode(scripts)))
 end
 local info = require(game.ServerScriptService.Mythragon.Diagnostics.BuildInfo)

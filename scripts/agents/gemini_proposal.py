@@ -4,6 +4,33 @@ import os
 from pathlib import Path, PurePosixPath
 from urllib import request, error
 
+
+def select_model():
+    """Discover an available model rather than assuming a fixed model name."""
+    list_req = request.Request(
+        "https://generativelanguage.googleapis.com/v1beta/models?pageSize=100",
+        headers={"x-goog-api-key": os.environ["GEMINI_API_KEY"]},
+    )
+    try:
+        with request.urlopen(list_req, timeout=30) as response:
+            available = json.load(response).get("models", [])
+    except error.HTTPError as exc:
+        raise SystemExit(
+            f"Gemini model discovery HTTP {exc.code}; verify API key, API enablement, and quota"
+        ) from exc
+    supported = [
+        m["name"] for m in available
+        if "generateContent" in m.get("supportedGenerationMethods", [])
+        and m.get("name", "").startswith("models/gemini-")
+    ]
+    preferred = ("models/gemini-2.5-flash", "models/gemini-2.0-flash")
+    for model in preferred:
+        if model in supported:
+            return model
+    if supported:
+        return sorted(supported)[0]
+    raise SystemExit("No Gemini generateContent model available to this API key")
+
 root = Path(__file__).resolve().parents[2]
 target = os.environ["GEMINI_TARGET_FILE"]
 task = os.environ["GEMINI_TASK"][:2500]
@@ -48,7 +75,7 @@ body = json.dumps({
     },
 }).encode()
 req = request.Request(
-    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent",
+    "https://generativelanguage.googleapis.com/v1beta/" + select_model() + ":generateContent",
     data=body, method="POST",
     headers={"Content-Type": "application/json", "x-goog-api-key": os.environ["GEMINI_API_KEY"]},
 )

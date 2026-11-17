@@ -35,8 +35,10 @@ for _, id in Layout.order do
 	local hit = workspace:Raycast(p, Vector3.new(0, -16, 0), params)
 	assert(hit and hit.Instance.CanCollide, "Arrival missing collidable floor: " .. id)
 end
-assert(islands.Gelo.Content:FindFirstChild("ReservedLanding"), "Gelo status changed; update contract")
-assert(islands.Selva.Content:FindFirstChild("ReservedLanding"), "Selva status changed; update contract")
+assert(islands.Gelo.Content.Gelo:FindFirstChild("ObservatoryDeck"), "Gelo scenery missing")
+assert(islands.Selva.Content.Selva:FindFirstChild("TemplePlatform"), "Selva scenery missing")
+assert(not islands.Gelo.Content:FindFirstChild("ReservedLanding"), "Gelo should not use placeholder")
+assert(not islands.Selva.Content:FindFirstChild("ReservedLanding"), "Selva should not use placeholder")
 assert(islands.Deserto.Content.Deserto:FindFirstChild("RuinasSoterradas"))
 assert(islands.Vulcanica.Content.Vulcanica:FindFirstChild("CraterLava"))
 assert((root.LatuniaTestGate.Position - Vector3.new(24, 4.5, 8)).Magnitude < 0.01)

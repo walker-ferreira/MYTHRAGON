@@ -2,12 +2,15 @@
 -- Independent of GLM's upper-left objective panel and seal HUD.
 local Players = game:GetService("Players")
 local State = require(script.Parent.ExplorationState)
+local Journey = require(script.Parent.JourneyGuide)
 local Panel = {}
 local sessions = {}
 
 local function draw(session)
     if not session.gui or not session.gui.Parent then return end
     session.counter.Text = ("LATÚNIA · %d/5 DESCOBERTAS"):format(session.state.total)
+    local nextStep, completed, total = Journey.next(session.objectives, session.ember)
+    session.nextObjective.Text = ("JORNADA %d/%d · %s"):format(completed, total, nextStep)
     for _, entry in ipairs(State.order) do
         local label = session.rows[entry.id]
         local visited = session.state.visited[entry.id] == true
@@ -34,15 +37,15 @@ local function build(player, session)
     local frame = Instance.new("Frame")
     frame.Name = "Panel"
     frame.Position = UDim2.new(0, 12, 0, 180)
-    frame.Size = UDim2.new(0.34, 0, 0, 160)
+    frame.Size = UDim2.new(0.34, 0, 0, 215)
     frame.BackgroundColor3 = Color3.fromRGB(25, 22, 42)
     frame.BackgroundTransparency = 0.18
     frame.BorderSizePixel = 0
     frame.Parent = gui
 
     local limit = Instance.new("UISizeConstraint")
-    limit.MinSize = Vector2.new(145, 160)
-    limit.MaxSize = Vector2.new(235, 160)
+    limit.MinSize = Vector2.new(145, 215)
+    limit.MaxSize = Vector2.new(235, 215)
     limit.Parent = frame
 
     local corner = Instance.new("UICorner")
@@ -75,13 +78,27 @@ local function build(player, session)
         label.Parent = frame
         rows[entry.id] = label
     end
+    local nextObjective = Instance.new("TextLabel")
+    nextObjective.Name = "NextJourneyObjective"
+    nextObjective.Position = UDim2.fromOffset(9, 155)
+    nextObjective.Size = UDim2.new(1, -18, 0, 52)
+    nextObjective.BackgroundTransparency = 1
+    nextObjective.Font = Enum.Font.GothamMedium
+    nextObjective.TextSize = 11
+    nextObjective.TextWrapped = true
+    nextObjective.TextXAlignment = Enum.TextXAlignment.Left
+    nextObjective.TextYAlignment = Enum.TextYAlignment.Center
+    nextObjective.TextColor3 = Color3.fromRGB(244, 214, 150)
+    nextObjective.Parent = frame
+
     session.gui, session.counter, session.rows = gui, heading, rows
+    session.nextObjective = nextObjective
     draw(session)
 end
 
 function Panel.attach(player)
     if sessions[player] then return end
-    local session = { state = State.new() }
+    local session = { state = State.new(), objectives = {}, ember = false }
     sessions[player] = session
     task.spawn(build, player, session)
 end
@@ -91,6 +108,11 @@ function Panel.hydrate(player, done)
     Panel.attach(player)
     local session = sessions[player]
     session.state:hydrate(done)
+    if type(done) == "table" then
+        for id, completed in pairs(done) do
+            if completed == true then session.objectives[id] = true end
+        end
+    end
     draw(session)
 end
 
@@ -99,8 +121,28 @@ function Panel.mark(player, id)
     Panel.attach(player)
     local session = sessions[player]
     local changed = session.state:mark(id)
-    if changed then draw(session) end
+    if changed then
+        session.objectives[id] = true
+        draw(session)
+    end
     return changed
+end
+
+-- Display-only hooks, invoked after server-authoritative callbacks.
+function Panel.markObjective(player, id)
+    if player.Parent ~= Players then return end
+    Panel.attach(player)
+    local session = sessions[player]
+    session.objectives[id] = true
+    draw(session)
+end
+
+function Panel.markEmber(player)
+    if player.Parent ~= Players then return end
+    Panel.attach(player)
+    local session = sessions[player]
+    session.ember = true
+    draw(session)
 end
 
 function Panel.remove(player)

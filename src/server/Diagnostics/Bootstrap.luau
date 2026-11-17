@@ -68,9 +68,16 @@ function Bootstrap.run()
 				Gelo = Expansion.ice,
 				Selva = Expansion.jungle,
 			}, function(player, islandId)
-				if islandId == "Central" and current.objectives then
+				if current.objectives then
 					local first = current.objectives:recordArrival(player, islandId)
-					if first then Hub.notify(player, "Jornada: Vila Central de Latúnia descoberta!") end
+					if first then
+						local names = {
+							Central = "Vila Central", Gelo = "Ilha do Gelo",
+							Deserto = "Ilha do Deserto", Selva = "Ilha da Selva",
+							Vulcanica = "Ilha Vulcânica",
+						}
+						Hub.notify(player, "Exploração: " .. (names[islandId] or "Latúnia") .. " descoberta!")
+					end
 				end
 			end)
 			assert(current.latunia.root.Parent == workspace, "Latunia did not mount")

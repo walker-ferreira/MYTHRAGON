@@ -36,6 +36,26 @@ def main():
     for path in pure:
         run([vm, str(path)])
         results.append({"name": path.relative_to(ROOT).as_posix(), "status": "PASS"})
+    # Execute only the module's export contract. Stub Color3 constants; NOT engine geometry.
+    model_source = (ROOT / "src/server/Dragons/VarkhionModel.luau").read_text(encoding="utf-8")
+    def model_contract(source):
+        return ("local Color3 = { fromRGB = function(...) return table.pack(...) end }\n"
+                "local function module()\n" + source + "\nend\n"
+                "local exported = module()\n"
+                'assert(type(exported) == "table", "VarkhionModel must return its module table")\n'
+                'assert(type(exported.build) == "function", "VarkhionModel.build export required")\n')
+    with tempfile.TemporaryDirectory() as d:
+        contract = Path(d) / "model-export.luau"
+        contract.write_text(model_contract(model_source), encoding="utf-8")
+        run([vm, str(contract)])
+        negative = model_source.replace("\nreturn Model\n", "\n")
+        if negative == model_source:
+            raise RuntimeError("Model export negative fixture did not remove the return")
+        contract.write_text(model_contract(negative), encoding="utf-8")
+        rejected = subprocess.run([vm, str(contract)], capture_output=True)
+        if rejected.returncode == 0:
+            raise RuntimeError("Model export gate accepted missing module return")
+    results.append({"name": "VarkhionModel export + missing-return negative (Color3 stub, NOT geometry)", "status": "PASS"})
     run([sys.executable, "-m", "unittest", "discover", "-s", "tests", "-v"])
     results.append({"name": "Python release/contracts negative tests", "status": "PASS"})
     registry = json.loads((ROOT / "assets/registry.json").read_text())

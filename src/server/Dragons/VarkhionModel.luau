@@ -134,3 +134,5 @@ function Model.build(parent, origin)
     dragon.Parent = parent
     return dragon, interaction
 end
+
+return Model

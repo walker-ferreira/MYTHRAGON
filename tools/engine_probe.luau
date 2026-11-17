@@ -23,6 +23,17 @@ for _, value in root:GetDescendants() do
 	end
 end
 assert(villas == 1 and prompts == 10, "No duplicated village or travel prompts")
+-- The safe on-screen menu API may invoke only the already-mounted physical
+-- portals. It cannot create a direct Hub -> remote island or island -> Hub hop.
+local portals = assert(result.latunia and result.latunia.portalPoints,
+    "Latunia portal registry missing")
+assert(portals.Hub.Central and portals.Central.Hub, "Hub/Vila route missing")
+for _, id in ipairs({"Gelo", "Selva", "Deserto", "Vulcanica"}) do
+    assert(portals.Central[id] and portals[id].Central, "Island route missing: " .. id)
+    assert(not portals.Hub[id] and not portals[id].Hub, "Forbidden direct Hub route: " .. id)
+end
+assert(not require(app.Latunia.Codex.Map).requestTravel(workspace, nil, "Central"),
+    "A request without a player must fail closed")
 -- Regression: procedurally generated village decorations must follow the
 -- Latunia island anchor rather than accidentally appearing at Hub (0,0,0).
 local central = islands.Central

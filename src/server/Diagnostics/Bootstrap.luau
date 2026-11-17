@@ -11,7 +11,7 @@ function Bootstrap.run()
 	local parent = script.Parent.Parent
 	local Players = game:GetService("Players")
 	local Hub, Profile, map, returnToHub
-	local profileConnection
+	local profileConnection, leaveEmber, releaseEmberTransit
 	local coreOk = health:stage("Core", function()
 		assert(not workspace:FindFirstChild("MythragonMap"), "Unowned existing map")
 		Hub = require(parent.Hub.Map)
@@ -31,9 +31,12 @@ function Bootstrap.run()
 				Hub.setSealEarned(player, seal.index)
 			end
 		end
-		local enterEmber = Ember.build(map, onVictory)
-		returnToHub = Hub.build(map, enterEmber)
-		assert(type(returnToHub) == "function", "Hub return contract")
+		local enterEmber
+		enterEmber, leaveEmber = Ember.build(map, onVictory)
+		returnToHub, releaseEmberTransit = Hub.build(map, enterEmber)
+		assert(type(returnToHub) == "function" and type(releaseEmberTransit) == "function",
+			"Hub return and transit contract")
+		assert(type(leaveEmber) == "function", "Ember departure contract")
 		local ProgressStore = require(parent.Profile.ProgressStore)
 		current.progress = ProgressStore.start(Profile, Hub)
 		local ObjectivesStore = require(parent.Profile.ObjectivesStore)
@@ -81,6 +84,9 @@ function Bootstrap.run()
 						Hub.notify(player, "Exploração: " .. (names[islandId] or "Latúnia") .. " descoberta!")
 					end
 				end
+			end, function(player)
+				leaveEmber(player)
+				releaseEmberTransit(player)
 			end)
 			assert(current.latunia.root.Parent == workspace, "Latunia did not mount")
 		end, function()

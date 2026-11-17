@@ -902,13 +902,14 @@ function Hub.build(parent, onEnterEmber)
 
 	-- Retorno ao hub (ligado pelo Sol em Ember.connectReturn): libera o
 	-- jogador para novas tentativas e devolve o corpo ao spawn.
-	return function(player)
-		releaseTransit(player)
+	local function returnToHub(player)
 		local character = player.Character
 		if character then
 			character:PivotTo(CFrame.new(spawn.Position + Vector3.new(0, 4, 0)))
 		end
+		releaseTransit(player)
 	end
+	return returnToHub, releaseTransit
 end
 
 return Hub

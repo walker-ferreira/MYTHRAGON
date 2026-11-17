@@ -18,25 +18,18 @@
 -- (Layout.origin + Layout.arrivals), então não duplicam geografia.
 
 local Players = game:GetService("Players")
-local Workspace = game:GetService("Workspace")
+local RunService = game:GetService("RunService")
+local Map = require(script.Parent.Parent.Latunia.Codex.Map)
 
-local Layout = require(script.Parent.Parent.Latunia.Codex.Layout)
-
-local function pos(t)
-	return Vector3.new(t[1], t[2], t[3])
-end
-
-local origin = pos(Layout.origin)
+-- This command is for Studio tests only; published servers use validated
+-- ProximityPrompt travel instead of free teleports.
+if not RunService:IsStudio() then return end
 
 local DESTINOS = {
-	hub = CFrame.new(0, 5, 14),
+    hub = "Hub", vila = "Central", central = "Central",
+    gelo = "Gelo", selva = "Selva", deserto = "Deserto",
+    vulcanica = "Vulcanica",
 }
-for id, def in pairs(Layout.islands) do
-	local islandOrigin = origin + Vector3.new(def.x, 0, def.z)
-	local p = islandOrigin + pos(Layout.arrivals[id])
-	DESTINOS[id:lower()] = CFrame.lookAt(p, Vector3.new(islandOrigin.X, p.Y, islandOrigin.Z))
-end
-DESTINOS.vila = DESTINOS.central
 
 local function notify(player, message)
 	local playerGui = player:FindFirstChildOfClass("PlayerGui")
@@ -69,22 +62,14 @@ local function notify(player, message)
 end
 
 local function viajar(player, key)
-	local destino = DESTINOS[key]
-	if not destino then
-		notify(player, "Destino desconhecido. Use: /ir hub · vila · deserto · vulcanica · gelo · selva")
-		return
-	end
-	if key ~= "hub" and not Workspace:FindFirstChild("LatuniaCodex") then
-		notify(player, "Latúnia não está montada neste servidor.")
-		return
-	end
-	local character = player.Character
-	local humanoid = character and character:FindFirstChildOfClass("Humanoid")
-	local root = character and character:FindFirstChild("HumanoidRootPart")
-	if not root or not humanoid or humanoid.Health <= 0 or player.Character ~= character then
-		return
-	end
-	character:PivotTo(destino + Vector3.new(0, 3, 0))
+    local destino = DESTINOS[key]
+    if not destino then
+        notify(player, "Destino desconhecido. Use: /ir hub · vila · deserto · vulcanica · gelo · selva")
+        return
+    end
+    if not Map.debugWarp(workspace, player, destino) then
+        notify(player, "Comando indisponível: confirme Latúnia READY e personagem vivo.")
+    end
 end
 
 local function onChatted(player, message)

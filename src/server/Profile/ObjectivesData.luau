@@ -1,4 +1,4 @@
--- Pure policy for the three existing Hub objectives, stored in the
+-- Pure policy for journey objectives, stored in the
 -- same record as the Ember seal via monotonic UpdateAsync merges.
 local ProgressData = require("./ProgressData")
 local ObjectivesData = {}
@@ -40,8 +40,7 @@ function ObjectivesData.read(raw)
     return result
 end
 
-function ObjectivesData.merge(raw, id)
-    assert(allowed[id], "Unknown objective")
+function ObjectivesData.mergeMany(raw, completed)
     ObjectivesData.read(raw) -- Never overwrite invalid or newer data.
     local out = {}
     if raw then for name, value in pairs(raw) do out[name] = value end end
@@ -49,11 +48,18 @@ function ObjectivesData.merge(raw, id)
     if raw and raw.objectives then
         for name, done in pairs(raw.objectives) do objectives[name] = done end
     end
-    objectives[id] = true
+    for id in pairs(completed) do
+        assert(allowed[id], "Unknown objective")
+        objectives[id] = true
+    end
     out.schema = 1
     out.objectives = objectives
     if not out.seals then out.seals = {} end
     return out
+end
+
+function ObjectivesData.merge(raw, id)
+    return ObjectivesData.mergeMany(raw, { [id] = true })
 end
 
 return ObjectivesData

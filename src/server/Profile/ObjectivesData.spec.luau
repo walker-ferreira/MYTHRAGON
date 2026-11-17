@@ -41,4 +41,10 @@ for _, bad in ipairs({ "broken", { schema = 5, objectives = {} },
     assert(not pcall(D.merge, bad, "portal"))
 end
 assert(not pcall(D.merge, nil, "invalid"))
-print("Hub ObjectivesData: PASS")
+local batch = { gelo = true, retorno = true, portal = true }
+local merged = D.mergeMany(future, batch)
+assert(merged.seals.Ember and merged.objectives.bonus)
+assert(merged.objectives.gelo and merged.objectives.retorno and merged.objectives.portal)
+assert(future.objectives.gelo == nil and future.objectives.portal == nil)
+assert(not pcall(D.mergeMany, future, { portal = true, invalid = true }))
+print("Journey ObjectivesData: PASS")

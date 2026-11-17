@@ -4,6 +4,7 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local Access = require(script.Parent.CommandAccess)
+local TravelPolicy = require(script.Parent.FlightTravelPolicy)
 
 local remote = Instance.new("RemoteEvent")
 remote.Name = "MythragonOwnerFlight"
@@ -51,6 +52,7 @@ local function start(player)
         character = character, humanoid = humanoid, root = root,
         attachment = attachment, velocity = velocity, direction = Vector3.zero,
         speed = 45, lastInput = os.clock(),
+        lastPosition = root.Position,
     }
     remote:FireClient(player, "status", true)
 end
@@ -77,12 +79,21 @@ remote.OnServerEvent:Connect(function(player, action, direction, speed)
     flight.lastInput = os.clock()
 end)
 
-RunService.Heartbeat:Connect(function()
+RunService.Heartbeat:Connect(function(dt)
     for player, flight in pairs(active) do
         if player.Parent ~= Players or player.Character ~= flight.character
             or flight.root.Parent ~= flight.character or flight.humanoid.Health <= 0 then
             stop(player)
         else
+            -- A portal/debug travel is a server-driven teleport. End flight
+            -- immediately so PlatformStand/LinearVelocity cannot strand the
+            -- character at the next island or interfere with combat.
+            local moved = (flight.root.Position - flight.lastPosition).Magnitude
+            flight.lastPosition = flight.root.Position
+            if TravelPolicy.isTeleport(moved, dt, flight.speed) then
+                stop(player)
+                continue
+            end
             local dir = flight.direction
             if os.clock() - flight.lastInput > INPUT_TIMEOUT then dir = Vector3.zero end
             local y = flight.root.Position.Y

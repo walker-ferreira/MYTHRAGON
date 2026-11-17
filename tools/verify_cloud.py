@@ -29,15 +29,22 @@ for path, source in pairs(expected) do
     count += 1
 end
 local actualCount = 0
+local scripts = {}
 for _, root in {
     game.ServerScriptService.Mythragon,
     game.StarterPlayer.StarterPlayerScripts,
 } do
     for _, value in root:GetDescendants() do
-        if value:IsA("LuaSourceContainer") then actualCount += 1 end
+        if value:IsA("LuaSourceContainer") then
+            actualCount += 1
+            table.insert(scripts, value:GetFullName())
+        end
     end
 end
-assert(actualCount == count, "Unexpected persisted script modules")
+if actualCount ~= count then
+    error(("Unexpected persisted script modules: expected=%%d actual=%%d paths=%%s")
+        :format(count, actualCount, HttpService:JSONEncode(scripts)))
+end
 local info = require(game.ServerScriptService.Mythragon.Diagnostics.BuildInfo)
 assert(info.gitSha == %s, "Wrong build identity")
 assert(tostring(game.GameId) == %s and tostring(game.PlaceId) == %s, "Wrong engine destination")

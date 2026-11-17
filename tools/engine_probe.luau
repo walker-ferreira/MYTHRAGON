@@ -1,4 +1,7 @@
 -- Isolated Open Cloud engine bootstrap; NO physics, players, SavePlaceAsync or DataStore writes.
+-- The command UI is a LocalScript template; isolated engine cannot click it.
+local playerScripts = game:GetService("StarterPlayer").StarterPlayerScripts
+assert(playerScripts:FindFirstChild("CommandPanel"), "Command GUI LocalScript missing")
 local app = game:GetService("ServerScriptService").Mythragon
 local result = require(app.Diagnostics.Bootstrap).run()
 assert(result == require(app.Diagnostics.Bootstrap).run(), "Bootstrap must be idempotent")

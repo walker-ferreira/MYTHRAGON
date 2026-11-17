@@ -11,12 +11,12 @@ AWAITING_OWNER. Estados de certificação são separados (AGENTS.md).
 - Responsável: CODEX. Base: `ca70154aec58b50b2aa53c20fed95cbf54cd5159`. Branch: `codex/objective-save-batches`.
 - Caminhos: `src/server/Profile/ObjectivesData.luau`, `ObjectivesData.spec.luau` e `ObjectivesStore.luau`.
 - Aceite: uma gravação por lote, preservando selo, marcos salvos e novos objetivos concluídos durante a gravação. Falhas mantêm o lote pendente para nova tentativa.
-- Estado: REVIEW. Próximo checkpoint: confirmar persistência entre servidores no teste real da Fase 1.
+- Estado: INTEGRATED (PR #68), aguardando confirmação de persistência entre servidores no playtest da Fase 1.
 
-## GATE FINAL — Fase 1 candidata, revisão 52 (PENDING PLAYTEST)
+## GATE FINAL — Fase 1 candidata, revisão 57 (PENDING PLAYTEST)
 
-- Responsável: CODEX/integrador. Base `c932ca58c9c6041eb1969e6483798fd315b260c9`; PRs #57–#63 integrados; código de dez marcos, menu VIAGEM seguro, mural de missões e quatro selos narrativos.
-- Evidência: GitHub Actions CI `44098387837` e staging `44098460021` concluídos; revisão **52**, `PERSISTED_OK + isolated engine bootstrap PASS`. A revisão 50 havia sido publicada, mas a inspeção falhou; corrigido pelos PRs #61/#62 e verificado na 51.
+- Responsável: CODEX/integrador. Base `d82cc87f267c92c6d8fe53a0a512590f3652ed4f`; PRs #57–#70 integrados; código de dez marcos, menu VIAGEM seguro, mural de missões e quatro selos narrativos.
+- Evidência: GitHub Actions CI `44103144825` e staging `44103219262` concluídos; revisão **57**, `PERSISTED_OK + isolated engine bootstrap PASS`. A revisão 50 havia sido publicada, mas a inspeção falhou; corrigido pelos PRs #61/#62 e verificado na 51.
 - **Não certificado:** testes reais de servidor/cliente, 2 jogadores, joystick mobile, desempenho e DataStore entre servidores. Estado `AWAITING_OWNER` para evidência, **não** `PLAYTEST_OK`, `RUNTIME_OK`, `DATASTORE_OK` ou produção.
 - Próximo checkpoint: executar [gate de aceitação](../testing/phase1-final-acceptance.md) em servidor novo e registrar revisão, logs F9 e evidências (sem dados pessoais). Corrigir problemas reproduzidos em PR separado.
 - Coordenação: GLM PR #45 continua bloqueado por teleporte direto e não deve substituir o menu seguro PR #58. Os 10 NPCs permanecem desativados. Histórico abaixo é preservado, mesmo quando marcado como REVIEW no passado.

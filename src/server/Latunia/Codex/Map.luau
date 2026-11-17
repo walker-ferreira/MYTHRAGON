@@ -52,6 +52,27 @@ function Controller:arrival(id)
     return CFrame.lookAt(p, Vector3.new(center.X, p.Y, center.Z))
 end
 
+function Controller:teleportToIsland(character, root, to)
+    local ok, err = pcall(function()
+        local arrival = self:arrival(to)
+        root.AssemblyLinearVelocity, root.AssemblyAngularVelocity = Vector3.zero, Vector3.zero
+        character:PivotTo(arrival)
+    end)
+    if not ok then
+        warn("[Latunia] falha ao teleportar para " .. to .. ": " .. tostring(err))
+    end
+    return ok
+end
+
+function Controller:trackArrival(player, to)
+    if not self.playerConns[player] then
+        self.playerConns[player] = player.CharacterRemoving:Connect(function()
+            self:forget(player)
+        end)
+    end
+    self.current[player] = to
+end
+
 function Controller:request(player, point, from, to)
     if self.destroyed or player.Parent ~= Players or not point:IsDescendantOf(workspace) then return end
     if from == "Hub" then
@@ -88,14 +109,11 @@ function Controller:request(player, point, from, to)
             self:forget(player)
             return
         end
-        if not self.playerConns[player] then
-            self.playerConns[player] = player.CharacterRemoving:Connect(function()
-                self:forget(player)
-            end)
+        if not self:teleportToIsland(character, root, to) then
+            self:notify(player, "A travessia falhou. Tente novamente neste portal.")
+            return
         end
-        self.current[player] = to
-        root.AssemblyLinearVelocity, root.AssemblyAngularVelocity = Vector3.zero, Vector3.zero
-        character:PivotTo(self:arrival(to))
+        self:trackArrival(player, to)
         -- This callback is only reached after the server validates the
         -- travel ticket, character, portal position and successful arrival.
         if self.onArrival then
@@ -131,23 +149,11 @@ function Controller:debugWarp(player, to)
         self:forget(player)
         return true
     end
-    if not self.origins[to] then return false end
-    local ok, err = pcall(function()
-        local arrival = self:arrival(to)
-        root.AssemblyLinearVelocity, root.AssemblyAngularVelocity = Vector3.zero, Vector3.zero
-        character:PivotTo(arrival)
-    end)
-    if not ok then
-        warn("[Latunia] viagem debug falhou: " .. tostring(err))
+    if not self.origins[to] or not self:teleportToIsland(character, root, to) then
         return false
     end
     self.travel:remove(player)
-    if not self.playerConns[player] then
-        self.playerConns[player] = player.CharacterRemoving:Connect(function()
-            self:forget(player)
-        end)
-    end
-    self.current[player] = to
+    self:trackArrival(player, to)
     return true
 end
 
@@ -358,9 +364,9 @@ function Map.build(parent, onReturn, partnerBuilders, onArrival, onDebugArrival)
                         and (Vector2.new(relative.X+25, relative.Z+25)).Magnitude < 36
                     if relative.Y < -20 or craterFall then
                         self.travel:remove(player)
-                        hrp.AssemblyLinearVelocity = Vector3.zero
-                        character:PivotTo(self:arrival(id))
-                        self:notify(player, "Você foi devolvido ao desembarque seguro.")
+                        if self:teleportToIsland(character, hrp, id) then
+                            self:notify(player, "Você foi devolvido ao desembarque seguro.")
+                        end
                     end
                 end
             end

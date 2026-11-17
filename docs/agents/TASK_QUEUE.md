@@ -6,6 +6,15 @@ Claim por branch/PR, nunca dois escritores no mesmo worktree.
 Estados de trabalho: AVAILABLE, ASSIGNED, IMPLEMENTING, REVIEW, BLOCKED, INTEGRATED,
 AWAITING_OWNER. Estados de certificação são separados (AGENTS.md).
 
+## GATE FINAL — Fase 1 candidata, revisão 51 (PENDING PLAYTEST)
+
+- Responsável: CODEX/integrador. Base `da50ac3ec6d93b0021d9250676b18845e62bc808`; PRs #57–#62 integrados; código de dez marcos, menu VIAGEM seguro, mural de missões e quatro selos narrativos.
+- Evidência: GitHub Actions CI `44097438927` e staging `44097503800` concluídos; revisão **51**, `PERSISTED_OK + isolated engine bootstrap PASS`. A revisão 50 havia sido publicada, mas a inspeção falhou; corrigido pelos PRs #61/#62 e verificado na 51.
+- **Não certificado:** testes reais de servidor/cliente, 2 jogadores, joystick mobile, desempenho e DataStore entre servidores. Estado `AWAITING_OWNER` para evidência, **não** `PLAYTEST_OK`, `RUNTIME_OK`, `DATASTORE_OK` ou produção.
+- Próximo checkpoint: executar [gate de aceitação](../testing/phase1-final-acceptance.md) em servidor novo e registrar revisão, logs F9 e evidências (sem dados pessoais). Corrigir problemas reproduzidos em PR separado.
+- Coordenação: GLM PR #45 continua bloqueado por teleporte direto e não deve substituir o menu seguro PR #58. Os 10 NPCs permanecem desativados. Histórico abaixo é preservado, mesmo quando marcado como REVIEW no passado.
+
+
 ## LATUNIA-TRAVEL-RECOVERY-001 — confirmar chegada antes de atualizar a viagem
 
 - Responsável: CODEX. Base: `600316ca927aa5c0c10765db3605964ce661865e`. Branch: `codex/latunia-travel-recovery`.

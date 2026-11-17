@@ -23,8 +23,8 @@ function Bootstrap.run()
 		local function onVictory(player, encounterId)
 			local status, seal = Profile.recordVictory(player, "Ember", encounterId)
 			if status == "granted" and seal then
-				require(parent.Profile.ExplorationPanel).markEmber(player)
 				if current.progress then current.progress:recordSeal(player, seal.id) end
+				require(parent.Profile.ExplorationPanel).markEmber(player)
 				Hub.setSealEarned(player, seal.index)
 				Hub.notify(player, seal.title .. " conquistado!")
 			elseif status == "duplicate" and seal and Profile.hasSeal(player, seal.id) then
@@ -41,13 +41,16 @@ function Bootstrap.run()
 		current.progress = ProgressStore.start(Profile, Hub)
 		local ObjectivesStore = require(parent.Profile.ObjectivesStore)
 		current.objectives = ObjectivesStore.start(Hub)
-		Ember.connectReturn(map, function(player)
+		Ember.connectReturn(map, function(player, wonEncounter)
 			-- Only the active Ember encounter can use this callback. Debug
 			-- commands and Latunia returns call returnToHub independently.
 			returnToHub(player)
-			if Profile.hasSeal(player, "Ember") and current.objectives then
-				local first = current.objectives:recordEmberReturn(player)
-				if first then Hub.notify(player, "Jornada: retorno a Aetheria concluído!") end
+			if wonEncounter and Profile.hasSeal(player, "Ember") and current.objectives then
+				local ok, err = pcall(function()
+					local first = current.objectives:recordEmberReturn(player)
+					if first then Hub.notify(player, "Jornada: retorno a Aetheria concluído!") end
+				end)
+				if not ok then warn("[Bootstrap] Ember return objective failed: " .. tostring(err)) end
 			end
 		end)
 		assert(map:FindFirstChild("Hub"), "Hub did not mount")

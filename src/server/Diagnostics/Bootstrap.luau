@@ -23,6 +23,7 @@ function Bootstrap.run()
 		local function onVictory(player, encounterId)
 			local status, seal = Profile.recordVictory(player, "Ember", encounterId)
 			if status == "granted" and seal then
+				require(parent.Profile.ExplorationPanel).markEmber(player)
 				if current.progress then current.progress:recordSeal(player, seal.id) end
 				Hub.setSealEarned(player, seal.index)
 				Hub.notify(player, seal.title .. " conquistado!")

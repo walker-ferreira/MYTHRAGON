@@ -3,6 +3,7 @@
 local Players = game:GetService("Players")
 local DataStoreService = game:GetService("DataStoreService")
 local Data = require(script.Parent.ProgressData)
+local ExplorationPanel = require(script.Parent.ExplorationPanel)
 local ProgressStore = {}
 
 local DATASTORE_NAME = "Mythragon_Progress_v1"
@@ -92,6 +93,7 @@ function ProgressStore.start(Profile, Hub)
                 return
             end
             if snapshot.seals.Ember then
+                ExplorationPanel.markEmber(player)
                 local seal = Profile.sealForRealm("Ember")
                 if seal then
                     Profile.grantSeal(player, seal)

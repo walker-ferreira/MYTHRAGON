@@ -35,6 +35,14 @@ return function()
         local p = expected+Vector3.new(arrival[1], arrival[2], arrival[3])
         assert(workspace:Raycast(p, Vector3.new(0, -16, 0), params), "Arrival needs floor: "..id)
     end
+
+    local vila = assert(islands.Central.Content:FindFirstChild("VilaCentral"))
+    for _, name in {"Guindaste1Mast", "DirigivelDocaCabin", "Oficina1Body",
+        "LampiaoAtracadouroNPost", "LampiaoPracaPost"} do
+        local p = assert(vila:FindFirstChild(name, true), "Missing anchored village decor: " .. name)
+        assert((p.Position - islands.Central.BuildAnchor.Position).Magnitude < 180,
+            "Village decor not anchored to Latunia: " .. name)
+    end
     assert(islands.Gelo.Content.Gelo:FindFirstChild("ObservatoryDeck"))
     assert(islands.Selva.Content.Selva:FindFirstChild("TemplePlatform"))
     assert(islands.Deserto.Content.Deserto:FindFirstChild("RuinasSoterradas"))

@@ -221,6 +221,9 @@ function Latunia.build(parent, anchorCFrame)
 	local function A(localCFrame)
 		return anchor * localCFrame
 	end
+	local function W(localPosition)
+		return anchor:PointToWorldSpace(localPosition)
+	end
 
 	local model = Instance.new("Model")
 	model.Name = "VilaCentral"
@@ -270,7 +273,7 @@ function Latunia.build(parent, anchorCFrame)
 				A(CFrame.new(offset.X, -6.5, offset.Z)), Enum.Material.Metal, IRON)
 		end
 		local pierLamp = lamp(model, "LampiaoAtracadouro" .. spec.name,
-			Vector3.new(center.X, 0, center.Z) + along * 3)
+			W(Vector3.new(center.X, 0, center.Z) + along * 3))
 		_ = pier
 		_ = pierLamp
 	end
@@ -286,16 +289,16 @@ function Latunia.build(parent, anchorCFrame)
 	part(model, "DocasStairLanding", Vector3.new(4, 1, 3),
 		A(CFrame.new(-12, -5, 31.5)), Enum.Material.Slate, STONE_DARK)
 
-	crane(model, "Guindaste1", Vector3.new(-20, -5, 26))
-	crane(model, "Guindaste2", Vector3.new(18, -5, 26))
+	crane(model, "Guindaste1", W(Vector3.new(-20, -5, 26)))
+	crane(model, "Guindaste2", W(Vector3.new(18, -5, 26)))
 	for index = 1, 6 do
 		part(model, "DocasPost" .. index, Vector3.new(0.8, 2.2, 0.8),
 			A(CFrame.new(-22 + (index - 1) * 8, -4.4, 27.2)), Enum.Material.Metal, BRASS)
 	end
-	dirigible(model, "DirigivelDoca", Vector3.new(-14, 7, 25))
-	dirigible(model, "DirigivelDoca2", Vector3.new(12, 8.5, 25))
-	lamp(model, "LampiaoDoca1", Vector3.new(-22, -5, 24))
-	lamp(model, "LampiaoDoca2", Vector3.new(22, -5, 24))
+	dirigible(model, "DirigivelDoca", W(Vector3.new(-14, 7, 25)))
+	dirigible(model, "DirigivelDoca2", W(Vector3.new(12, 8.5, 25)))
+	lamp(model, "LampiaoDoca1", W(Vector3.new(-22, -5, 24)))
+	lamp(model, "LampiaoDoca2", W(Vector3.new(22, -5, 24)))
 
 	-- ===== (2) Mercado de Ferro e Vidro =====
 	part(model, "MercadoBase", Vector3.new(20, 0.6, 13), A(CFrame.new(-14, 0.3, -6)),
@@ -319,19 +322,19 @@ function Latunia.build(parent, anchorCFrame)
 		part(model, "MercadoBem" .. index, Vector3.new(1, 1, 1),
 			A(CFrame.new(-20 + (index - 1) * 6, 2.4, -6)), Enum.Material.Neon, EMBER_GLOW)
 	end
-	lamp(model, "LampiaoMercado", Vector3.new(-14, 0, 1))
+	lamp(model, "LampiaoMercado", W(Vector3.new(-14, 0, 1)))
 
 	-- ===== (5) Bairro das Oficinas =====
-	house(model, "Oficina1", Vector3.new(10, 0, -10), 7, 6)
-	house(model, "Oficina2", Vector3.new(20, 0, -10), 7, 6)
-	house(model, "Oficina3", Vector3.new(15, 0, 2), 7, 6)
-	house(model, "Oficina4", Vector3.new(26, 0, 2), 6, 6)
+	house(model, "Oficina1", W(Vector3.new(10, 0, -10)), 7, 6)
+	house(model, "Oficina2", W(Vector3.new(20, 0, -10)), 7, 6)
+	house(model, "Oficina3", W(Vector3.new(15, 0, 2)), 7, 6)
+	house(model, "Oficina4", W(Vector3.new(26, 0, 2)), 6, 6)
 	for index = 0, 4 do
 		part(model, "TuboLatao" .. index, Vector3.new(0.8, 0.8, 3.4),
 			A(CFrame.new(-5 + index * 4.4, 0.9, -16) * CFrame.Angles(0, index % 2 == 0 and 0 or math.rad(4), 0)),
 			Enum.Material.Metal, BRASS)
 	end
-	lamp(model, "LampiaoOficinas", Vector3.new(16, 0, -5))
+	lamp(model, "LampiaoOficinas", W(Vector3.new(16, 0, -5)))
 
 	-- ===== (3) Praça da Torre-Relógio: terraço superior + pilares =====
 	part(model, "PracaDeck", Vector3.new(30, 1, 22), A(CFrame.new(4, 7.5, -14)),
@@ -381,10 +384,10 @@ function Latunia.build(parent, anchorCFrame)
 		A(CFrame.new(23, 8.25, -14)))
 
 	-- Lampiões do trajeto principal.
-	lamp(model, "LampiaoTrj1", Vector3.new(-24, 0, 10))
-	lamp(model, "LampiaoTrj2", Vector3.new(-6, 0, 8))
-	lamp(model, "LampiaoTrj3", Vector3.new(2, 0, 2))
-	lamp(model, "LampiaoPraca", Vector3.new(-2, 8, -8))
+	lamp(model, "LampiaoTrj1", W(Vector3.new(-24, 0, 10)))
+	lamp(model, "LampiaoTrj2", W(Vector3.new(-6, 0, 8)))
+	lamp(model, "LampiaoTrj3", W(Vector3.new(2, 0, 2)))
+	lamp(model, "LampiaoPraca", W(Vector3.new(-2, 8, -8)))
 
 	model.Parent = parent
 	return model

@@ -20,6 +20,17 @@ for _, value in root:GetDescendants() do
 	end
 end
 assert(villas == 1 and prompts == 10, "No duplicated village or travel prompts")
+-- Regression: procedurally generated village decorations must follow the
+-- Latunia island anchor rather than accidentally appearing at Hub (0,0,0).
+local central = islands.Central
+local village = assert(central.Content:FindFirstChild("VilaCentral"))
+for _, name in {"Guindaste1Mast", "DirigivelDocaCabin", "Oficina1Body",
+    "LampiaoAtracadouroNPost", "LampiaoPracaPost"} do
+    local piece = assert(village:FindFirstChild(name, true), "Village decor missing: " .. name)
+    assert((piece.Position - central.BuildAnchor.Position).Magnitude < 180,
+        "Village decor outside Latunia island: " .. name)
+end
+
 assert(parts < 2500, "Latunia geometry budget")
 local params = RaycastParams.new()
 params.FilterType = Enum.RaycastFilterType.Include

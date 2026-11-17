@@ -21,8 +21,12 @@ def digest(data):
 
 
 def sources(root=ROOT):
-    return {p.relative_to(root / "src/server").as_posix(): p.read_text(encoding="utf-8")
-            for p in sorted((root / "src/server").rglob("*.luau"))}
+    result = {p.relative_to(root / "src/server").as_posix(): p.read_text(encoding="utf-8")
+              for p in sorted((root / "src/server").rglob("*.luau"))}
+    # Include first-party client scripts in the same fail-closed source manifest.
+    for p in sorted((root / "src/client").rglob("*.luau")):
+        result["client/" + p.relative_to(root / "src/client").as_posix()] = p.read_text(encoding="utf-8")
+    return result
 
 
 def normalized(text):
@@ -55,6 +59,10 @@ def artifact_sources(path):
 
 
 def instance_path(path):
+    if path.startswith("client/"):
+        if not path.endswith(".client.luau"):
+            raise ValueError("Client scripts must use .client.luau")
+        return "StarterPlayer/StarterPlayerScripts/" + path[len("client/"):-len(".client.luau")]
     suffix = ".server.luau" if path.endswith(".server.luau") else ".luau"
     return "ServerScriptService/Mythragon/" + path[:-len(suffix)]
 

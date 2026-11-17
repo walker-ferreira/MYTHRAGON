@@ -15,8 +15,14 @@ def select_model():
         with request.urlopen(list_req, timeout=30) as response:
             available = json.load(response).get("models", [])
     except error.HTTPError as exc:
+        details = exc.read(2048).decode("utf-8", errors="replace")
+        try:
+            google_error = json.loads(details).get("error", {})
+            message = str(google_error.get("message", ""))[:400]
+        except (ValueError, AttributeError):
+            message = "No structured error details"
         raise SystemExit(
-            f"Gemini model discovery HTTP {exc.code}; verify API key, API enablement, and quota"
+            f"Gemini model discovery HTTP {exc.code}: {message}"
         ) from exc
     print(f"Gemini model discovery returned {len(available)} models", flush=True)
     supported = [

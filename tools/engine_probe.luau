@@ -54,6 +54,17 @@ assert(islands.Deserto.Content.Deserto:FindFirstChild("RuinasSoterradas"))
 assert(islands.Vulcanica.Content.Vulcanica:FindFirstChild("CraterLava"))
 assert((root.LatuniaTestGate.Position - Vector3.new(24, 4.5, 8)).Magnitude < 0.01)
 assert(workspace.MythragonMap.Hub:FindFirstChild("HubSpawn"))
+local ember = assert(workspace.MythragonMap:FindFirstChild("Ember"))
+local boss = assert(ember:FindFirstChild("BasaltWyrm"))
+local body = assert(boss:FindFirstChild("ObsidianBody"))
+local board = assert(body:FindFirstChildOfClass("BillboardGui"))
+local background = assert(board:FindFirstChild("BossHealthBackground"))
+assert(background:FindFirstChild("BossHealthFill"), "Boss HP bar missing")
+for index = 1, 6 do
+    local rock = assert(ember:FindFirstChild("FloatingBasalt" .. index), "Missing floating rock")
+    assert(rock.Anchored and not rock.CanCollide and not rock.CanTouch,
+        "Scenic basalt must not change arena physics")
+end
 assert(workspace.MythragonMap:FindFirstChild("Varkhion"))
 return { mode = "ISOLATED_ENGINE_BOOTSTRAP", parts = parts, prompts = prompts,
 	healthy = result.healthy, physics = "NOT_RUN", player_travel = "NOT_RUN" }

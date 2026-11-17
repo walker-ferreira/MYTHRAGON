@@ -96,6 +96,14 @@ function Controller:request(player, point, from, to)
         self.current[player] = to
         root.AssemblyLinearVelocity, root.AssemblyAngularVelocity = Vector3.zero, Vector3.zero
         character:PivotTo(self:arrival(to))
+        -- This callback is only reached after the server validates the
+        -- travel ticket, character, portal position and successful arrival.
+        if self.onArrival then
+            local completed, err = pcall(self.onArrival, player, to)
+            if not completed then
+                warn("[Latunia] arrival objective callback failed: " .. tostring(err))
+            end
+        end
         local slot = self.slots[to]
         local provisional = slot and slot.Content:FindFirstChild("ReservedLanding") ~= nil
         local extra = provisional
@@ -231,16 +239,18 @@ function Controller:destroy()
     self.root:Destroy()
 end
 
-function Map.build(parent, onReturn, partnerBuilders)
+function Map.build(parent, onReturn, partnerBuilders, onArrival)
     assert(parent == workspace or parent:IsDescendantOf(workspace))
     assert(type(onReturn) == "function")
+    assert(onArrival == nil or type(onArrival) == "function")
     if mounted[parent] then return mounted[parent] end
     assert(not parent:FindFirstChild("LatuniaCodex"), "Existing Latunia scene is not owned by this controller")
     local root = B.model(parent, "LatuniaCodex")
     root:SetAttribute("Prototype", true)
     root:SetAttribute("TravelMode", "ServerTeleportPrototype")
     local self = setmetatable({
-        root = root, parent = parent, onReturn = onReturn, travel = TravelState.new(),
+        root = root, parent = parent, onReturn = onReturn, onArrival = onArrival,
+        travel = TravelState.new(),
         current = {}, origins = {}, slots = {}, notices = {}, connections = {}, playerConns = {},
     }, Controller)
     mounted[parent] = self

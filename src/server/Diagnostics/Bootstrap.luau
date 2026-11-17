@@ -23,6 +23,7 @@ function Bootstrap.run()
 		local function onVictory(player, encounterId)
 			local status, seal = Profile.recordVictory(player, "Ember", encounterId)
 			if status == "granted" and seal then
+				if current.progress then current.progress:recordSeal(player, seal.id) end
 				Hub.setSealEarned(player, seal.index)
 				Hub.notify(player, seal.title .. " conquistado!")
 			elseif status == "duplicate" and seal and Profile.hasSeal(player, seal.id) then
@@ -32,10 +33,16 @@ function Bootstrap.run()
 		local enterEmber = Ember.build(map, onVictory)
 		returnToHub = Hub.build(map, enterEmber)
 		assert(type(returnToHub) == "function", "Hub return contract")
+		local ProgressStore = require(parent.Profile.ProgressStore)
+		current.progress = ProgressStore.start(Profile, Hub)
+		local ObjectivesStore = require(parent.Profile.ObjectivesStore)
+		current.objectives = ObjectivesStore.start(Hub)
 		Ember.connectReturn(map, returnToHub)
 		assert(map:FindFirstChild("Hub"), "Hub did not mount")
 		profileConnection = Players.PlayerRemoving:Connect(function(player) Profile.clearSession(player) end)
 	end, function()
+		if current.objectives then current.objectives.stop() end
+		if current.progress then current.progress.stop() end
 		if profileConnection then profileConnection:Disconnect() end
 		if map then map:Destroy() end
 	end)
@@ -46,6 +53,8 @@ function Bootstrap.run()
 			current.varkhion = Varkhion.mount(map, anchor, function(player, speciesId)
 				assert(speciesId == "Varkhion", "Unexpected sanctuary species")
 				Hub.completeObjective(player, "santuario")
+			end, function(player)
+				return Profile.hasSeal(player, "Ember")
 			end)
 		end, function()
 			if current.varkhion then current.varkhion:destroy() end
@@ -60,7 +69,19 @@ function Bootstrap.run()
 				Central = Vila.build,
 				Gelo = Expansion.ice,
 				Selva = Expansion.jungle,
-			})
+			}, function(player, islandId)
+				if current.objectives then
+					local first = current.objectives:recordArrival(player, islandId)
+					if first then
+						local names = {
+							Central = "Vila Central", Gelo = "Ilha do Gelo",
+							Deserto = "Ilha do Deserto", Selva = "Ilha da Selva",
+							Vulcanica = "Ilha Vulcânica",
+						}
+						Hub.notify(player, "Exploração: " .. (names[islandId] or "Latúnia") .. " descoberta!")
+					end
+				end
+			end)
 			assert(current.latunia.root.Parent == workspace, "Latunia did not mount")
 		end, function()
 			-- Map.build already owns rollback/connections; do not destroy an unowned scene.

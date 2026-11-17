@@ -84,9 +84,12 @@ local function observePrompt(anchorPart, objectText, objectiveId)
 	prompt.RequiresLineOfSight = false
 	prompt.Parent = anchorPart
 	prompt.Triggered:Connect(function(player)
+		if player.Parent ~= Players or not anchorPart:IsDescendantOf(workspace) then return end
 		local character = player.Character
 		local humanoid = character and character:FindFirstChildOfClass("Humanoid")
-		if not (character and humanoid and humanoid.Health > 0) then
+		local root = character and character:FindFirstChild("HumanoidRootPart")
+		if not (character and humanoid and root) or humanoid.Health <= 0
+			or (root.Position - anchorPart.Position).Magnitude > 11 then
 			return
 		end
 		Hub.completeObjective(player, objectiveId)
@@ -460,6 +463,36 @@ local function initObjectives()
 	end
 end
 
+-- Persistence hook is provided by the server's composition root.
+-- Restoring old progress must not emit duplicate quest events or rewards.
+local onObjectiveCompleted
+
+function Hub.setObjectiveCompletionHandler(callback)
+    assert(callback == nil or type(callback) == "function")
+    onObjectiveCompleted = callback
+end
+
+function Hub.restoreObjective(player, id)
+    local objective
+    for _, item in ipairs(OBJECTIVES) do
+        if item.id == id then objective = item break end
+    end
+    if not objective then return false end
+    local state = ensureObjectives(player)
+    if not state then
+        task.spawn(function()
+            local gui = player:WaitForChild("PlayerGui", 30)
+            if gui and player.Parent == Players then Hub.restoreObjective(player, id) end
+        end)
+        return false
+    end
+    if state.done[id] then return true end
+    state.done[id] = true
+    state.rows[id].TextColor3 = AETHER_GOLD
+    state.rows[id].Text = "✓ " .. objective.text
+    return true
+end
+
 -- Marca um objetivo como concluído para este jogador. Idempotente.
 -- Chamado pelos prompts do hub, pelo portal e (proposta GLM-R001) pelo
 -- módulo do Varkhion do Codex após interação validada no servidor.
@@ -491,6 +524,10 @@ function Hub.completeObjective(player, id)
 	state.rows[id].TextColor3 = AETHER_GOLD
 	state.rows[id].Text = "✓ " .. objective.text
 	Hub.notify(player, objective.text .. " · concluído")
+	if onObjectiveCompleted then
+		local ok, err = pcall(onObjectiveCompleted, player, id)
+		if not ok then warn("[Hub] objective persistence callback failed: " .. tostring(err)) end
+	end
 
 	local completed = 0
 	for _, item in ipairs(OBJECTIVES) do
@@ -846,10 +883,17 @@ function Hub.build(parent, onEnterEmber)
 		-- Contrato Ember (Sol): enter(player): boolean. false = recusado no
 		-- servidor (arena ocupada, personagem inválido). Sem recusa, o
 		-- jogador está a caminho de Ember e só volta pelo retorno do reino.
-		local accepted = onEnterEmber and onEnterEmber(player)
-		if accepted == false then
+		local ok, accepted = pcall(function()
+			return onEnterEmber and onEnterEmber(player)
+		end)
+		if not ok or accepted ~= true then
 			releaseTransit(player)
-			Hub.notify(player, "Guardião de Ember já está em combate · aguarde")
+			if not ok then
+				warn("[Hub] Ember entry failed: " .. tostring(accepted))
+				Hub.notify(player, "Não foi possível entrar em Ember. Tente novamente.")
+			else
+				Hub.notify(player, "Guardião de Ember já está em combate · aguarde")
+			end
 		else
 			-- Entrada aceita pelo servidor de Ember: objetivo do portal concluído.
 			Hub.completeObjective(player, "portal")

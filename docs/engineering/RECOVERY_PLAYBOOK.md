@@ -53,3 +53,17 @@ registrar PENDING, não PASS e não esconder erro.
   continuam bloqueando; recibos reais continuam exigindo retomada sem PATCH.
 - Teste de regressão: environment sozinho é ignorado; journal coexistente é
   preservado; payload desconhecido é rejeitado. Não apagar deployments para ocultar erro.
+
+## WORLD-002 — VarkhionModel sem retorno de ModuleScript
+
+- Revisão publicada 13; run 43984354467 confirmou 24 Sources, mas bootstrap falhou.
+- Inspeção **somente leitura** 43985660493 recuperou logs reais da tarefa original:
+  Core READY, Latunia READY, Varkhion FAILED; erro
+  `Module code did not return exactly one value`, Varkhion linha 3.
+- Fonte VarkhionModel terminava em `end` de Model.build, sem `return Model`.
+  Isso é falha real de contrato de ModuleScript, não limitação inventada de física
+  nem comprovação de que todo mundo normal foi testado.
+- Correção mínima: retornar Model após definição. Novo gate CLI executa só exportação
+  com constantes Color3 stubadas; fixture sem return deve falhar. Geometria continua
+  exigindo engine. Não desabilitar Varkhion nem marcar release saudável por omissão.
+- Próximo: PR/CI/merge de fonte → novo staging oficial → inspeção persistida/engine.

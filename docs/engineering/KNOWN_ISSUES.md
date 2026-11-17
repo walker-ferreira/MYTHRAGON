@@ -14,4 +14,4 @@
 | OPS-002 | Push que altera workflows recusado: OAuth sem escopo workflow | Resolvido: proprietário autorizou scope; push real aceito |
 | REL-003 | Não mesclar código novo sem workflows | Resolvido: #12 integrou código e workflows juntos em c669613 |
 | REL-004 | Registro automático do environment confundido com journal de upload | Resolvido pelo PR #14; publicação seguinte chegou à revisão 13 |
-| WORLD-002 | Inspeção da revisão 13 confirmou Sources mas Bootstrap isolado FAILED | Recuperar logs de componente; não concluir que servidor normal foi testado; CODEX |
+| WORLD-002 | VarkhionModel sem return Model causava require falhar; Core/Latúnia montaram | Causa comprovada por logs da revisão 13; fix/export gate em revisão; CODEX |

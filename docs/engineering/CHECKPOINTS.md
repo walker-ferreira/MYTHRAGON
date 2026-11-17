@@ -92,5 +92,21 @@ integrar PR #12 parcial nem acionar publisher antigo para contornar OPS-002.
   sem upload evita republicação da mesma falha; docs/inspeção não geram release
   de conteúdo, mas continuam sob CI no PR. Recuperação em andamento.
 
+## Causa real recuperada sem upload duplicado
+
+- PR #16, CI 43985546889 PASS e revisão GLM (B1/B2 corrigidos) integrado em
+  c5d4777. Somente tooling/docs não criou novo build/publicação de conteúdo.
+- INSPECT 43985660493 SUCCESS: logs da tarefa da revisão 13 recuperados por GET,
+  sem repetir tarefa/upload. Arquivo engine-logs.json preservado no artefato.
+- Core READY e Latunia READY; Varkhion FAILED:
+  `Module code did not return exactly one value` em Varkhion.luau linha 3.
+- Fonte VarkhionModel não retornava Model após definir build. Causa comprovada;
+  não remover componente obrigatório nem inventar limitação da API.
+- Fix mínimo na branch codex/fix-engine-bootstrap, base main c5d4777:
+  return Model e gate positivo/negativo de exportação CLI com Color3 stubado
+  (não testa geometria). 22 testes Python + quatro specs + export gate PASS local.
+- Contribuição GLM externa detectada/preservada em PR #15; feedback técnico
+  enviado via comentário, sem presumir recebimento nem integrar código conflitante.
+
 O commit que contém cada registro é consultável por `git log -- <arquivo>`;
 não inserir SHA autorreferencial fictício. Resultados posteriores entram abaixo.

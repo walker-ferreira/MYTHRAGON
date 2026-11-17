@@ -5,8 +5,8 @@ Jogo de fantasia épica para Roblox. Repositório principal em **Luau + Rojo**; 
 ## Estado implementado
 
 - **Aetheria (Hub):** spawn, cenário, quatro selos visuais, Guardiões do Éter, objetivos e santuário de Varkhion.
-- **Ember:** portal, arena com volume em basalto, Guardião, barra de vida, combate e vitórias validadas no servidor, portal de retorno e recuperação de falhas.
-- **Latúnia:** Vila Central, atlas, docas e rotas de teleporte autenticadas no servidor. Deserto, Vulcânica, Gelo e Selva possuem cenários exploráveis iniciais; dirigíveis e ferrovias são cenográficos, sem transporte real.
+- **Ember:** portal, arena com volume em basalto, Guardião, barra de vida, ataque, esquiva (Q/controle B/toque, cooldown autoritativo), dano alinhado ao aviso laranja, vitórias validadas no servidor e retorno com recuperação de falhas.
+- **Latúnia:** Vila Central, atlas, docas e rotas de teleporte autenticadas no servidor. Deserto, Vulcânica, Gelo e Selva possuem cenários exploráveis iniciais; a primeira visita a cada ilha gera uma descoberta persistente (DataStore) validada pelo servidor. Dirigíveis e ferrovias são cenográficos, sem transporte real.
 - **NPCs:** biblioteca de 10 personagens com diálogos e catálogos **preparada, mas não instalada no mundo**, aguardando autorização de colocação.
 - **Engenharia:** CI verifica compilação Luau, contratos unitários, Enums Roblox e build Rojo. Publicação automática somente em **staging** após integração e CI aprovada, seguida por inspeção de fontes/Bootstrap em motor isolado.
 
@@ -20,7 +20,7 @@ Em **servidor novo**:
 1. Confira a faixa `STAGING EXPERIMENTAL`, SHA, versão e estado `READY`.
 2. Use o portal de Ember, vença o Guardião, confira o selo e volte pelo portal roxo.
 3. Interaja com Varkhion e os Guardiões, observe os objetivos individuais; saia e entre novamente em servidor novo para verificar a persistência do selo e dos três objetivos.
-4. Entre em Latúnia pelo portal próximo de (24, 4.5, 8); use as docas da Vila Central para visitar Deserto, Vulcânica, Gelo e Selva, retornando pela Vila.
+4. Entre em Latúnia pelo portal próximo de (24, 4.5, 8); use as docas da Vila Central para visitar Deserto, Vulcânica, Gelo e Selva, retornando pela Vila. Confirme a descoberta de cada ilha apenas uma vez e a permanência após reconectar.
 5. Teste teclado, toque, duas contas, FPS e falhas do DataStore. Registre os erros do console F9 junto da versão exibida.
 
 Comandos `/ir` / `!ir` são **apenas para testes no Roblox Studio** e passam pelo controlador oficial de Latúnia, não ficam liberados para jogadores em servidores publicados.

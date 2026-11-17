@@ -1,4 +1,4 @@
-"""Discover supported Gemini models and retry only model-not-found errors."""
+"""Discover supported Gemini text models and fail over on transient API errors."""
 import json
 import os
 from urllib import request, error
@@ -57,6 +57,6 @@ def generate(body, timeout=90):
         except error.HTTPError as exc:
             detail = google_error(exc)
             print(f"Gemini {model} HTTP {exc.code}: {detail}", flush=True)
-            if exc.code not in (404, 429):
+            if exc.code not in (404, 429, 500, 502, 503, 504):
                 raise SystemExit(f"Gemini API HTTP {exc.code}; see model-specific error above") from exc
-    raise SystemExit("Gemini generation failed: attempted text models unavailable or quota exhausted; see errors above")
+    raise SystemExit("Gemini generation failed: text models unavailable, overloaded or quota exhausted; see errors above")

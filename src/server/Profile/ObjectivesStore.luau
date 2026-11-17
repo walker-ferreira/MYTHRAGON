@@ -1,4 +1,4 @@
--- Stores only the three existing server-authoritative Hub objectives.
+-- Stores server-authoritative journey objectives.
 -- Shares the Ember record and uses UpdateAsync union, never SetAsync.
 local Players = game:GetService("Players")
 local DataStoreService = game:GetService("DataStoreService")
@@ -19,14 +19,24 @@ local function userKey(id)
     return "player_" .. tostring(id)
 end
 
-local function save(id, objectiveId)
+local function flush(id)
+    local entries = pending[id]
+    if not entries then return true end
+    -- UpdateAsync can yield or rerun its callback. Keep the snapshot fixed
+    -- and acknowledge only objectives that were included in this write.
+    local batch = table.clone(entries)
     local ok, err = pcall(function()
         store():UpdateAsync(userKey(id), function(previous)
-            return Data.merge(previous, objectiveId)
+            return Data.mergeMany(previous, batch)
         end)
     end)
-    if not ok then warn("[ObjectivesStore] save failed for " .. tostring(id) .. ": " .. tostring(err)) end
-    return ok
+    if not ok then
+        warn("[ObjectivesStore] save failed for " .. tostring(id) .. ": " .. tostring(err))
+        return false
+    end
+    for objective in pairs(batch) do entries[objective] = nil end
+    if pending[id] == entries and next(entries) == nil then pending[id] = nil end
+    return true
 end
 
 local function schedule(id, objectiveId)
@@ -40,16 +50,9 @@ local function schedule(id, objectiveId)
     working[id] = true
     task.spawn(function()
         for attempt = 1, 6 do
-            local current = pending[id]
-            if not current or next(current) == nil then break end
-            for objective in pairs(current) do
-                if save(id, objective) then current[objective] = nil end
-            end
-            if next(current) == nil then
-                pending[id] = nil
-                break
-            end
-            if attempt < 6 then task.wait(math.min(attempt * 2, 10)) end
+            local saved = flush(id)
+            if not pending[id] then break end
+            if not saved and attempt < 6 then task.wait(math.min(attempt * 2, 10)) end
         end
         working[id] = nil
         if pending[id] then warn("[ObjectivesStore] unsaved objectives for " .. tostring(id)) end
@@ -142,11 +145,7 @@ function ObjectivesStore.start(Hub)
             end
         end)
         game:BindToClose(function()
-            for id, entries in pairs(pending) do
-                for objective in pairs(entries) do
-                    if save(id, objective) then entries[objective] = nil end
-                end
-            end
+            for id in pairs(table.clone(pending)) do flush(id) end
         end)
     end
 

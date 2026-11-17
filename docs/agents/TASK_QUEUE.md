@@ -6,6 +6,13 @@ Claim por branch/PR, nunca dois escritores no mesmo worktree.
 Estados de trabalho: AVAILABLE, ASSIGNED, IMPLEMENTING, REVIEW, BLOCKED, INTEGRATED,
 AWAITING_OWNER. Estados de certificação são separados (AGENTS.md).
 
+## QUEST-SAVE-BATCH-001 — consolidar gravação dos marcos da jornada
+
+- Responsável: CODEX. Base: `ca70154aec58b50b2aa53c20fed95cbf54cd5159`. Branch: `codex/objective-save-batches`.
+- Caminhos: `src/server/Profile/ObjectivesData.luau`, `ObjectivesData.spec.luau` e `ObjectivesStore.luau`.
+- Aceite: uma gravação por lote, preservando selo, marcos salvos e novos objetivos concluídos durante a gravação. Falhas mantêm o lote pendente para nova tentativa.
+- Estado: REVIEW. Próximo checkpoint: confirmar persistência entre servidores no teste real da Fase 1.
+
 ## GATE FINAL — Fase 1 candidata, revisão 52 (PENDING PLAYTEST)
 
 - Responsável: CODEX/integrador. Base `c932ca58c9c6041eb1969e6483798fd315b260c9`; PRs #57–#63 integrados; código de dez marcos, menu VIAGEM seguro, mural de missões e quatro selos narrativos.

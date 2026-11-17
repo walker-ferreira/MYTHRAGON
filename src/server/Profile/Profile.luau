@@ -72,16 +72,19 @@ function Profile.recordVictory(player: Player, realmId: string, encounterId: str
 	if not seal then
 		return "unknown", nil
 	end
-	local session = getSession(player)
-	if type(encounterId) == "string" and encounterId ~= "" then
-		if session.encounters[encounterId] then
-			session.duplicates += 1
-			logDuplicate(("[Profile] evento duplicado ignorado: %s / %s (total %d)")
-				:format(player.Name, encounterId, session.duplicates))
-			return "duplicate", seal
-		end
-		session.encounters[encounterId] = true
+	-- A victory must have a server-issued encounter identity. Invalid values
+	-- cannot bypass deduplication or grant seals.
+	if type(encounterId) ~= "string" or encounterId == "" then
+		return "unknown", nil
 	end
+	local session = getSession(player)
+	if session.encounters[encounterId] then
+		session.duplicates += 1
+		logDuplicate(("[Profile] evento duplicado ignorado: %s / %s (total %d)")
+			:format(player.Name, encounterId, session.duplicates))
+		return "duplicate", seal
+	end
+	session.encounters[encounterId] = true
 	if session.seals[seal.id] then
 		session.duplicates += 1
 		logDuplicate(("[Profile] selo já concedido nesta sessão: %s / %s (total %d)")

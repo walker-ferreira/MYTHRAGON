@@ -93,6 +93,11 @@ hint.TextWrapped = true
 hint.Text = "Ferramentas do proprietário · apenas staging"
 hint.Parent = panel
 
+local function setOpen(value)
+    panel.Visible = value
+    open.Text = value and "× Fechar" or "⚙ Comandos"
+end
+
 local destinations = {
     { "Aetheria / Hub", "hub" },
     { "Vila Central", "vila" },
@@ -118,13 +123,13 @@ for i, entry in ipairs(destinations) do
     local destination = entry[2]
     button.Activated:Connect(function()
         remote:FireServer(destination)
-        panel.Visible = false
+        setOpen(false)
     end)
 end
 
 open.Activated:Connect(function()
-    panel.Visible = not panel.Visible
+    setOpen(not panel.Visible)
 end)
 close.Activated:Connect(function()
-    panel.Visible = false
+    setOpen(false)
 end)

@@ -6,6 +6,14 @@ Claim por branch/PR, nunca dois escritores no mesmo worktree.
 Estados de trabalho: AVAILABLE, ASSIGNED, IMPLEMENTING, REVIEW, BLOCKED, INTEGRATED,
 AWAITING_OWNER. Estados de certificação são separados (AGENTS.md).
 
+## CHECKPOINT INTEGRADOR — JOURNEY-001/002 e COMBAT-002
+
+- **Integrados:** #32 registra primeira viagem validada do Hub à Vila Central como descoberta persistente; #33 adiciona esquiva no combate de Ember (Q/controle B/toque) com cooldown de 3 segundos, verificação de obstáculos e dano alinhado ao quadrado de aviso; #35 expande descoberta persistente para cinco ilhas. Base de referência: commit `2b396acfe98ba38307525781c32ba1506b04181e`.
+- **Evidência:** CI de PRs #32, #33 e #35 aprovada. Revisão 28 de staging publicou #33 com engine isolado PASS; verificar publicação do #35 pelo pipeline oficial antes de declarar sua revisão publicada. Dados de jogadores reais, navegação física, multijogador e cliente mobile permanecem **PENDING**.
+- **GLM PR #34:** CI inicial reprovada no LSP por `Enum.Material.Terracotta` inexistente nas definições do projeto; comentário técnico registrado no PR do GLM. Não integrar reprovado nem editar sua branch sem coordenação.
+- **Próximo checkpoint:** PLAYTEST-001 (viajar pelas cinco ilhas e voltar), DATASTORE-QA-001 (retorno após sair, duas contas e falha), COMBAT-QA-002 (esquiva Q/B/toque, cooldown, área laranja e obstáculos), MOBILE-001 (UI/responsividade). NPCs continuam não montados.
+- **Regra:** preservar trabalho histórico e diferenciar CI, publicação, motor isolado e partida real.
+
 ## CHECKPOINT TÉCNICO — integrados PRs #26–#30
 
 - **Integrados:** #26 validação estrita de identidade de encontro; #27 DataStore v1 do selo Ember; #28 DataStore v1 dos três objetivos existentes do Hub; #29 validação de distância dos Guardiões e liberação de trânsito em falha do portal Ember; #30 barra de vida do Guardião e seis rochas cenográficas não colidíveis.

@@ -24,6 +24,7 @@
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Codex = script.Parent.Parent.Latunia.Codex
 local Map = require(Codex.Map)
 local Layout = require(Codex.Layout)
@@ -36,6 +37,15 @@ local DESTINOS = {
 	gelo = "Gelo", selva = "Selva", deserto = "Deserto",
 	vulcanica = "Vulcanica",
 }
+
+-- RemoteEvent do botão de tela (GLM-R012): o cliente só envia o nome do
+-- destino; validação, cooldown e teleporte são sempre do lado do servidor.
+local remotoViagem = ReplicatedStorage:FindFirstChild("LatuniaTravelRemote")
+if not remotoViagem then
+	remotoViagem = Instance.new("RemoteEvent")
+	remotoViagem.Name = "LatuniaTravelRemote"
+	remotoViagem.Parent = ReplicatedStorage
+end
 
 local function notify(player, message)
 	local playerGui = player:FindFirstChildOfClass("PlayerGui")
@@ -120,6 +130,18 @@ local function viajar(player, slotId)
 	character:PivotTo(chegada(slotId))
 	notify(player, Layout.islands[slotId].name .. " · desembarque no atracadouro da ilha.")
 end
+
+remotoViagem.OnServerEvent:Connect(function(player, key)
+	if typeof(key) ~= "string" then
+		return
+	end
+	local slotId = DESTINOS[key]
+	if not slotId then
+		notify(player, "Destino desconhecido.")
+		return
+	end
+	viajar(player, slotId)
+end)
 
 local function onChatted(player, message)
 	local key = message:match("^/ir%s+([%a]+)") or message:match("^!ir%s+([%a]+)")

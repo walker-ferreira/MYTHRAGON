@@ -59,6 +59,16 @@ melhorias em `src/server/Hub/Latunia.luau` (Vila Central). Geometria validada po
        (posicional estimado pelo Layout — confirmar visualmente).
 6. [ ] Mobile: toque no pad funciona; rótulos legíveis.
 
+## Botão na tela (GLM-R012)
+
+1. [ ] Botão "VIAGEM" fixo no canto inferior direito (não some ao morrer).
+2. [ ] Abrir/fechar o menu pelo botão e pelo "FECHAR".
+3. [ ] 6 destinos no menu; cada clique teleporta com aviso no rodapé.
+4. [ ] Cooldown 1,5 s no servidor (cliques rápidos não aceleram).
+5. [ ] Mobile: botão e itens do menu respondem ao toque.
+6. [ ] Servidor de teste: destino de ilha sem LatuniaCodex avisou
+       "Latúnia ainda não terminou de montar".
+
 ## Registro
 
 | Data | Build (SHA) | Resultado | Observações |

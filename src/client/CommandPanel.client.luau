@@ -3,6 +3,8 @@
 local RunService = game:GetService("RunService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local UserInputService = game:GetService("UserInputService")
+local touch = UserInputService.TouchEnabled
 local player = Players.LocalPlayer
 local authorizedPreview = RunService:IsStudio() or (
     game.PlaceId == 135004978091658
@@ -29,27 +31,40 @@ open.Name = "OpenCommands"
 open.AnchorPoint = Vector2.new(1, 1)
 open.Position = UDim2.new(1, -12, 1, -14)
 open.Size = UDim2.fromOffset(116, 42)
+if touch then
+    open.AnchorPoint = Vector2.new(0.5, 0)
+    open.Position = UDim2.new(0.5, 75, 0, 24)
+    open.Size = UDim2.fromOffset(94, 34)
+end
 open.BackgroundColor3 = Color3.fromRGB(75, 53, 133)
 open.TextColor3 = Color3.fromRGB(255, 240, 192)
 open.Text = "⚙ Comandos"
-open.TextSize = 15
+open.TextSize = touch and 13 or 15
 open.Font = Enum.Font.GothamBold
 open.Parent = gui
 local openCorner = Instance.new("UICorner")
 openCorner.CornerRadius = UDim.new(0, 10)
 openCorner.Parent = open
 
-local panel = Instance.new("Frame")
+local panel = Instance.new("ScrollingFrame")
 panel.Name = "CommandPanel"
 panel.AnchorPoint = Vector2.new(1, 1)
 panel.Position = UDim2.new(1, -12, 1, -62)
 panel.Size = UDim2.fromOffset(240, 308)
+panel.CanvasSize = UDim2.new(1, 0, 0, 308)
+panel.ScrollingDirection = Enum.ScrollingDirection.Y
+panel.ScrollBarThickness = 5
+if touch then
+    panel.AnchorPoint = Vector2.new(0.5, 0)
+    panel.Position = UDim2.new(0.5, 0, 0, 64)
+    panel.Size = UDim2.new(1, -24, 1, -132)
+end
 panel.BackgroundColor3 = Color3.fromRGB(25, 22, 43)
 panel.BorderSizePixel = 0
 panel.Visible = false
 panel.Parent = gui
 local bound = Instance.new("UISizeConstraint")
-bound.MinSize = Vector2.new(190, 308)
+bound.MinSize = Vector2.new(0, 0)
 bound.MaxSize = Vector2.new(240, 308)
 bound.Parent = panel
 local round = Instance.new("UICorner")

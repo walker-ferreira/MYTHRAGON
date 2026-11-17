@@ -34,17 +34,20 @@ local function build(player, session)
     gui.DisplayOrder = 6
     gui.Parent = playerGui
 
-    local frame = Instance.new("Frame")
+    local frame = Instance.new("ScrollingFrame")
     frame.Name = "Panel"
     frame.Position = UDim2.new(0, 12, 0, 180)
-    frame.Size = UDim2.new(0.34, 0, 0, 215)
+    frame.Size = UDim2.new(0.34, 0, 1, -194)
+    frame.CanvasSize = UDim2.new(1, 0, 0, 215)
+    frame.ScrollingDirection = Enum.ScrollingDirection.Y
+    frame.ScrollBarThickness = 5
     frame.BackgroundColor3 = Color3.fromRGB(25, 22, 42)
     frame.BackgroundTransparency = 0.18
     frame.BorderSizePixel = 0
     frame.Parent = gui
 
     local limit = Instance.new("UISizeConstraint")
-    limit.MinSize = Vector2.new(145, 215)
+    limit.MinSize = Vector2.new(145, 0)
     limit.MaxSize = Vector2.new(235, 215)
     limit.Parent = frame
 

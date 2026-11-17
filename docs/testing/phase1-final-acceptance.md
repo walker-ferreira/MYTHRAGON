@@ -55,3 +55,11 @@ A jornada visual também possui spawn, painéis de objetivos, quatro selos visua
 **RUNTIME_OK, PLAYTEST_OK, DATASTORE_OK e PRODUCTION_APPROVED estão PENDING** até receber evidências reais. Não publicar em produção. O PR histórico **#45 do GLM** ainda contém teleporte direto inseguro; o **menu público protegido do PR #58** já foi integrado. Não mesclar #45 sem substituição completa pelo controlador seguro.
 
 Em caso de falha: registrar ação reproduzível, dispositivo, imagem/vídeo ou logs F9, SHA/revisão, conta de teste (sem senha ou dados pessoais) e PR corretivo. Não declarar conclusões apenas com sucesso de CI. A Fase 1 só poderá ser certificada quando B, C e D forem verificados em partida real.
+
+## Regressão do HUD no celular
+
+A captura de cliente da revisão 60 comprova o HUD em READY, o Selo de Ember visível e cinco descobertas na conta observada. Ela mostra Comandos sobre o botão de pulo, Voar sobre o título dos selos e a lista de Latúnia cortada. A captura não registra o percurso nem a reconexão entre servidores.
+
+- Confira em paisagem e em retrato se Voar, VIAGEM e Comandos ficam abaixo da faixa de revisão e acima dos títulos do HUD. Confira o pulo e o joystick com os menus fechados.
+- Abra os dois menus separadamente e role até o fim em paisagem. Confira Subir e Descer ao ativar Voar e role a lista de Latúnia até a próxima missão.
+- Com teclado e mouse, confira a posição habitual dos botões.

@@ -48,6 +48,17 @@ for _, id in Layout.order do
 end
 assert(islands.Gelo.Content.Gelo:FindFirstChild("ObservatoryDeck"), "Gelo scenery missing")
 assert(islands.Selva.Content.Selva:FindFirstChild("TemplePlatform"), "Selva scenery missing")
+-- GLM-R009: verify additive builder wiring and base models coexist in staging.
+local geloGLM = assert(islands.Gelo.Content:FindFirstChild("GeloGLM"),
+    "GLM Gelo overlay was not mounted")
+local selvaGLM = assert(islands.Selva.Content:FindFirstChild("SelvaGLM"),
+    "GLM Selva overlay was not mounted")
+assert(geloGLM:FindFirstChild("CavernaParedao", true)
+    or geloGLM:FindFirstChild("MonolitoRuna", true), "Missing Gelo GLM landmark")
+assert(selvaGLM:FindFirstChild("CachoeiraParedao", true),
+    "Missing Selva GLM waterfall")
+assert(village:FindFirstChild("FonteJato", true),
+    "Vila Central GLM improvements not mounted")
 assert(not islands.Gelo.Content:FindFirstChild("ReservedLanding"), "Gelo should not use placeholder")
 assert(not islands.Selva.Content:FindFirstChild("ReservedLanding"), "Selva should not use placeholder")
 assert(islands.Deserto.Content.Deserto:FindFirstChild("RuinasSoterradas"))

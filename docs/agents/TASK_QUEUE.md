@@ -6,6 +6,15 @@ Claim por branch/PR, nunca dois escritores no mesmo worktree.
 Estados de trabalho: AVAILABLE, ASSIGNED, IMPLEMENTING, REVIEW, BLOCKED, INTEGRATED,
 AWAITING_OWNER. Estados de certificação são separados (AGENTS.md).
 
+## EMBER-TRAVEL-001 — sincronizar saída de Ember pelo painel Comandos
+
+- Responsável: CODEX. Base: `c41c35b75dd8777890453d30ff3c81c563856a4a`. Branch: `codex/ember-command-travel-sync`.
+- Caminhos: `src/server/{Diagnostics/Bootstrap,Ember/Map,Hub/Map,Latunia/Codex/Map}.luau` e `docs/testing/studio-command-panel.md`.
+- Dependências: autorização existente de Comandos em Studio/staging e os controladores de Ember, Hub e Latúnia da main.
+- Aceite: após um teleporte de teste bem-sucedido, liberar a arena e a trava de entrada do jogador. Destino recusado ou teleporte com erro deve manter a tentativa disponível para continuar. A viagem de teste não concede selo nem descoberta.
+- Estado: REVIEW. Evidências de compilação, testes e staging no PR e nos workflows associados.
+- Próximo checkpoint: executar a regressão do painel em uma sessão Roblox com duas contas e registrar a revisão exibida.
+
 ## CHECKPOINT DE INTEGRAÇÃO — GLM-R009 e DATASTORE-RETRY-001
 
 - **PR #34:** melhorias GLM em Gelo, Selva e Vila Central integradas após correção `Enum.Material.Terracotta` → `ClayRoofTiles` e CI aprovada. A implantação visual foi integrada sem descartar a geometria base Codex.

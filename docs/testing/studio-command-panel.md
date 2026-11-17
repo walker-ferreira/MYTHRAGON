@@ -14,3 +14,11 @@ O botão **⚙ Comandos** fica no canto inferior direito durante testes no Roblo
 4. Abrir servidor de staging normal e confirmar que o proprietário individual consegue usar o botão, enquanto usuários comuns não conseguem executar teleporte, mesmo enviando RemoteEvent manualmente.
 
 Esse controle é uma ferramenta de desenvolvimento para Studio e para o criador individual do Place experimental. Em experiências pertencentes a grupos, a autorização publicada falha de modo seguro e fica somente no Studio. Não declarar PLAYTEST_OK por aprovação da CI.
+## Regressão de saída de Ember
+
+1. Em Studio com dois clientes ou no staging como criador, entre em Ember pela rota normal e deixe o Guardião vivo.
+2. Use **Comandos** para viajar direto à Vila Central. Aguarde cinco segundos e confirme que seu personagem continua na ilha. Confira que a viagem de teste não acrescentou descoberta nem selo ao perfil.
+3. No segundo cliente, tente entrar em Ember enquanto o primeiro está na Vila. A arena deve aceitar a entrada. O primeiro cliente pode retornar a Aetheria pelo portal da Vila.
+4. Repita saindo de Ember diretamente para Aetheria pelo painel e tente iniciar outra luta assim que chegar ao Hub.
+5. Repita após derrotar o Guardião. Confira que o selo já concedido aparece no Hub e continua registrado uma única vez.
+6. Execute o percurso pelo portal roxo, sem usar o painel, para confirmar o retorno normal. Registre revisão, conta de teste e erros do console F9.

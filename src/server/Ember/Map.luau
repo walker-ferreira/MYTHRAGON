@@ -144,9 +144,15 @@ function Ember.build(parent, onVictory)
     end
     local encounter = Combat.new(model, arenaCenter, onVictory)
     encounters[parent] = encounter
-    return function(player)
+    local function enter(player)
         return encounter:enter(player)
     end
+    local function leave(player)
+        if encounter.session and encounter.session.player == player then
+            encounter:close("abandoned")
+        end
+    end
+    return enter, leave
 end
 
 function Ember.connectReturn(parent, onReturn)

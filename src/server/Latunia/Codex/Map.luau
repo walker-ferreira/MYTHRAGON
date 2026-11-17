@@ -113,15 +113,14 @@ function Controller:request(player, point, from, to)
     end)
 end
 
--- Studio-only helper used by debug chat commands. Keep navigation state consistent
--- with the actual character position; this does not award objectives or rewards.
+-- Test commands in Studio or staging. Keep the character and travel state
+-- together without awarding discoveries.
 function Controller:debugWarp(player, to)
     if self.destroyed or player.Parent ~= Players then return false end
     local character = player.Character
     local humanoid = character and character:FindFirstChildOfClass("Humanoid")
     local root = character and character:FindFirstChild("HumanoidRootPart")
     if not root or not humanoid or humanoid.Health <= 0 then return false end
-    self.travel:remove(player)
     if to == "Hub" then
         local ok, err = pcall(self.onReturn, player)
         if not ok then
@@ -132,14 +131,22 @@ function Controller:debugWarp(player, to)
         return true
     end
     if not self.origins[to] then return false end
+    local ok, err = pcall(function()
+        local arrival = self:arrival(to)
+        root.AssemblyLinearVelocity, root.AssemblyAngularVelocity = Vector3.zero, Vector3.zero
+        character:PivotTo(arrival)
+    end)
+    if not ok then
+        warn("[Latunia] viagem debug falhou: " .. tostring(err))
+        return false
+    end
+    self.travel:remove(player)
     if not self.playerConns[player] then
         self.playerConns[player] = player.CharacterRemoving:Connect(function()
             self:forget(player)
         end)
     end
     self.current[player] = to
-    root.AssemblyLinearVelocity, root.AssemblyAngularVelocity = Vector3.zero, Vector3.zero
-    character:PivotTo(self:arrival(to))
     return true
 end
 
@@ -239,10 +246,11 @@ function Controller:destroy()
     self.root:Destroy()
 end
 
-function Map.build(parent, onReturn, partnerBuilders, onArrival)
+function Map.build(parent, onReturn, partnerBuilders, onArrival, onDebugArrival)
     assert(parent == workspace or parent:IsDescendantOf(workspace))
     assert(type(onReturn) == "function")
     assert(onArrival == nil or type(onArrival) == "function")
+    assert(onDebugArrival == nil or type(onDebugArrival) == "function")
     if mounted[parent] then return mounted[parent] end
     assert(not parent:FindFirstChild("LatuniaCodex"), "Existing Latunia scene is not owned by this controller")
     local root = B.model(parent, "LatuniaCodex")
@@ -250,7 +258,7 @@ function Map.build(parent, onReturn, partnerBuilders, onArrival)
     root:SetAttribute("TravelMode", "ServerTeleportPrototype")
     local self = setmetatable({
         root = root, parent = parent, onReturn = onReturn, onArrival = onArrival,
-        travel = TravelState.new(),
+        onDebugArrival = onDebugArrival, travel = TravelState.new(),
         current = {}, origins = {}, slots = {}, notices = {}, connections = {}, playerConns = {},
     }, Controller)
     mounted[parent] = self
@@ -364,8 +372,11 @@ function Map.debugWarp(parent, player, to)
     local Access = require(script.Parent.Parent.Parent.Hub.CommandAccess)
     if not Access.canUse(player) then return false end
     local controller = mounted[parent]
-    if not controller then return false end
-    return controller:debugWarp(player, to)
+    if not controller or not controller:debugWarp(player, to) then return false end
+    -- Release Ember only once the destination is confirmed. Otherwise its
+    -- recovery loop can pull the player out of Latúnia and leave stale state.
+    if controller.onDebugArrival then controller.onDebugArrival(player) end
+    return true
 end
 
 return Map

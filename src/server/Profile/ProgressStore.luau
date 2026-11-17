@@ -94,6 +94,20 @@ function ProgressStore.start(Profile, Hub)
     table.insert(connections, Players.PlayerAdded:Connect(load))
     for _, player in ipairs(Players:GetPlayers()) do load(player) end
 
+    -- Transient outages longer than the initial retry window must not leave
+    -- earned seals stranded forever in memory while the server is alive.
+    if game:GetService("RunService"):IsRunning() then
+        task.spawn(function()
+            while not closed do
+                task.wait(60)
+                if closed then break end
+                for userId in pairs(pending) do
+                    if not saving[userId] then scheduleSave(userId) end
+                end
+            end
+        end)
+    end
+
     -- Open Cloud isolated engine checks are not a running game server.
     if game:GetService("RunService"):IsRunning() then
         game:BindToClose(function()

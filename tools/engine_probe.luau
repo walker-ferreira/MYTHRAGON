@@ -2,6 +2,11 @@
 -- The command UI is a LocalScript template; isolated engine cannot click it.
 local playerScripts = game:GetService("StarterPlayer").StarterPlayerScripts
 assert(playerScripts:FindFirstChild("CommandPanel"), "Command GUI LocalScript missing")
+assert(playerScripts:FindFirstChild("LatuniaTravelUi"),
+    "Public GLM-style travel menu LocalScript missing")
+local serverScripts = game:GetService("ServerScriptService").Mythragon
+assert(serverScripts.Latunia:FindFirstChild("TravelMenu"),
+    "Server-validated public travel menu gateway missing")
 local app = game:GetService("ServerScriptService").Mythragon
 local result = require(app.Diagnostics.Bootstrap).run()
 assert(result == require(app.Diagnostics.Bootstrap).run(), "Bootstrap must be idempotent")

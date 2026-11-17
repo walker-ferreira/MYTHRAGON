@@ -224,8 +224,7 @@ function Map.build(parent, onReturn, partnerBuilders)
             -- Temporary landing only, explicitly NOT the partner's finished island.
             local base = B.part(content, "ReservedLanding", Vector3.new(220, 20, 220),
                 CFrame.new(at-Vector3.new(0, 10, 0)), B.colors.basalt, Enum.Material.Slate)
-            B.label(base, def.name.."
-Desembarque provisório · mapa 3D do GLM pendente",
+            B.label(base, def.name.."\nDesembarque provisório · mapa 3D do GLM pendente",
                 Vector3.new(0, 25, 0), 220)
         end
         -- Endurecimento GLM-R008 (autorização do dono): uma ilha que falha em

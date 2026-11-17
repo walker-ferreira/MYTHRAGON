@@ -35,6 +35,8 @@ return function()
         local p = expected+Vector3.new(arrival[1], arrival[2], arrival[3])
         assert(workspace:Raycast(p, Vector3.new(0, -16, 0), params), "Arrival needs floor: "..id)
     end
+    assert(islands.Gelo.Content.Gelo:FindFirstChild("ObservatoryDeck"))
+    assert(islands.Selva.Content.Selva:FindFirstChild("TemplePlatform"))
     assert(islands.Deserto.Content.Deserto:FindFirstChild("RuinasSoterradas"))
     assert(islands.Vulcanica.Content.Vulcanica:FindFirstChild("CraterLava"))
     assert(root:GetAttribute("TravelMode") == "ServerTeleportPrototype")

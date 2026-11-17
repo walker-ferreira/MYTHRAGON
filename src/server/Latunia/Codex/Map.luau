@@ -96,9 +96,11 @@ function Controller:request(player, point, from, to)
         self.current[player] = to
         root.AssemblyLinearVelocity, root.AssemblyAngularVelocity = Vector3.zero, Vector3.zero
         character:PivotTo(self:arrival(to))
-        local extra = Layout.islands[to].editor == "GLM"
-            and "\nÁrea de desembarque provisória · detalhes 3D do GLM pendentes."
-            or "\nMapa explorável provisório · sem missão/recompensa nova."
+        local slot = self.slots[to]
+        local provisional = slot and slot.Content:FindFirstChild("ReservedLanding") ~= nil
+        local extra = provisional
+            and "\nÁrea de desembarque provisória · cenário ainda não construído."
+            or "\nMapa explorável em desenvolvimento · sem missão/recompensa nova."
         self:notify(player, Layout.islands[to].name..extra)
     end)
 end

@@ -55,7 +55,12 @@ function Bootstrap.run()
 		health:stage("Latunia", function()
 			local Latunia = require(parent.Latunia.Codex.Map)
 			local Vila = require(parent.Hub.Latunia)
-			current.latunia = Latunia.build(workspace, returnToHub, { Central = Vila.build })
+			local Expansion = require(parent.Latunia.Codex.Expansion)
+			current.latunia = Latunia.build(workspace, returnToHub, {
+				Central = Vila.build,
+				Gelo = Expansion.ice,
+				Selva = Expansion.jungle,
+			})
 			assert(current.latunia.root.Parent == workspace, "Latunia did not mount")
 		end, function()
 			-- Map.build already owns rollback/connections; do not destroy an unowned scene.

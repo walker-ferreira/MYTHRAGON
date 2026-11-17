@@ -336,7 +336,8 @@ function Map.build(parent, onReturn, partnerBuilders, onArrival, onDebugArrival,
         prompt.HoldDuration = 0
         prompt.Parent = mural
         table.insert(self.connections, prompt.Triggered:Connect(function(player)
-            if self.destroyed or self.current[player] ~= "Central" then return end
+            if self.destroyed or player.Parent ~= Players
+                or self.current[player] ~= "Central" then return end
             local character = player.Character
             local rootPart = character and character:FindFirstChild("HumanoidRootPart")
             local humanoid = character and character:FindFirstChildOfClass("Humanoid")

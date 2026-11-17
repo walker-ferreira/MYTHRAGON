@@ -145,6 +145,15 @@ function Panel.markEmber(player)
     draw(session)
 end
 
+-- Read-only server guidance for an interactive village noticeboard.
+-- Never creates progress or grants a reward.
+function Panel.nextObjective(player)
+    local session = sessions[player]
+    if not session then return "Observe um Guardião do Éter" end
+    local label = Journey.next(session.objectives, session.ember)
+    return label
+end
+
 function Panel.remove(player)
     local session = sessions[player]
     if not session then return end

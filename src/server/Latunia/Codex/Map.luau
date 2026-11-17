@@ -361,8 +361,8 @@ function Map.build(parent, onReturn, partnerBuilders, onArrival)
 end
 
 function Map.debugWarp(parent, player, to)
-    local RunService = game:GetService("RunService")
-    if not RunService:IsStudio() or not RunService:IsServer() then return false end
+    local Access = require(script.Parent.Parent.Parent.Hub.CommandAccess)
+    if not Access.canUse(player) then return false end
     local controller = mounted[parent]
     if not controller then return false end
     return controller:debugWarp(player, to)

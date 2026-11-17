@@ -1,10 +1,15 @@
--- Studio-only command palette. The server owns authorization and teleport.
+-- Developer command palette. In published staging only the individual
+-- place creator sees this UI; the server independently enforces access.
 local RunService = game:GetService("RunService")
-if not RunService:IsStudio() then return end
-
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local player = Players.LocalPlayer
+local authorizedPreview = RunService:IsStudio() or (
+    game.PlaceId == 135004978091658
+    and game.CreatorType == Enum.CreatorType.User
+    and player.UserId == game.CreatorId
+)
+if not authorizedPreview then return end
 local playerGui = player:WaitForChild("PlayerGui")
 local remote = ReplicatedStorage:WaitForChild("MythragonStudioCommand", 20)
 if not remote or not remote:IsA("RemoteEvent") then
@@ -85,7 +90,7 @@ hint.Font = Enum.Font.Gotham
 hint.TextSize = 11
 hint.TextColor3 = Color3.fromRGB(194, 191, 217)
 hint.TextWrapped = true
-hint.Text = "Apenas no Roblox Studio · teleporte de teste"
+hint.Text = "Ferramentas do proprietário · apenas staging"
 hint.Parent = panel
 
 local destinations = {

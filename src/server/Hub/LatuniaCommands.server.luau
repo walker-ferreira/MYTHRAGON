@@ -21,10 +21,10 @@ local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Map = require(script.Parent.Parent.Latunia.Codex.Map)
+local Access = require(script.Parent.CommandAccess)
 
--- This command is for Studio tests only; published servers use validated
--- ProximityPrompt travel instead of free teleports.
-if not RunService:IsStudio() then return end
+-- Remote commands are accepted only from Studio or the individual creator
+-- in the authorized staging place. Other players retain normal portals.
 
 local DESTINOS = {
     hub = "Hub", vila = "Central", central = "Central",
@@ -70,7 +70,7 @@ remote.Parent = ReplicatedStorage
 
 local lastRemote = {}
 remote.OnServerEvent:Connect(function(player, key)
-    if not RunService:IsStudio() or player.Parent ~= Players
+    if player.Parent ~= Players or not Access.canUse(player)
         or type(key) ~= "string" or not DESTINOS[key] then return end
     local now = os.clock()
     if now - (lastRemote[player] or -math.huge) < 0.75 then return end
@@ -95,6 +95,7 @@ local function viajar(player, key)
 end
 
 local function onChatted(player, message)
+    if not RunService:IsStudio() then return end
 	local key = message:match("^/ir%s+([%a]+)") or message:match("^!ir%s+([%a]+)")
 	if key then
 		viajar(player, key:lower())

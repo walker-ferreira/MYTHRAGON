@@ -1,13 +1,14 @@
 local Players = game:GetService("Players")
 local State = require(script.Parent.InteractionState)
 local Model = require(script.Parent.VarkhionModel)
+local Guidance = require(script.Parent.VarkhionGuidance)
 
 local Varkhion = {}
 local mounted = setmetatable({}, { __mode = "k" })
 local Controller = {}
 Controller.__index = Controller
 
-local GUIDANCE = "O Éter ainda pulsa em você. Entre no portal de Ember, enfrente o guardião de obsidiana e volte com o primeiro selo."
+-- The progression owner provides a read-only, server-validated seal check.
 
 function Controller:show(player, message)
     local playerGui = player:FindFirstChildOfClass("PlayerGui")
@@ -77,7 +78,16 @@ function Controller:interact(player)
         self:show(player, "Não consegui confirmar seu objetivo. Aproxime-se e tente ouvir novamente.")
         return false
     end
-    self:show(player, GUIDANCE)
+    local hasEmber = false
+    if self.hasEmberSeal then
+        local success, result = pcall(self.hasEmberSeal, player)
+        if success then
+            hasEmber = result == true
+        else
+            warn("Varkhion: progress lookup failed: " .. tostring(result))
+        end
+    end
+    self:show(player, Guidance.forSeal(hasEmber))
     return true
 end
 
@@ -94,13 +104,15 @@ function Controller:destroy()
     self.model:Destroy()
 end
 
-function Varkhion.mount(parent, anchor, onInteracted)
+function Varkhion.mount(parent, anchor, onInteracted, hasEmberSeal)
     assert(typeof(parent) == "Instance" and parent:IsDescendantOf(workspace),
         "Varkhion parent must be inside Workspace")
     assert(typeof(anchor) == "Instance" and anchor:IsA("BasePart")
         and anchor.Anchored and anchor:IsDescendantOf(parent),
         "Provide an anchored VarkhionAnchor inside parent, at floor level")
     assert(type(onInteracted) == "function", "Provide the GLM objective callback")
+    assert(hasEmberSeal == nil or type(hasEmberSeal) == "function",
+        "Optional seal check must be a server callback")
     local existing = mounted[parent]
     if existing then
         assert(existing.anchor == anchor, "Varkhion already mounted at a different anchor")
@@ -109,7 +121,8 @@ function Varkhion.mount(parent, anchor, onInteracted)
     local model, point = Model.build(parent, anchor.CFrame)
     local self = setmetatable({
         parent = parent, anchor = anchor, model = model, point = point,
-        onInteracted = onInteracted, state = State.new(),
+        onInteracted = onInteracted, hasEmberSeal = hasEmberSeal,
+        state = State.new(),
         connections = {}, dialogues = {}, destroyed = false,
     }, Controller)
     mounted[parent] = self

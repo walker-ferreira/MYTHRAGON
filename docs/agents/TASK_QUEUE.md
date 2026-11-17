@@ -6,6 +6,15 @@ Claim por branch/PR, nunca dois escritores no mesmo worktree.
 Estados de trabalho: AVAILABLE, ASSIGNED, IMPLEMENTING, REVIEW, BLOCKED, INTEGRATED,
 AWAITING_OWNER. Estados de certificação são separados (AGENTS.md).
 
+## CHECKPOINT TÉCNICO — integrados PRs #26–#30
+
+- **Integrados:** #26 validação estrita de identidade de encontro; #27 DataStore v1 do selo Ember; #28 DataStore v1 dos três objetivos existentes do Hub; #29 validação de distância dos Guardiões e liberação de trânsito em falha do portal Ember; #30 barra de vida do Guardião e seis rochas cenográficas não colidíveis.
+- **Base publicada confirmada:** PR28 revisão **24**, CI e inspeção isolada `PERSISTED_OK + engine_bootstrap PASS`; dados de jogador/cliente não foram testados. Inspecionar as publicações seguintes pelo run oficial.
+- **Estado real:** implementação integrada `BUILD_OK`; DataStore programado com `UpdateAsync`, mas **DATASTORE_OK não comprovado**. Ainda sem `RUNTIME_OK`, `PLAYTEST_OK` ou aprovação de produção.
+- **Próximos IDs:** PLAYTEST-001 (servidor real, jornada Aetheria→Ember→selo→Latúnia e volta, duas contas, teclado/toque); DATASTORE-QA-001 (sair/voltar, falha serviço, concorrência, logs); MISSION-002 (etapas restantes da sequência de 10 missões); COMBAT-002 (esquiva/ataques animados com controle de servidor); MOBILE-001 (interface/performance). Não declarar prontos nem instalar NPCs.
+- **Coordenação:** alterações em `Hub/Map.luau` foram incrementais e mantiveram o layout GLM; futuros agentes devem usar `main` mais recente, não reintroduzir branches antigos ou alterar o mesmo worktree.
+- **Evidência:** `docs/testing/persist-ember-v1.md`, `docs/testing/persist-hub-objectives-v1.md` e PRs #26–#30.
+
 ## STATUS ATUAL — Fase 1 após PRs #18 a #24
 
 - **Integrados em main:** recuperação/staging (18), retorno Ember (19), retorno Latúnia (20), Gelo/Selva inicial (21), comandos de Studio sincronizados (22), biblioteca de 10 NPCs não montada (23), correção de coordenadas de Vila Central (24).

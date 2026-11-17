@@ -1,6 +1,6 @@
 # MYTHRAGON — Gate final de aceitação da Fase 1
 
-**Estado atual:** implementação e build da Fase 1 em `main` entregues como **candidato de teste**, não certificadas como jogáveis. Última publicação experimental verificada: **staging revisão 52**, SHA `c932ca58c9c6041eb1969e6483798fd315b260c9`, GitHub Actions `44098460021`, `PERSISTED_OK` + `isolated engine bootstrap PASS`. Nenhum teste de cliente real é inferido disso.
+**Estado atual:** implementação e build da Fase 1 em `main` entregues como **candidato de teste**, não certificadas como jogáveis. Última publicação experimental verificada: **staging revisão 57**, SHA `d82cc87f267c92c6d8fe53a0a512590f3652ed4f`, GitHub Actions `44103219262`, `PERSISTED_OK` + `isolated engine bootstrap PASS`. Nenhum teste de cliente real é inferido disso.
 
 ## Fluxo de 10 marcos implementado no servidor
 
@@ -20,7 +20,7 @@ A jornada visual também possui spawn, painéis de objetivos, quatro selos visua
 ## Gate A — código, build e cenário
 
 - [x] PRs de jogabilidade integrados, mantendo contribuições Codex/GLM.
-- [x] Compilação/CI Luau e Rojo da `main` passando para revisão 52.
+- [x] Compilação/CI Luau e Rojo da `main` passando para revisão 57.
 - [x] Publicação somente em staging e conferência da versão persistida.
 - [x] Inspector isolado verifica Aetheria, Ember, Varkhion, cinco ilhas, modelos GLM, prompts de viagem, mural, barra de vida e fontes.
 - [ ] Confirmar funcionamento físico com jogadores; CI e engine isolado não substituem.
@@ -29,7 +29,7 @@ A jornada visual também possui spawn, painéis de objetivos, quatro selos visua
 
 - [ ] Abrir **servidor novo** em https://www.roblox.com/games/135004978091658, confirmar a revisão no HUD e READY.
 - [ ] Em PC, ir de Aetheria a Ember pelo portal (E), usar ataque, aviso do sopro, esquiva Q, vencer, receber selo e voltar.
-- [ ] Repetir em Android/iPhone com toque; testar controle com botão B para esquiva e X para viagem.
+- [ ] Repetir em Android/iPhone com toque; verificar dois prompts visíveis juntos e não sobrepostos (E/X ataque e Q/B esquiva), além de controle X para viagem nas docas.
 - [ ] Verificar a orientação de Varkhion antes/depois de Ember, o retorno persistente, mural da Vila Central e missão seguinte.
 - [ ] Ir da Vila às quatro ilhas e voltar; testar o botão VIAGEM **dentro e fora** da distância do cais, inclusive rotas proibidas.
 - [ ] Em servidor com duas contas, conferir isolamento de batalha, GUI, selos, viagem, histórico de objetivos e ausência de recompensas duplicadas.
@@ -46,7 +46,7 @@ A jornada visual também possui spawn, painéis de objetivos, quatro selos visua
 ## Gate D — experiência visual e desempenho
 
 - [ ] Conferir rochas/cachoeira/caverna, piso e altura das cinco ilhas em cliente, com screenshots.
-- [ ] Verificar aviso laranja do Guardião, esquiva de 0,45 s, barra de vida e retorno do portal roxo.
+- [ ] Verificar aviso laranja do Guardião, esquiva de 0,45 s sem sair do piso, barra de vida e retorno do portal roxo confirmado pelo servidor; falhas não podem concluir a jornada.
 - [ ] Conferir painel de 10 marcos, mural, aviso de viagem e joystick em 320×568 e aparelho real.
 - [ ] Medir quedas perceptíveis de FPS e falhas de carregamento; anotar dispositivo, F9 e revisão.
 

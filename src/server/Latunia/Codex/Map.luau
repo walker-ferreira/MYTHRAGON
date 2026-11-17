@@ -100,9 +100,9 @@ function Controller:request(player, point, from, to)
         if to == "Hub" then
             -- Keep the controller's travel state if returning to Aetheria fails.
             -- The player can then activate the return prompt again.
-            local ok, err = pcall(self.onReturn, player)
-            if not ok then
-                warn("[Latunia] retorno a Aetheria falhou: " .. tostring(err))
+            local ok, accepted = pcall(self.onReturn, player)
+            if not ok or accepted ~= true then
+                warn("[Latunia] retorno a Aetheria falhou: " .. tostring(accepted))
                 self:notify(player, "Não foi possível voltar a Aetheria. Tente novamente no portal.")
                 return
             end
@@ -141,9 +141,9 @@ function Controller:debugWarp(player, to)
     local root = character and character:FindFirstChild("HumanoidRootPart")
     if not root or not humanoid or humanoid.Health <= 0 then return false end
     if to == "Hub" then
-        local ok, err = pcall(self.onReturn, player)
-        if not ok then
-            warn("[Latunia] retorno debug falhou: " .. tostring(err))
+        local ok, accepted = pcall(self.onReturn, player)
+        if not ok or accepted ~= true then
+            warn("[Latunia] retorno debug falhou: " .. tostring(accepted))
             return false
         end
         self:forget(player)

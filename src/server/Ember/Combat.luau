@@ -305,10 +305,10 @@ function Combat:returnPlayer(player)
     if not s or s.returning or not self.onReturn then return false end
 
     s.returning = true
-    local ok, err = pcall(self.onReturn, player, s.rules.result == "victory")
+    local ok, accepted = pcall(self.onReturn, player, s.rules.result == "victory")
     s.returning = false
-    if not ok then
-        warn("Ember: falha ao retornar ao hub: " .. tostring(err))
+    if not ok or accepted ~= true then
+        warn("Ember: falha ao retornar ao hub: " .. tostring(accepted))
         if self.session == s then
             self:message("Falha ao voltar ao hub · tente o portal roxo novamente")
         end

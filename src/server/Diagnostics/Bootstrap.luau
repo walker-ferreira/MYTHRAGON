@@ -44,7 +44,9 @@ function Bootstrap.run()
 		Ember.connectReturn(map, function(player, wonEncounter)
 			-- Only the active Ember encounter can use this callback. Debug
 			-- commands and Latunia returns call returnToHub independently.
-			returnToHub(player)
+			if returnToHub(player) ~= true then
+				error("Hub return was not confirmed")
+			end
 			if wonEncounter and Profile.hasSeal(player, "Ember") and current.objectives then
 				local ok, err = pcall(function()
 					local first = current.objectives:recordEmberReturn(player)

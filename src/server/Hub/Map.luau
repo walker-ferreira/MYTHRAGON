@@ -903,11 +903,28 @@ function Hub.build(parent, onEnterEmber)
 	-- Retorno ao hub (ligado pelo Sol em Ember.connectReturn): libera o
 	-- jogador para novas tentativas e devolve o corpo ao spawn.
 	local function returnToHub(player)
+		-- Explicit acknowledgment: a missing/dead character or failed PivotTo
+		-- must NOT clear an Ember encounter or Latunia travel state.
+		if not player or player.Parent ~= Players then return false end
 		local character = player.Character
-		if character then
-			character:PivotTo(CFrame.new(spawn.Position + Vector3.new(0, 4, 0)))
+		local root = character and character:FindFirstChild("HumanoidRootPart")
+		local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+		if not root or not humanoid or humanoid.Health <= 0 then return false end
+		local destination = CFrame.new(spawn.Position + Vector3.new(0, 4, 0))
+		local ok, err = pcall(function()
+			character:PivotTo(destination)
+		end)
+		if not ok then
+			warn("[Hub] return teleport failed: " .. tostring(err))
+			return false
+		end
+		if player.Character ~= character or not root.Parent
+			or (root.Position - destination.Position).Magnitude > 12 then
+			warn("[Hub] return teleport did not reach the hub spawn")
+			return false
 		end
 		releaseTransit(player)
+		return true
 	end
 	return returnToHub, releaseTransit
 end

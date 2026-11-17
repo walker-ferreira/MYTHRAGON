@@ -27,7 +27,9 @@ for _, value in root:GetDescendants() do
 		assert(value.Anchored, "Unanchored generated geometry")
 	end
 end
-assert(villas == 1 and prompts == 10, "No duplicated village or travel prompts")
+assert(villas == 1 and prompts == 11, "Ten travel prompts plus one village mission mural")
+local mural = assert(village:FindFirstChild("MuralQuadro", true), "GLM quest mural missing")
+assert(mural:FindFirstChild("LatuniaQuestBoard"), "Quest mural interaction missing")
 -- The safe on-screen menu API may invoke only the already-mounted physical
 -- portals. It cannot create a direct Hub -> remote island or island -> Hub hop.
 local portals = assert(result.latunia and result.latunia.portalPoints,

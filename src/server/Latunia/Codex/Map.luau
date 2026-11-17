@@ -257,11 +257,12 @@ function Controller:destroy()
     self.root:Destroy()
 end
 
-function Map.build(parent, onReturn, partnerBuilders, onArrival, onDebugArrival)
+function Map.build(parent, onReturn, partnerBuilders, onArrival, onDebugArrival, onQuestBoard)
     assert(parent == workspace or parent:IsDescendantOf(workspace))
     assert(type(onReturn) == "function")
     assert(onArrival == nil or type(onArrival) == "function")
     assert(onDebugArrival == nil or type(onDebugArrival) == "function")
+    assert(onQuestBoard == nil or type(onQuestBoard) == "function")
     if mounted[parent] then return mounted[parent] end
     assert(not parent:FindFirstChild("LatuniaCodex"), "Existing Latunia scene is not owned by this controller")
     local root = B.model(parent, "LatuniaCodex")
@@ -269,7 +270,8 @@ function Map.build(parent, onReturn, partnerBuilders, onArrival, onDebugArrival)
     root:SetAttribute("TravelMode", "ServerTeleportPrototype")
     local self = setmetatable({
         root = root, parent = parent, onReturn = onReturn, onArrival = onArrival,
-        onDebugArrival = onDebugArrival, travel = TravelState.new(),
+        onDebugArrival = onDebugArrival, onQuestBoard = onQuestBoard,
+        travel = TravelState.new(),
         current = {}, origins = {}, slots = {}, notices = {}, connections = {}, playerConns = {},
         portalPoints = {},
     }, Controller)
@@ -318,6 +320,34 @@ function Map.build(parent, onReturn, partnerBuilders, onArrival, onDebugArrival)
         end
     end
     atlas(root, self.origins.Central)
+    -- Reuse the GLM village mural; never create or activate the NPC library.
+    -- The noticeboard reads the player's next real objective but grants none.
+    local mural = self.slots.Central.Content:FindFirstChild("MuralQuadro", true)
+    if mural and onQuestBoard then
+        local prompt = Instance.new("ProximityPrompt")
+        prompt.Name = "LatuniaQuestBoard"
+        prompt.ActionText = "Consultar missão"
+        prompt.ObjectText = "Mural de Avisos · Vila Central"
+        prompt.MaxActivationDistance = 12
+        prompt.RequiresLineOfSight = false
+        prompt.ClickablePrompt = true
+        prompt.KeyboardKeyCode = Enum.KeyCode.E
+        prompt.GamepadKeyCode = Enum.KeyCode.ButtonX
+        prompt.HoldDuration = 0
+        prompt.Parent = mural
+        table.insert(self.connections, prompt.Triggered:Connect(function(player)
+            if self.destroyed or self.current[player] ~= "Central" then return end
+            local character = player.Character
+            local rootPart = character and character:FindFirstChild("HumanoidRootPart")
+            local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+            if not rootPart or not humanoid or humanoid.Health <= 0
+                or (rootPart.Position - mural.Position).Magnitude > 14 then return end
+            local ok, err = pcall(onQuestBoard, player)
+            if not ok then warn("[Latunia] Mural de Avisos falhou: " .. tostring(err)) end
+        end))
+    elseif onQuestBoard then
+        warn("[Latunia] Mural GLM ausente; orientação continua no painel individual")
+    end
     for _, route in ipairs(Layout.docks) do
         local c, p = route.central, route.island
         local from = self.origins.Central

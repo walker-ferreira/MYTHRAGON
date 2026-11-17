@@ -4,6 +4,7 @@ local Players = game:GetService("Players")
 local DataStoreService = game:GetService("DataStoreService")
 local RunService = game:GetService("RunService")
 local Data = require(script.Parent.ObjectivesData)
+local ExplorationPanel = require(script.Parent.ExplorationPanel)
 local ObjectivesStore = {}
 local storage
 local pending = {}
@@ -61,6 +62,7 @@ function ObjectivesStore.start(Hub)
     local arrivalRecorded = {}
 
     local function load(player)
+        ExplorationPanel.attach(player)
         task.spawn(function()
             local raw
             local loaded = false
@@ -81,6 +83,7 @@ function ObjectivesStore.start(Hub)
                 warn("[ObjectivesStore] invalid objectives for " .. tostring(player.UserId) .. ": " .. tostring(done))
                 return
             end
+            ExplorationPanel.hydrate(player, done)
             for objective, completed in pairs(done) do
                 if completed then
                     if Data.isExploration(objective) then
@@ -106,6 +109,7 @@ function ObjectivesStore.start(Hub)
     end)
 
     table.insert(connections, Players.PlayerRemoving:Connect(function(player)
+        ExplorationPanel.remove(player)
         arrivalRecorded[player] = nil
     end))
     table.insert(connections, Players.PlayerAdded:Connect(load))
@@ -134,6 +138,7 @@ function ObjectivesStore.start(Hub)
             end
             if visited[objectiveId] then return false end
             visited[objectiveId] = true
+            ExplorationPanel.mark(player, objectiveId)
             schedule(player.UserId, objectiveId)
             return true
         end,

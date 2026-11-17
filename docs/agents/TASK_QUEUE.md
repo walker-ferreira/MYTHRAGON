@@ -18,12 +18,17 @@ AWAITING_OWNER. Estados de certificação são separados (AGENTS.md).
   ainda precisa ser testado; não presume executor externo GLM/Codex instalado.
 - Aceite: sem publicação fantasma, build/SHA/destino/revisão rastreáveis,
   testes disponíveis executados, saúde do mundo e pendências verdadeiras.
-- Estado: IMPLEMENTING. OPS-002 resolvido; #12 integrado com CI nova PASS em
-  main c669613. Primeiro publish automático falhou antes de PATCH (REL-004).
-  F motor pendente; G sem nova publicação; H planejado.
-- Próximo checkpoint: corrigir/revisar journal do environment, PR/CI e novo
-  candidato oficial; conferir revisão e inspeção de motor disponível.
-- Evidência: docs/engineering/AUDIT-2026-11-16.md.
+- Estado: AWAITING_OWNER para playtest, implementação integrada e publicada.
+  Checkpoints A–E aplicados; F engine isolado PASS, física/servidor normal/cliente
+  pendentes; G candidato experimental revisão14 publicado; H fila preparada.
+- Certificação: BUILD_OK, PREVIEW_OK, PUBLISHED, PERSISTED_OK; engine_bootstrap PASS.
+  Não RUNTIME_OK/PLAYTEST_OK/PRODUCTION_APPROVED.
+- Release: main integrado fc262b4a63e42176ede5255fa913524d4b3e887f,
+  CI43986367988, PUBLISH43986456709, revisão14.
+- Próximo checkpoint: proprietário avaliar versão14 em servidor novo; agentes
+  corrigirem problemas por PR/pipeline. Conteúdo GLM-R008/PR15 e Gelo/Selva seguem
+  tarefas separadas, sem merge automático de escopo ainda não revisado.
+- Evidência: docs/releases/REC-001-fc262b4.json e REC-001-recovered-staging.md.
 
 ## LAT-GLM-001 — Gelo/Selva e revisão independente da recuperação
 

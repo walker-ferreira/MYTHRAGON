@@ -1,0 +1,66 @@
+{
+  "project": "MYTHRAGON",
+  "release_id": "REC-001-fc262b4a63e4",
+  "git_sha": "fc262b4a63e42176ede5255fa913524d4b3e887f",
+  "build_run_id": "43986367988",
+  "publish_run_id": "43986456709",
+  "sha256": "194d829e0cd63b2312f37c4624fbe627c3a7eda4a5fc6270398062a0a8b8306b",
+  "universe_id": "10777026486",
+  "place_id": "135004978091658",
+  "revision": "14",
+  "operation": "operations/8da37e58-12f4-4ed4-a172-9e9ae91c3b0f",
+  "deployment_id": 7840187753,
+  "publication": {"done": true, "isPublished": true, "asset_path": "assets/135004978091658"},
+  "states_with_evidence": ["BUILD_OK", "PREVIEW_OK", "PUBLISHED", "PERSISTED_OK"],
+  "verification": {
+    "build": "PASS", "artifact_hash_and_sources": "PASS", "persisted": "PASS",
+    "engine_bootstrap": "PASS", "runtime_new_server": "PENDING", "playtest": "PENDING",
+    "production": "NOT_APPROVED"
+  },
+  "module_root": "ServerScriptService/Mythragon",
+  "modules_expected": [
+    "Diagnostics/Bootstrap", "Diagnostics/BuildInfo", "Diagnostics/Health",
+    "Dragons/InteractionState", "Dragons/InteractionState.spec", "Dragons/Varkhion",
+    "Dragons/Varkhion.engine.spec", "Dragons/VarkhionModel",
+    "Ember/Combat", "Ember/EncounterState", "Ember/EncounterState.spec", "Ember/Map",
+    "Hub/Latunia", "Hub/Map", "Latunia/Codex/Build", "Latunia/Codex/Islands",
+    "Latunia/Codex/Layout", "Latunia/Codex/Layout.spec", "Latunia/Codex/Map",
+    "Latunia/Codex/Map.engine.spec", "Latunia/Codex/TravelState",
+    "Profile/Profile", "Profile/Profile.spec", "Start"
+  ],
+  "assets_expected": [],
+  "expected_content": {
+    "latunia": true, "island_slots": 5, "detailed_islands": 3,
+    "travel_prompts": 10, "latunia_gate": true, "provisional_islands": ["Gelo", "Selva"]
+  },
+  "tests_executed": [
+    "Luau syntax 24 files plus probe and negative syntax gate",
+    "4 standalone Luau specs",
+    "VarkhionModel export positive/negative CLI gate; constants stubbed, NOT geometry",
+    "22 Python contract tests with simulated APIs",
+    "5 policies with pinned Roblox LSP definitions and all Enum references",
+    "Reproducible Rojo build and exact artifact source verification",
+    "Open Cloud revision 14: exact persisted Sources of 24 scripts PASS",
+    "Explicit isolated Bootstrap twice: idempotent, Core/Varkhion/Latunia READY",
+    "5 slots with correct anchors, exactly one VilaCentral, detailed Deserto/Vulcanica",
+    "Gelo/Selva explicitly provisional, gate position, 10 travel prompts",
+    "Raycasts confirm collidable floor at all 5 arrivals, anchored parts, geometry budget"
+  ],
+  "engine_result": {
+    "mode": "ISOLATED_ENGINE_BOOTSTRAP", "healthy": true, "parts": 1317, "prompts": 10,
+    "physics": "NOT_RUN", "player_travel": "NOT_RUN"
+  },
+  "engine_task": "universes/10777026486/places/135004978091658/versions/14/luau-execution-sessions/5eddd570-3471-4ed9-abda-ff67ac871ec0/tasks/5eddd570-3471-4ed9-abda-ff67ac871ec0",
+  "engine_job_id": "71334df3-9f09-4f15-96f8-765fae2f8a5b",
+  "pending": [
+    "Fresh normal server runtime with automatic Start and staging version UI",
+    "Physics and player travel: Hub -> Central -> islands -> Central -> Aetheria",
+    "Keyboard/touch/multiplayer, Ember victory/reward/return, Varkhion interaction",
+    "Owner visual evaluation; Gelo/Selva remain provisional",
+    "Studio-only geometry/lifecycle specs not executed by this cloud probe"
+  ],
+  "evidence_url": "https://github.com/walker-ferreira/MYTHRAGON/actions/runs/43986456709",
+  "artifact_name": "staging-evidence-43986456709-1",
+  "rollback": "Revert the failing content change through PR, run checks, publish a new staging revision. Revision 13 is known to fail Varkhion initialization; do not restore it as a healthy baseline.",
+  "play_url": "https://www.roblox.com/games/135004978091658"
+}

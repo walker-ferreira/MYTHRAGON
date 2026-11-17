@@ -32,4 +32,10 @@ main c66961397f30bb684f939421642dfc27c7a5848f; CI ampliada oficial 43983671970 P
 Primeiro PUBLISH automático 43983719759 falhou antes de upload por REL-004,
 não por falta de permissão. Não confundir pipeline instalado com release publicada.
 
+Validação operacional final da recuperação: main de conteúdo fc262b4a63e4,
+CI43986367988 e PUBLISH43986456709 SUCCESS, revisão14 publicada. Secret existente
+também autorizou Luau Execution: leitura de Source da revisão, bootstrap isolado
+e logs estruturados foram executados de fato. Não precisou nova credencial nem
+extração local do secret. Servidor normal/cliente continuam fora dessa prova.
+
 Não registrar cookies, tokens, API keys ou conteúdo de configuração com segredos.

@@ -2,6 +2,14 @@
 
 ## REC-001 — recuperação 2026-11-16 (estado mais recente)
 
+**Entrega recuperada:** PRs #12/#14/#16/#17 integrados com checks e revisões reais.
+Main de conteúdo fc262b4a63e42176ede5255fa913524d4b3e887f, CI43986367988,
+PUBLISH43986456709: revisão **14**, PERSISTED_OK e bootstrap isolado PASS.
+Core/Varkhion/Latúnia READY, 24 fontes, cinco slots, dez prompts, 1.317 partes.
+Servidor normal/cliente/física/playtest pendentes; Gelo/Selva provisórios.
+Manifesto/roteiro em docs/releases/REC-001-recovered-staging.md.
+Os parágrafos seguintes preservam a sequência histórica, não bloqueios atuais.
+
 **Retomada após autenticação:** OPS-002 resolvido; PR #12 integrado com CI ampliada
 PASS (43983522637 e main 43983671970). Main c669613. Publicação automática
 43983719759 falhou antes de PATCH por confundir deployment automático vazio com

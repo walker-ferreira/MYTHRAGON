@@ -108,5 +108,25 @@ integrar PR #12 parcial nem acionar publisher antigo para contornar OPS-002.
 - Contribuição GLM externa detectada/preservada em PR #15; feedback técnico
   enviado via comentário, sem presumir recebimento nem integrar código conflitante.
 
+## Primeira release recuperada — revisão 14
+
+- Revisão GLM independente do fix sem bloqueantes; sessão anterior teve erro de
+  compaction do harness, revisão reatribuída a ses_e192465baffe2R3yxtYwxk7Xy9.
+  Nenhuma aprovação foi inventada durante a falha do executor.
+- CI PR17 43986112928 PASS; merge fc262b4a63e42176ede5255fa913524d4b3e887f.
+- CI main 43986367988 PASS; PUBLISH43986456709 SUCCESS, envio único,
+  revisionId14, isPublished true, destino autorizado.
+- Operação8da37e58-12f4-4ed4-a172-9e9ae91c3b0f; SHA-256
+  194d829e0cd63b2312f37c4624fbe627c3a7eda4a5fc6270398062a0a8b8306b.
+- Artefato baixado e revalidado independentemente após publicação.
+- Engine real na revisão14: 24 fontes conferidas, Core/Varkhion/Latunia READY,
+  bootstrap idempotente; cinco slots, Vila única, três detalhados, Gelo/Selva
+  provisórios, dez prompts, 1.317 peças, pisos colidíveis nas cinco chegadas PASS.
+- Estados: BUILD_OK/PREVIEW_OK/PUBLISHED/PERSISTED_OK + engine_bootstrap PASS.
+  Servidor normal/Start automático, física, viagem com jogador, cliente, visual e
+  playtest continuam PENDING. Produção não aprovada/configurada.
+- G entregue experimental; H preparado na fila com PRs existentes preservados.
+  Roteiro curto em docs/releases/REC-001-recovered-staging.md.
+
 O commit que contém cada registro é consultável por `git log -- <arquivo>`;
 não inserir SHA autorreferencial fictício. Resultados posteriores entram abaixo.

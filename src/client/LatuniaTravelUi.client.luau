@@ -83,6 +83,29 @@ menu.Parent = gui
 round(menu, 10)
 label(menu, "Title", "TERMINAL DE VIAGEM", 8, 26).Font = Enum.Font.GothamBold
 label(menu, "Hint", "Vá até o portal ou cais de embarque para viajar.", 36, 30)
+local mobileMenuAttribute = "MythragonMobileMenu"
+local menuId = "Travel"
+local function setOpen(value)
+    if touch then
+        if value then
+            playerGui:SetAttribute(mobileMenuAttribute, menuId)
+        elseif playerGui:GetAttribute(mobileMenuAttribute) == menuId then
+            playerGui:SetAttribute(mobileMenuAttribute, nil)
+        end
+    end
+    menu.Visible = value
+    if value then menu.CanvasPosition = Vector2.zero end
+    open.Text = value and "FECHAR" or "VIAGEM"
+end
+
+if touch then
+    playerGui:GetAttributeChangedSignal(mobileMenuAttribute):Connect(function()
+        if menu.Visible and playerGui:GetAttribute(mobileMenuAttribute) ~= menuId then
+            setOpen(false)
+        end
+    end)
+end
+
 for i, entry in ipairs(destinations) do
     local button = Instance.new("TextButton")
     button.Name = "Go" .. entry[2]
@@ -97,15 +120,12 @@ for i, entry in ipairs(destinations) do
     round(button, 6)
     local id = entry[2]
     button.Activated:Connect(function()
-        menu.Visible = false
-        open.Text = "VIAGEM"
+        setOpen(false)
         remote:FireServer(id)
     end)
 end
 open.Activated:Connect(function()
-    menu.Visible = not menu.Visible
-    if menu.Visible then menu.CanvasPosition = Vector2.zero end
-    open.Text = menu.Visible and "FECHAR" or "VIAGEM"
+    setOpen(not menu.Visible)
 end)
 
 local lastNotice

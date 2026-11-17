@@ -77,5 +77,20 @@ integrar PR #12 parcial nem acionar publisher antigo para contornar OPS-002.
   19 testes Python PASS local. Nova revisão GLM solicitada. Não republicar build
   anterior por caminho manual; integrar correção e deixar pipeline oficial agir.
 
+## Primeira publicação rastreável e falha real de inspeção
+
+- PR #14 revisado pelo GLM sem bloqueantes e CI 43984167625 PASS; integrado em
+  f0ebd49bfd56f65c482cfad81246cb91bef1f5bc.
+- CI main 43984307864 PASS; PUBLISH automático 43984354467 enviou uma vez,
+  Roblox confirmou revisionId 13, destino autorizado, isPublished true.
+- Operação 470fdc76-0aeb-482d-8753-83d396c19267; recibo completo e resposta
+  preservados no artefato staging-evidence-43984354467-1.
+- Luau Execution real disponível: revisão 13 e 24 Sources conferidos. PERSISTED_OK.
+- Bootstrap explícito no motor isolado falhou (WORLD-002), portanto workflow
+  FAILED e release NÃO saudável. Nenhuma prova de servidor normal/cliente.
+- Diagnóstico precisa dos logs estruturados da tarefa existente. Inspeção separada
+  sem upload evita republicação da mesma falha; docs/inspeção não geram release
+  de conteúdo, mas continuam sob CI no PR. Recuperação em andamento.
+
 O commit que contém cada registro é consultável por `git log -- <arquivo>`;
 não inserir SHA autorreferencial fictício. Resultados posteriores entram abaixo.

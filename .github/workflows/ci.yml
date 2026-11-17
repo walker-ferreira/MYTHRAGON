@@ -3,6 +3,11 @@ on:
   pull_request:
   push:
     branches: [main, 'setup/**']
+    # PRs validate all changes. Only content/composition changes produce a release.
+    paths:
+      - 'src/**'
+      - 'assets/**'
+      - 'default.project.json'
   workflow_dispatch:
 
 permissions:

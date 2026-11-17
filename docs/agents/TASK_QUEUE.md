@@ -6,6 +6,13 @@ Claim por branch/PR, nunca dois escritores no mesmo worktree.
 Estados de trabalho: AVAILABLE, ASSIGNED, IMPLEMENTING, REVIEW, BLOCKED, INTEGRATED,
 AWAITING_OWNER. Estados de certificação são separados (AGENTS.md).
 
+## COMBAT-003 — sopro direcionado e esquiva no impacto
+
+- Responsável: CODEX. Base da main: `e6cd00352d29b089e4320da1f06a1d66ad523e4e` (PR #54). Branch: `codex/ember-breath-dodge-fix`.
+- Caminhos: `src/server/Ember/` e `docs/testing/ember-targeted-breath.md`. Dependências: combate de Ember, dimensões do piso e relógio do servidor.
+- Aceite: quadrado permanece imóvel e sobre o piso. O servidor concede 0,45 segundo de proteção contra o sopro após uma esquiva aceita, com cooldown de 3 segundos.
+- Estado: REVIEW. Próximo checkpoint: verificar publicação e testar o impacto com teclado, controle e toque em cliente real.
+
 ## EMBER-TRAVEL-001 — sincronizar saída de Ember pelo painel Comandos
 
 - Responsável: CODEX. Base: `c41c35b75dd8777890453d30ff3c81c563856a4a`. Branch: `codex/ember-command-travel-sync`.

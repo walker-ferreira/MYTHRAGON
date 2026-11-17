@@ -19,7 +19,7 @@ local function part(parent, name, size, position, color, material)
     return value
 end
 
-function Combat.new(model, center, onVictory)
+function Combat.new(model, center, arenaHalfSize, onVictory)
     local self = setmetatable({ center = center, onVictory = onVictory }, Combat)
     local enemy = Instance.new("Model")
     enemy.Name = "BasaltWyrm"
@@ -40,10 +40,12 @@ function Combat.new(model, center, onVictory)
             center + Vector3.new(side * 1.5, 7, 0), Color3.fromRGB(173, 149, 115))
         horn.CFrame *= CFrame.Angles(math.rad(-25), 0, math.rad(side * -15))
     end
-    self.warning = part(model, "BreathTelegraph", Vector3.new(22, 0.12, 22),
+    local warningWidth = 2 * BreathPattern.HALF_WIDTH
+    self.warning = part(model, "BreathTelegraph", Vector3.new(warningWidth, 0.12, warningWidth),
         center + Vector3.new(0, 0.15, -4), Color3.fromRGB(255, 69, 20), Enum.Material.Neon)
     self.warning.CanCollide = false
     self.warning.CanTouch = false
+    self.arenaHalfSize = arenaHalfSize
     self.warning.Transparency = 1
 
     local board = Instance.new("BillboardGui")
@@ -200,16 +202,17 @@ function Combat:enter(player)
                 continue
             end
             -- Lock the target at the start of the 1.2s wind-up. The warning
-            -- stays in place so dodging or walking away always avoids damage.
+            -- stays in place so the player can leave it before impact.
             local aimX, aimZ = BreathPattern.target(
-                self.center.X, self.center.Z, position.X, position.Z)
+                self.center.X, self.center.Z, position.X, position.Z,
+                self.arenaHalfSize.X, self.arenaHalfSize.Z)
             if not aimX then
                 self.warning.Transparency = 1
                 continue
             end
             self.warning.Position = Vector3.new(aimX, self.center.Y + 0.15, aimZ)
             self.warning.Transparency = 0.35
-            self:message("SOPRO MIRANDO VOCÊ! Saia da área laranja · Guardião "
+            self:message("SOPRO! Saia da área laranja ou esquive no impacto · Guardião "
                 .. s.rules.health .. "/100")
             task.wait(1.2)
             if self.session ~= s then break end
@@ -222,7 +225,7 @@ function Combat:enter(player)
             local zone = self.warning.Position
             local inWarning = BreathPattern.hits(
                 zone.X, zone.Z, at.X, at.Z, at.Y - zone.Y)
-            if valid and inWarning then
+            if valid and inWarning and not s.dodge:isEvading(os.clock()) then
                 humanoid:TakeDamage(25)
                 if self.session == s then
                     self:message("-25 PV · Você " .. math.ceil(humanoid.Health)

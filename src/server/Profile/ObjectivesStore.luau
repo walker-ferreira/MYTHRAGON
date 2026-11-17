@@ -114,6 +114,7 @@ function ObjectivesStore.start(Hub)
 
     Hub.setObjectiveCompletionHandler(function(player, objectiveId)
         if not active or not Data.allowed(objectiveId) then return end
+        ExplorationPanel.markObjective(player, objectiveId)
         if type(player.UserId) == "number" and player.UserId > 0 then
             schedule(player.UserId, objectiveId)
         end

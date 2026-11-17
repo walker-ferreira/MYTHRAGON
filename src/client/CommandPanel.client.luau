@@ -108,9 +108,27 @@ hint.TextWrapped = true
 hint.Text = "Ferramentas do proprietário · apenas staging"
 hint.Parent = panel
 
+local mobileMenuAttribute = "MythragonMobileMenu"
+local menuId = "Commands"
 local function setOpen(value)
+    if touch then
+        if value then
+            playerGui:SetAttribute(mobileMenuAttribute, menuId)
+        elseif playerGui:GetAttribute(mobileMenuAttribute) == menuId then
+            playerGui:SetAttribute(mobileMenuAttribute, nil)
+        end
+    end
     panel.Visible = value
+    if value then panel.CanvasPosition = Vector2.zero end
     open.Text = value and "× Fechar" or "⚙ Comandos"
+end
+
+if touch then
+    playerGui:GetAttributeChangedSignal(mobileMenuAttribute):Connect(function()
+        if panel.Visible and playerGui:GetAttribute(mobileMenuAttribute) ~= menuId then
+            setOpen(false)
+        end
+    end)
 end
 
 local destinations = {

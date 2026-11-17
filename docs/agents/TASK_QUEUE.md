@@ -6,6 +6,13 @@ Claim por branch/PR, nunca dois escritores no mesmo worktree.
 Estados de trabalho: AVAILABLE, ASSIGNED, IMPLEMENTING, REVIEW, BLOCKED, INTEGRATED,
 AWAITING_OWNER. Estados de certificação são separados (AGENTS.md).
 
+## MOBILE-MENU-002 — alternar VIAGEM e Comandos por toque
+
+- Responsável: CODEX. Base: `3064e0c2e6147a7b30044d75008bb817191c1e4e`. Branch: `codex/mobile-menu-switching`.
+- Caminhos: `src/client/CommandPanel.client.luau`, `src/client/LatuniaTravelUi.client.luau` e roteiro final.
+- Aceite: abrir um painel fecha o outro, restaura o texto do botão anterior e reabre a lista no topo. Usa estado local no PlayerGui em dispositivos com toque.
+- Próximo checkpoint: CI, staging e conferência da alternância em partida real.
+
 ## MOBILE-HUD-001 — liberar controles nativos e mostrar a lista completa
 
 - Responsável: CODEX. Base: `f007ea62ab0e36c1e77e1df61ebd19c841d7b271`. Branch: `codex/mobile-hud-clear-controls`.

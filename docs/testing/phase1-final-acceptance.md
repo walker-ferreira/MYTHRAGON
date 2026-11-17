@@ -61,5 +61,5 @@ Em caso de falha: registrar ação reproduzível, dispositivo, imagem/vídeo ou 
 A captura de cliente da revisão 60 comprova o HUD em READY, o Selo de Ember visível e cinco descobertas na conta observada. Ela mostra Comandos sobre o botão de pulo, Voar sobre o título dos selos e a lista de Latúnia cortada. A captura não registra o percurso nem a reconexão entre servidores.
 
 - Confira em paisagem e em retrato se Voar, VIAGEM e Comandos ficam abaixo da faixa de revisão e acima dos títulos do HUD. Confira o pulo e o joystick com os menus fechados.
-- Abra os dois menus separadamente e role até o fim em paisagem. Confira Subir e Descer ao ativar Voar e role a lista de Latúnia até a próxima missão.
+- Em paisagem, abra VIAGEM e depois toque em Comandos. Confira se VIAGEM fecha e o botão volta a mostrar seu nome. Faça a troca inversa e role até o fim de cada lista. Confira Subir e Descer ao ativar Voar e role a lista de Latúnia até a próxima missão.
 - Com teclado e mouse, confira a posição habitual dos botões.

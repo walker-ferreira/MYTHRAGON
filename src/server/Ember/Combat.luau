@@ -2,6 +2,8 @@ local Players = game:GetService("Players")
 local HttpService = game:GetService("HttpService")
 local State = require(script.Parent.EncounterState)
 
+local IDLE_MESSAGE = "Guardião de Ember"
+
 local Combat = {}
 Combat.__index = Combat
 
@@ -45,9 +47,10 @@ function Combat.new(model, center, onVictory)
     self.warning.Transparency = 1
 
     local board = Instance.new("BillboardGui")
-    board.Size = UDim2.fromOffset(370, 100)
+    board.Size = UDim2.fromOffset(250, 64)
     board.StudsOffset = Vector3.new(0, 7, 0)
-    board.AlwaysOnTop = true
+    board.MaxDistance = 38
+    board.AlwaysOnTop = false
     board.Parent = self.body
     local text = Instance.new("TextLabel")
     text.Size = UDim2.fromScale(1, 1)
@@ -56,9 +59,12 @@ function Combat.new(model, center, onVictory)
     text.TextColor3 = Color3.fromRGB(255, 224, 178)
     text.TextScaled = true
     text.TextWrapped = true
+    local textLimit = Instance.new("UITextSizeConstraint")
+    textLimit.MaxTextSize = 18
+    textLimit.Parent = text
     text.Parent = board
     self.text = text
-    self:message("Guardião de Ember\nEntre pelo portal do hub")
+    self:message(IDLE_MESSAGE)
 
     local attack = Instance.new("ProximityPrompt")
     attack.Name = "Attack"
@@ -107,11 +113,7 @@ function Combat:close(result)
     s.death:Disconnect()
     s.characterRemoving:Disconnect()
     self.warning.Transparency = 1
-    if s.rules.result == "defeat" then
-        self:message("DERROTA · renasça no hub e tente novamente")
-    elseif s.rules.result ~= "victory" then
-        self:message("Tentativa encerrada · volte pelo hub para tentar novamente")
-    end
+    self:message(IDLE_MESSAGE)
 end
 
 function Combat:enter(player)

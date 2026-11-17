@@ -93,10 +93,10 @@ function ProgressStore.start(Profile, Hub)
                 return
             end
             if snapshot.seals.Ember then
-                ExplorationPanel.markEmber(player)
                 local seal = Profile.sealForRealm("Ember")
                 if seal then
                     Profile.grantSeal(player, seal)
+                    ExplorationPanel.markEmber(player)
                     Hub.setSealEarned(player, seal.index)
                 end
             end

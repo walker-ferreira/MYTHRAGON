@@ -114,10 +114,10 @@ function ObjectivesStore.start(Hub)
 
     Hub.setObjectiveCompletionHandler(function(player, objectiveId)
         if not active or not Data.allowed(objectiveId) then return end
-        ExplorationPanel.markObjective(player, objectiveId)
         if type(player.UserId) == "number" and player.UserId > 0 then
             schedule(player.UserId, objectiveId)
         end
+        ExplorationPanel.markObjective(player, objectiveId)
     end)
 
     table.insert(connections, Players.PlayerRemoving:Connect(function(player)
@@ -163,8 +163,8 @@ function ObjectivesStore.start(Hub)
             end
             if visited.retorno then return false end
             visited.retorno = true
-            ExplorationPanel.markObjective(player, "retorno")
             schedule(player.UserId, "retorno")
+            ExplorationPanel.markObjective(player, "retorno")
             return true
         end,
         recordArrival = function(_, player, islandId)
@@ -180,8 +180,8 @@ function ObjectivesStore.start(Hub)
             end
             if visited[objectiveId] then return false end
             visited[objectiveId] = true
-            ExplorationPanel.mark(player, objectiveId)
             schedule(player.UserId, objectiveId)
+            ExplorationPanel.mark(player, objectiveId)
             return true
         end,
         stop = function()

@@ -2,6 +2,7 @@ local Players = game:GetService("Players")
 local HttpService = game:GetService("HttpService")
 local State = require(script.Parent.EncounterState)
 local DodgeState = require(script.Parent.DodgeState)
+local DodgeBounds = require(script.Parent.DodgeBounds)
 local BreathPattern = require(script.Parent.BreathPattern)
 
 local Combat = {}
@@ -266,14 +267,27 @@ function Combat:dodge(player)
     local direction = horizontal.Magnitude > 0.1 and horizontal.Unit or Vector3.new(0, 0, 1)
     local shift = direction * 11
     local target = root.Position + shift
-    if (target - self.center).Magnitude > 48 then return false end
+    if not DodgeBounds.inside(self.center.X, self.center.Z,
+        target.X, target.Z, self.arenaHalfSize.X, self.arenaHalfSize.Z) then
+        return false
+    end
     local rayParams = RaycastParams.new()
     rayParams.FilterType = Enum.RaycastFilterType.Exclude
     rayParams.FilterDescendantsInstances = { s.character, self.enemy, self.warning }
     if workspace:Raycast(root.Position, shift, rayParams) then return false end
-    if not s.dodge:use(os.clock()) then return false end
-    root.AssemblyLinearVelocity = Vector3.zero
-    s.character:PivotTo(s.character:GetPivot() + shift)
+    local now = os.clock()
+    if not s.dodge:canUse(now) then return false end
+    -- Only consume cooldown/brief invulnerability after the actual move.
+    -- Character disappearance or PivotTo failure must not strand the player.
+    local moved, err = pcall(function()
+        root.AssemblyLinearVelocity = Vector3.zero
+        s.character:PivotTo(s.character:GetPivot() + shift)
+    end)
+    if not moved then
+        warn("[Ember] dodge move failed: " .. tostring(err))
+        return false
+    end
+    if not s.dodge:use(now) then return false end
     self:message("ESQUIVA! · Guardião " .. s.rules.health .. "/100")
     return true
 end

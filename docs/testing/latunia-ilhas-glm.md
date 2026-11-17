@@ -48,6 +48,17 @@ melhorias em `src/server/Hub/Latunia.luau` (Vila Central). Geometria validada po
        deck sobre a base do mercado, praça no terraço alto).
 8. [ ] Bandeiras nas escadarias das docas; lampiões extras acesos.
 
+## Terminais de Viagem (GLM-R011)
+
+1. [ ] Hub: terminal visível a leste do spawn (deck), pad "Vila Central";
+       clique/toque teleporta para a chegada da Vila.
+2. [ ] Vila: terminal na praça com 5 pads (Hub/Gelo/Selva/Deserto/Vulcânica).
+3. [ ] Cada ilha tem terminal de retorno junto à chegada (pad "Vila Central").
+4. [ ] Cooldown 1,5 s (cliques rápidos não aceleram viagem).
+5. [ ] Deserto/Vulcânica: terminal sobre piso da chegada, sem flutuar
+       (posicional estimado pelo Layout — confirmar visualmente).
+6. [ ] Mobile: toque no pad funciona; rótulos legíveis.
+
 ## Registro
 
 | Data | Build (SHA) | Resultado | Observações |

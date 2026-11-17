@@ -51,6 +51,11 @@ LAT-GLM-001 autoriza módulos próprios de Gelo/Selva em `src/server/Hub/`.
    para o Codex (arquivos dele) — fluxo contínuo de lava ligando caldeira ao mar,
    interior navegável da mina, fumaça de refinaria com material registrado,
    guarda-corpos de pontes e placas nos desvios.
+11. **Interface de comandos (GLM-R011):** Terminais de Viagem físicos (pads de
+    latão com ClickDetector, rótulo flutuante, cooldown 1,5 s validado no
+    servidor) no hub, na praça da Vila Central e na chegada de cada ilha —
+    rotas idênticas às do `Layout.canTravel`. Sem client scripts; pedido de
+    accessor `Map.controller` ao Codex para integrar ao estado oficial.
 9. **Ambientação global:** nenhuma alteração em `Lighting` (compartilhado com a
    Aetheria) nesta rodada — proposta separada ao Codex para avaliar atmosfera por
    ilha. Iluminação nova é local (PointLights/Neon já usados no padrão do jogo).

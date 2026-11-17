@@ -6,11 +6,11 @@ Jogo de fantasia épica para Roblox. Repositório principal em **Luau + Rojo**; 
 
 - **Aetheria (Hub):** spawn, cenário, quatro selos visuais, Guardiões do Éter, objetivos e santuário de Varkhion.
 - **Ember:** portal, arena com volume em basalto, Guardião, barra de vida, ataque, esquiva (Q/controle B/toque, cooldown autoritativo), dano alinhado ao aviso laranja, vitórias validadas no servidor e retorno com recuperação de falhas.
-- **Latúnia:** Vila Central, atlas, docas e rotas de teleporte autenticadas no servidor. Deserto, Vulcânica, Gelo e Selva possuem cenários exploráveis iniciais; a primeira visita a cada ilha gera uma descoberta persistente (DataStore) validada pelo servidor. Dirigíveis e ferrovias são cenográficos, sem transporte real.
+- **Latúnia:** Vila Central, atlas, docas e rotas de teleporte autenticadas no servidor. Gelo e Selva incluem camadas visuais do GLM sobre os cenários-base do Codex (caverna, lago, cachoeira e templo); Deserto e Vulcânica mantêm cenários exploráveis iniciais. A primeira visita a cada ilha gera uma descoberta persistente (DataStore) validada pelo servidor. Dirigíveis e ferrovias seguem cenográficos.
 - **NPCs:** biblioteca de 10 personagens com diálogos e catálogos **preparada, mas não instalada no mundo**, aguardando autorização de colocação.
 - **Engenharia:** CI verifica compilação Luau, contratos unitários, Enums Roblox e build Rojo. Publicação automática somente em **staging** após integração e CI aprovada, seguida por inspeção de fontes/Bootstrap em motor isolado.
 
-A persistência v1 do **Selo de Ember** e dos três objetivos atuais de Aetheria foi implementada via DataStore com gravação monotônica e recuperação na interface; **ainda não foi comprovada entre sessões reais de jogadores**. Não afirmar `DATASTORE_OK`, `RUNTIME_OK`, `PLAYTEST_OK` ou `PRODUCTION_APPROVED` sem as evidências correspondentes. A sequência narrativa completa de dez missões, multiplayer, interface no celular e desempenho ainda precisam ser desenvolvidos e testados.
+A persistência v1 do **Selo de Ember**, dos três objetivos de Aetheria e das cinco descobertas de Latúnia usa DataStore com gravação monotônica, recuperação na interface e nova tentativa periódica após falhas prolongadas; **ainda não foi comprovada entre sessões reais de jogadores**. Não afirmar `DATASTORE_OK`, `RUNTIME_OK`, `PLAYTEST_OK` ou `PRODUCTION_APPROVED` sem as evidências correspondentes. A sequência narrativa completa de dez missões, multiplayer, interface no celular e desempenho ainda precisam ser desenvolvidos e testados.
 
 ## Como testar
 

@@ -90,13 +90,18 @@ function Controller:request(player, point, from, to)
     if not root or not humanoid or humanoid.Health <= 0 then return end
     local ticket = self.travel:begin(player, os.clock(), (root.Position-point.Position).Magnitude, true)
     if not ticket then return end
-    self:notify(player, "LATÚNIA · preparando travessia rápida de teste…")
     task.delay(1.2, function()
-        if self.destroyed then return end
-        local valid = player.Parent == Players and player.Character == character
-            and character.Parent and humanoid.Health > 0 and root.Parent == character
-            and point:IsDescendantOf(workspace) and (root.Position-point.Position).Magnitude <= 14
-        if not self.travel:finish(player, ticket) or not valid then return end
+        if self.destroyed or not self.travel:finish(player, ticket) then return end
+        if player.Parent ~= Players or player.Character ~= character
+            or not character.Parent or humanoid.Health <= 0 or root.Parent ~= character then
+            return
+        end
+        local stillAtPortal = point:IsDescendantOf(workspace)
+            and (root.Position - point.Position).Magnitude <= 14
+        if not stillAtPortal then
+            self:notify(player, "Travessia cancelada. Aproxime-se do portal e tente novamente.")
+            return
+        end
         if to == "Hub" then
             -- Keep the controller's travel state if returning to Aetheria fails.
             -- The player can then activate the return prompt again.
@@ -129,6 +134,8 @@ function Controller:request(player, point, from, to)
             or "\nMapa explorável em desenvolvimento · sem missão/recompensa nova."
         self:notify(player, Layout.islands[to].name..extra)
     end)
+    local notified, err = pcall(self.notify, self, player, "LATÚNIA · preparando travessia rápida de teste…")
+    if not notified then warn("[Latunia] falha ao exibir aviso de embarque: " .. tostring(err)) end
     return true
 end
 

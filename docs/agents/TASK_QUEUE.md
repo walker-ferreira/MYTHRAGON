@@ -6,6 +6,13 @@ Claim por branch/PR, nunca dois escritores no mesmo worktree.
 Estados de trabalho: AVAILABLE, ASSIGNED, IMPLEMENTING, REVIEW, BLOCKED, INTEGRATED,
 AWAITING_OWNER. Estados de certificação são separados (AGENTS.md).
 
+## LATUNIA-CANCEL-NOTICE-001 — indicar cancelamento da travessia
+
+- Responsável: CODEX. Base: `e985890e35052ef7669233ec703ab610fec20246`. Branch: `codex/latunia-travel-cancel-notice`.
+- Caminhos: `src/server/Latunia/Codex/Map.luau` e `docs/testing/latunia-safe-travel-menu-api.md`.
+- Aceite: avisar cancelamento ao sair do alcance, encerrar o bilhete e não creditar descoberta. Falha no aviso inicial não impede a conclusão do bilhete.
+- Próximo checkpoint: CI e inspeção de staging. Validar cancelamento e nova tentativa em partida real.
+
 ## EMBER-LEGACY-SEAL-001 — restaurar o selo com evidência do retorno anterior
 
 - Responsável: CODEX. Base: `9133f1eff4a7b906673862bc83d5ee8a971fc1c9`. Branch: `codex/recover-legacy-ember-seal`.

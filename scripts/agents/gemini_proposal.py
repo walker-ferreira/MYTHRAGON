@@ -2,38 +2,9 @@
 import json
 import os
 from pathlib import Path, PurePosixPath
-from urllib import request, error
+from gemini_api import generate
 
 
-def select_model():
-    """Discover an available model rather than assuming a fixed model name."""
-    list_req = request.Request(
-        "https://generativelanguage.googleapis.com/v1beta/models?pageSize=100",
-        headers={"x-goog-api-key": os.environ["GEMINI_API_KEY"]},
-    )
-    try:
-        with request.urlopen(list_req, timeout=30) as response:
-            available = json.load(response).get("models", [])
-    except error.HTTPError as exc:
-        raise SystemExit(
-            f"Gemini model discovery HTTP {exc.code}; verify API key, API enablement, and quota"
-        ) from exc
-    print(f"Gemini model discovery returned {len(available)} models", flush=True)
-    supported = [
-        m["name"] for m in available
-        if "generateContent" in m.get("supportedGenerationMethods", [])
-        and m.get("name", "").startswith("models/gemini-")
-    ]
-    preferred = ("models/gemini-2.5-flash", "models/gemini-2.0-flash")
-    for model in preferred:
-        if model in supported:
-            print(f"Gemini selected model: {model}", flush=True)
-            return model
-    if supported:
-        selected = sorted(supported)[0]
-        print(f"Gemini selected model: {selected}", flush=True)
-        return selected
-    raise SystemExit("No Gemini generateContent model available to this API key")
 
 root = Path(__file__).resolve().parents[2]
 target = os.environ["GEMINI_TARGET_FILE"]
@@ -70,24 +41,14 @@ prompt = (
     f"TASK: {task}\nTARGET: {target}\nAGENT RULES:\n"
     + "\n".join(context) + "\nORIGINAL FILE:\n" + original
 )
-body = json.dumps({
+result = generate({
     "contents": [{"parts": [{"text": prompt}]}],
     "generationConfig": {
         "temperature": 0.1,
         "maxOutputTokens": 8192,
         "responseMimeType": "application/json",
     },
-}).encode()
-req = request.Request(
-    "https://generativelanguage.googleapis.com/v1beta/" + select_model() + ":generateContent",
-    data=body, method="POST",
-    headers={"Content-Type": "application/json", "x-goog-api-key": os.environ["GEMINI_API_KEY"]},
-)
-try:
-    with request.urlopen(req, timeout=100) as response:
-        result = json.load(response)
-except error.HTTPError as exc:
-    raise SystemExit(f"Gemini generateContent HTTP {exc.code}; selected model may not support this API version or key") from exc
+}, timeout=100)
 candidates = result.get("candidates") or []
 parts = candidates[0].get("content", {}).get("parts", []) if candidates else []
 raw = "".join(p.get("text", "") for p in parts if p.get("text"))

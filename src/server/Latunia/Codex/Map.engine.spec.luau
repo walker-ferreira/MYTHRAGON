@@ -20,7 +20,9 @@ return function()
         end
     end
     assert(parts < 2500, "Geometry budget exceeded")
-    assert(prompts == 10, "Four outbound, four return, access and exit")
+    assert(prompts == 11, "Ten travel prompts plus the GLM village quest mural")
+    local mural = assert(islands.Central.Content:FindFirstChild("MuralQuadro", true))
+    assert(mural:FindFirstChild("LatuniaQuestBoard"), "Village quest interaction missing")
     local params = RaycastParams.new()
     params.FilterType = Enum.RaycastFilterType.Include
     params.FilterDescendantsInstances = { islands }

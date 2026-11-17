@@ -6,13 +6,20 @@ Claim por branch/PR, nunca dois escritores no mesmo worktree.
 Estados de trabalho: AVAILABLE, ASSIGNED, IMPLEMENTING, REVIEW, BLOCKED, INTEGRATED,
 AWAITING_OWNER. Estados de certificação são separados (AGENTS.md).
 
+## EMBER-LEGACY-SEAL-001 — restaurar o selo com evidência do retorno anterior
+
+- Responsável: CODEX. Base: `9133f1eff4a7b906673862bc83d5ee8a971fc1c9`. Branch: `codex/recover-legacy-ember-seal`.
+- Caminhos: `src/server/Profile/ProgressData.luau` e `ProgressData.spec.luau`.
+- Aceite: restaurar selo de perfil v1 com retorno confirmado e gravação do selo ausente. Entrada no portal, descoberta e valores inválidos não restauram o selo.
+- Próximo checkpoint: CI e publicação experimental, seguidas de reconexão num cliente Roblox.
+
 ## EMBER-RETURN-ATOMIC-001 — gravar retorno e selo juntos
 
 - Responsável: CODEX. Base: `5e87e2a575143b39af082ae50c151cab31007f14`. Branch: `codex/persist-ember-return-with-seal`.
 - Caminhos: `src/server/Profile/ObjectivesData.luau` e `ObjectivesData.spec.luau`.
 - Dependências: retorno validado pelo servidor exige vitória, selo concedido e viagem concluída.
 - Aceite: gravação do marco de retorno inclui o selo de Ember na mesma atualização. Descobertas de ilhas preservam selos existentes.
-- Próximo checkpoint: rodar CI e confirmar a revisão experimental. Reconexão com cliente Roblox faz parte do teste de aceitação.
+- Estado: INTEGRATED (PR #72), revisão 58 experimental confirmada no GitHub Actions `44104982300`. A reconexão no cliente Roblox faz parte do teste de aceitação.
 
 ## QUEST-SAVE-BATCH-001 — consolidar gravação dos marcos da jornada
 

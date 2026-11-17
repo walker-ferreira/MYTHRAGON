@@ -6,6 +6,15 @@ Claim por branch/PR, nunca dois escritores no mesmo worktree.
 Estados de trabalho: AVAILABLE, ASSIGNED, IMPLEMENTING, REVIEW, BLOCKED, INTEGRATED,
 AWAITING_OWNER. Estados de certificação são separados (AGENTS.md).
 
+## GATE FINAL — Fase 1 candidata, revisão 52 (PENDING PLAYTEST)
+
+- Responsável: CODEX/integrador. Base `c932ca58c9c6041eb1969e6483798fd315b260c9`; PRs #57–#63 integrados; código de dez marcos, menu VIAGEM seguro, mural de missões e quatro selos narrativos.
+- Evidência: GitHub Actions CI `44098387837` e staging `44098460021` concluídos; revisão **52**, `PERSISTED_OK + isolated engine bootstrap PASS`. A revisão 50 havia sido publicada, mas a inspeção falhou; corrigido pelos PRs #61/#62 e verificado na 51.
+- **Não certificado:** testes reais de servidor/cliente, 2 jogadores, joystick mobile, desempenho e DataStore entre servidores. Estado `AWAITING_OWNER` para evidência, **não** `PLAYTEST_OK`, `RUNTIME_OK`, `DATASTORE_OK` ou produção.
+- Próximo checkpoint: executar [gate de aceitação](../testing/phase1-final-acceptance.md) em servidor novo e registrar revisão, logs F9 e evidências (sem dados pessoais). Corrigir problemas reproduzidos em PR separado.
+- Coordenação: GLM PR #45 continua bloqueado por teleporte direto e não deve substituir o menu seguro PR #58. Os 10 NPCs permanecem desativados. Histórico abaixo é preservado, mesmo quando marcado como REVIEW no passado.
+
+
 ## EMBER-RETURN-PERSIST-001 — validar vitória no retorno e enfileirar salvamento antes da interface
 
 - Responsável: CODEX. Base: `b0699ba0b05636a96975049a491a7f9f94f95e5f`. Branch: `codex/ember-seal-save-order`.

@@ -35,6 +35,17 @@ def collect_logs(path, revision, key):
     raise ValueError("Log pagination exceeded bound; partial evidence preserved")
 
 
+def latest_evidence(artifacts, run):
+    eligible = []
+    for artifact in artifacts:
+        match = re.fullmatch(rf"staging-evidence-{re.escape(run)}-([1-9][0-9]*)", artifact.get("name", ""))
+        if match and not artifact.get("expired", True):
+            eligible.append((int(match[1]), artifact["id"], artifact))
+    if not eligible:
+        raise ValueError("No retained staging evidence for this run")
+    return max(eligible, key=lambda value: (value[0], value[1]))[2]
+
+
 def main():
     run = os.environ["PUBLISH_RUN_ID"]
     mode = os.environ["INSPECT_MODE"]
@@ -45,10 +56,13 @@ def main():
                    os.environ["GH_TOKEN"], github=True)
     if info.get("path") != ".github/workflows/publish-staging.yml" or info.get("head_branch") != "main":
         raise ValueError("Only official main staging publications may be inspected")
+    artifacts = request(f"https://api.github.com/repos/{repo}/actions/runs/{run}/artifacts?per_page=100",
+                        os.environ["GH_TOKEN"], github=True)
+    artifact = latest_evidence(artifacts["artifacts"], run)
     OUT.mkdir(exist_ok=True)
     with tempfile.TemporaryDirectory() as d:
         subprocess.run(["gh", "run", "download", run, "--repo", repo,
-                        "--pattern", "staging-evidence-*", "--dir", d], check=True, capture_output=True)
+                        "--name", artifact["name"], "--dir", d], check=True, capture_output=True)
         receipts = sorted(Path(d).rglob("receipt.json"))
         if len(receipts) != 1:
             raise ValueError("Expected one unambiguous publication receipt")
@@ -62,6 +76,8 @@ def main():
         for file in folder.iterdir():
             if file.is_file():
                 shutil.copyfile(file, OUT / file.name)
+    save("inspection-origin.json", {"publish_run_id": run, "artifact_id": artifact["id"],
+                                    "artifact_name": artifact["name"], "revision": receipt["revision"]})
     if mode == "logs":
         task = json.loads((OUT / "engine-task.json").read_text(encoding="utf-8"))
         collect_logs(task["path"], receipt["revision"], os.environ["ROBLOX_OPEN_CLOUD_API_KEY"])

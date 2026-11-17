@@ -3,18 +3,11 @@ on:
   pull_request:
   push:
     branches: [main, 'setup/**']
-    paths-ignore:
-      - 'docs/**'
-      - 'AGENTS.md'
-      - 'ARCHITECTURE.md'
-      - 'GDD.md'
-      - 'README.md'
-      - 'tests/**'
-      - '.github/workflows/ci.yml'
-      - '.github/workflows/inspect-staging.yml'
-      - 'tools/inspect_staging.py'
-      - 'tools/verify_cloud.py'
-      - 'tools/engine_probe.luau'
+    # PRs validate all changes. Only content/composition changes produce a release.
+    paths:
+      - 'src/**'
+      - 'assets/**'
+      - 'default.project.json'
   workflow_dispatch:
 
 permissions:

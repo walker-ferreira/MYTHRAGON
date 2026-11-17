@@ -33,8 +33,11 @@ Não restaurar Place inteiro a partir de trabalho local não integrado.
 
 `INSPECT staging (no upload)` recupera recibo e artefato de um PUBLISH oficial,
 valida identidade e permite buscar logs da tarefa existente ou repetir a inspeção
-isolada. Não envia PATCH nem salva Place. Alterações só de docs/inspeção/testes
-continuam validadas no PR, mas não disparam novo candidato de conteúdo na main.
+isolada. Não envia PATCH nem salva Place. Seleciona o attempt mais recente do run,
+com identidade validada e origem do artefato registrada. Alterações só de
+docs/tooling/workflows/testes continuam validadas no PR, mas não disparam novo
+candidato: push de main produz release quando altera src/, assets/ ou composição
+default.project.json. Tooling-only não republica conteúdo conhecido-falho.
 
 ## Roteiro curto para o proprietário
 

@@ -9,6 +9,16 @@ from release import PLACE, UNIVERSE
 
 
 class InspectionTests(unittest.TestCase):
+    def test_latest_attempt_selection_is_numeric_and_run_bound(self):
+        def artifact(attempt, identifier):
+            return {"id": identifier, "name": f"staging-evidence-123-{attempt}", "expired": False}
+        older, latest = artifact(9, 90), artifact(10, 100)
+        other = {"id": 999, "name": "staging-evidence-999-99", "expired": False}
+        expired = dict(artifact(11, 110), expired=True)
+        self.assertEqual(inspect_staging.latest_evidence([older, latest, other, expired], "123"), latest)
+        with self.assertRaises(ValueError):
+            inspect_staging.latest_evidence([other, expired], "123")
+
     def test_task_path_is_revision_and_destination_bound(self):
         path = f"universes/{UNIVERSE}/places/{PLACE}/versions/13/luau-execution-sessions/a/tasks/b"
         self.assertEqual(inspect_staging.task_path(path, "13"), path)

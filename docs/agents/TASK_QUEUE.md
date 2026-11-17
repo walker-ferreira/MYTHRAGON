@@ -6,6 +6,14 @@ Claim por branch/PR, nunca dois escritores no mesmo worktree.
 Estados de trabalho: AVAILABLE, ASSIGNED, IMPLEMENTING, REVIEW, BLOCKED, INTEGRATED,
 AWAITING_OWNER. Estados de certificação são separados (AGENTS.md).
 
+## EMBER-RETURN-PERSIST-001 — validar vitória no retorno e enfileirar salvamento antes da interface
+
+- Responsável: CODEX. Base: `b0699ba0b05636a96975049a491a7f9f94f95e5f`. Branch: `codex/ember-seal-save-order`.
+- Caminhos: `src/server/{Diagnostics/Bootstrap,Ember/Combat,Profile/ProgressStore,Profile/ObjectivesStore}.luau` e `docs/testing/ember-return-milestone.md`.
+- Dependências: resultado de encontro emitido pelo controlador Ember e DataStore monotônico existente.
+- Aceite: saída de encontro abandonado não registra retorno, mesmo com selo antigo. Selos e marcos entram na fila de gravação antes da atualização visual. Erro no marco após o deslocamento não invalida o retorno físico.
+- Estado: REVIEW. Próximo checkpoint: inspecionar staging e validar o fluxo de vitória e reconexão com um cliente Roblox.
+
 ## LATUNIA-TRAVEL-RECOVERY-001 — confirmar chegada antes de atualizar a viagem
 
 - Responsável: CODEX. Base: `600316ca927aa5c0c10765db3605964ce661865e`. Branch: `codex/latunia-travel-recovery`.

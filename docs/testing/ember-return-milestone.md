@@ -2,7 +2,7 @@
 
 A jornada de descoberta passa de 9 para **10 marcos**. O novo objetivo `retorno` aparece depois da conquista do Selo de Ember e antes da descoberta da Vila Central. Ele é registrado **somente** quando o controlador de combate de Ember consegue retornar o participante a Aetheria via portal roxo ou retorno automático depois da vitória.
 
-- A callback de retorno de Ember executa primeiro o deslocamento oficial e depois consulta `Profile.hasSeal(player, "Ember")` no servidor. Sem selo confirmado, não concede o marco.
+- Após o deslocamento oficial, o servidor exige vitória no encontro que o jogador acabou de disputar e confirma a presença do Selo de Ember. Jogadores com selo antigo podem repetir a vitória e concluir o retorno.
 - Viagens de debug, saída de Latúnia e comandos de proprietário não registram a etapa; a callback especial só é ligada à arena de Ember.
 - `ObjectivesStore.recordEmberReturn` deduplica por jogador/sessão, envia atualização somente à interface individual e salva em `Mythragon_Progress_v1` com `UpdateAsync` monotônico, sem novas recompensas.
 - `ObjectivesData` preserva esquema v1 e campos históricos. O painel carrega o marco após reconexão, sem contá-lo como uma sexta ilha.
@@ -10,7 +10,7 @@ A jornada de descoberta passa de 9 para **10 marcos**. O novo objetivo `retorno`
 
 ## QA indispensável
 
-1. Entrar em Ember, perder ou abandonar e retornar: **não** marcar `retorno`.
+1. Entre em Ember e saia antes da vitória. O marco deve continuar pendente. Repita com um jogador que já possui o selo de uma vitória antiga, mas ainda tem o retorno pendente.
 2. Derrotar o Guardião, ganhar o selo, sair pelo portal roxo: marcar `retorno` uma única vez e avançar para Vila Central.
 3. Repetir o retorno automático após 30 s; verificar mesma deduplicação.
 4. Viagem debug Ember→Hub não marca a etapa; usuário sem selo não recebe progresso.

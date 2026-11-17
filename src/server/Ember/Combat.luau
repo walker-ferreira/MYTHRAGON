@@ -289,7 +289,7 @@ function Combat:returnPlayer(player)
     if not s or s.returning or not self.onReturn then return false end
 
     s.returning = true
-    local ok, err = pcall(self.onReturn, player)
+    local ok, err = pcall(self.onReturn, player, s.rules.result == "victory")
     s.returning = false
     if not ok then
         warn("Ember: falha ao retornar ao hub: " .. tostring(err))

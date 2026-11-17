@@ -35,10 +35,13 @@ function Bootstrap.run()
 		assert(type(returnToHub) == "function", "Hub return contract")
 		local ProgressStore = require(parent.Profile.ProgressStore)
 		current.progress = ProgressStore.start(Profile, Hub)
+		local ObjectivesStore = require(parent.Profile.ObjectivesStore)
+		current.objectives = ObjectivesStore.start(Hub)
 		Ember.connectReturn(map, returnToHub)
 		assert(map:FindFirstChild("Hub"), "Hub did not mount")
 		profileConnection = Players.PlayerRemoving:Connect(function(player) Profile.clearSession(player) end)
 	end, function()
+		if current.objectives then current.objectives.stop() end
 		if current.progress then current.progress.stop() end
 		if profileConnection then profileConnection:Disconnect() end
 		if map then map:Destroy() end

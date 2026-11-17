@@ -18,11 +18,11 @@ AWAITING_OWNER. Estados de certificação são separados (AGENTS.md).
   ainda precisa ser testado; não presume executor externo GLM/Codex instalado.
 - Aceite: sem publicação fantasma, build/SHA/destino/revisão rastreáveis,
   testes disponíveis executados, saúde do mundo e pendências verdadeiras.
-- Estado: BLOCKED (OPS-002: OAuth workflow). A auditado; B aplicado com bloqueio
-  residual; C exercitado com GLM real/lease; D/E implementados e testados localmente;
-  F motor pendente; G sem publicação; H planejado.
-- Próximo checkpoint: autenticação oficial workflow pelo proprietário, push dos
-  workflows, CI nova, revisão final, integração conjunta e staging experimental.
+- Estado: IMPLEMENTING. OPS-002 resolvido; #12 integrado com CI nova PASS em
+  main c669613. Primeiro publish automático falhou antes de PATCH (REL-004).
+  F motor pendente; G sem nova publicação; H planejado.
+- Próximo checkpoint: corrigir/revisar journal do environment, PR/CI e novo
+  candidato oficial; conferir revisão e inspeção de motor disponível.
 - Evidência: docs/engineering/AUDIT-2026-11-16.md.
 
 ## LAT-GLM-001 — Gelo/Selva e revisão independente da recuperação

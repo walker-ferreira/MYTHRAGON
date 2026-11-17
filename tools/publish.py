@@ -107,6 +107,26 @@ def recover_receipt(api, deployments, candidate):
     raise ValueError("Deployment exists without recoverable operation receipt; inspect prior upload. No duplicate PATCH.")
 
 
+def publication_journals(deployments):
+    """Environment jobs create empty GitHub deployments before our publisher starts."""
+    journals = []
+    for deployment in deployments:
+        payload = deployment.get("payload", {})
+        if isinstance(payload, str):
+            payload = json.loads(payload)
+        if not isinstance(payload, dict):
+            raise ValueError("Unexpected deployment payload; investigate before uploading")
+        if payload.get("mythragon_journal_schema") == 1 or (
+                payload.get("build_run_id") and payload.get("sha256")):
+            journals.append(deployment)
+        elif not payload and deployment.get("task") == "deploy" and deployment.get("ref") == "main":
+            # GitHub Actions environment bookkeeping, not an upload/operation fence.
+            continue
+        else:
+            raise ValueError("Unrecognized deployment journal; investigate before uploading")
+    return journals
+
+
 def main():
     sha, run = os.environ["BUILD_SHA"], os.environ["BUILD_RUN_ID"]
     m = verify_manifest(OUT, sha, run)
@@ -128,7 +148,7 @@ def main():
     if str(target.get("universeId")) != UNIVERSE:
         raise ValueError("Place belongs to another universe")
     save("target.json", target)
-    previous = api(f"/deployments?sha={sha}&environment=staging&per_page=100")
+    previous = publication_journals(api(f"/deployments?sha={sha}&environment=staging&per_page=100"))
     if previous:
         m = recover_receipt(api, previous, m)
         save("receipt.json", m)
@@ -150,7 +170,8 @@ def main():
     deployment = api("/deployments", {"ref": sha, "environment": "staging",
                      "auto_merge": False, "required_contexts": [], "production_environment": False,
                      "description": "MYTHRAGON experimental staging",
-                     "payload": {"build_run_id": run, "sha256": m["sha256"]}}, "POST")
+                     "payload": {"mythragon_journal_schema": 1,
+                                 "build_run_id": run, "sha256": m["sha256"]}}, "POST")
     dep_id = deployment["id"]
     m["deployment_id"] = dep_id
     save("deployment.json", {"id": dep_id, "sha": sha})

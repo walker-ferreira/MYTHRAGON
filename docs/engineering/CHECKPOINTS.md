@@ -62,5 +62,20 @@ Condição de
 merge explícita: código e workflows completos juntos, CI nova aprovada. Não
 integrar PR #12 parcial nem acionar publisher antigo para contornar OPS-002.
 
+## Retomada após autenticação — publicação real em recuperação
+
+- Proprietário concluiu refresh; scope workflow conferido e push b3f6888 aceito.
+- CI ampliada de PR 43983522637 PASS, todas etapas novas executadas.
+- PR #12 integrado sem bypass, main c66961397f30bb684f939421642dfc27c7a5848f.
+- CI oficial main 43983671970 PASS. Artefato baixado e manifesto validado
+  independentemente; SHA-256 rbxlx:
+  cf02566f287132ea7ce1bdc3611e656ba2422b971b41fb4b629c620936a29ad2.
+- PUBLISH workflow_run 43983719759 disparou automaticamente, mas falhou
+  corretamente antes de PATCH: environment job criou deployment vazio e ele foi
+  confundido com journal de upload (REL-004). Sem upload-intent/response/receipt.
+- Fix mínimo e regressão em codex/fix-staging-journal, base main c669613;
+  19 testes Python PASS local. Nova revisão GLM solicitada. Não republicar build
+  anterior por caminho manual; integrar correção e deixar pipeline oficial agir.
+
 O commit que contém cada registro é consultável por `git log -- <arquivo>`;
 não inserir SHA autorreferencial fictício. Resultados posteriores entram abaixo.

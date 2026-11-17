@@ -10,6 +10,15 @@ from release import PLACE, UNIVERSE
 
 
 class PublishGateTests(unittest.TestCase):
+    def test_environment_job_record_is_not_an_upload_journal(self):
+        environment = {"id": 1, "ref": "main", "task": "deploy", "payload": {}}
+        journal = {"id": 2, "payload": {
+            "mythragon_journal_schema": 1, "build_run_id": "1", "sha256": "reviewed"}}
+        self.assertEqual(publish.publication_journals([environment]), [])
+        self.assertEqual(publish.publication_journals([environment, journal]), [journal])
+        with self.assertRaises(ValueError):
+            publish.publication_journals([{"id": 3, "payload": {"unknown": True}}])
+
     def test_resume_polls_operation_without_upload(self):
         m = {"git_sha": "a" * 40, "operation": "operations/accepted"}
         result = {"done": True, "response": {

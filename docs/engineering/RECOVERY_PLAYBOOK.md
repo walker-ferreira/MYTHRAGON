@@ -39,3 +39,17 @@ registrar PENDING, não PASS e não esconder erro.
   integra pelo PR e deixa staging automático selecionar o build.
 - Commits locais preservados; registro remoto da auditoria não prova que o novo
   pipeline já esteja instalado no GitHub.
+
+## REL-004 — deployment automático do environment confundido com journal
+
+- Run real 43983719759, SHA c66961397f30bb684f939421642dfc27c7a5848f:
+  falhou em `recover_receipt` com "Prior deployment has a different artifact/build".
+- API mostrou deployment 7839851079, ref main, task deploy e payload vazio,
+  criado pelo GitHub para iniciar o job com environment staging. Não era upload.
+- Evidências do run contêm manifesto/artefato/target/tests, mas não upload-intent,
+  upload-response, operação ou receipt. A falha ocorreu antes do PATCH.
+- Correção: distinguir registros automáticos vazios de journals de publicação,
+  que possuem marcador de schema e identidade build/hash. Journals desconhecidos
+  continuam bloqueando; recibos reais continuam exigindo retomada sem PATCH.
+- Teste de regressão: environment sozinho é ignorado; journal coexistente é
+  preservado; payload desconhecido é rejeitado. Não apagar deployments para ocultar erro.

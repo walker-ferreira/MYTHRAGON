@@ -90,6 +90,19 @@ assert(workspace.MythragonMap.Hub:FindFirstChild("HubSpawn"))
 local ember = assert(workspace.MythragonMap:FindFirstChild("Ember"))
 local boss = assert(ember:FindFirstChild("BasaltWyrm"))
 local body = assert(boss:FindFirstChild("ObsidianBody"))
+local attackPrompt = assert(body:FindFirstChild("Attack"), "Ember attack missing")
+local dodgeAnchor = assert(body:FindFirstChild("DodgePromptAnchor"), "Mobile dodge attachment missing")
+local dodgePrompt = assert(dodgeAnchor:FindFirstChild("Dodge"), "Ember dodge missing")
+assert(attackPrompt:IsA("ProximityPrompt") and dodgePrompt:IsA("ProximityPrompt"))
+assert(attackPrompt.Exclusivity == Enum.ProximityPromptExclusivity.AlwaysShow
+    and dodgePrompt.Exclusivity == Enum.ProximityPromptExclusivity.AlwaysShow,
+    "Attack and dodge must remain jointly visible on touch")
+assert(attackPrompt.GamepadKeyCode == Enum.KeyCode.ButtonX
+    and dodgePrompt.GamepadKeyCode == Enum.KeyCode.ButtonB,
+    "Attack and dodge gamepad buttons must not conflict")
+assert(attackPrompt.KeyboardKeyCode == Enum.KeyCode.E
+    and dodgePrompt.KeyboardKeyCode == Enum.KeyCode.Q,
+    "Keyboard attack and dodge controls must remain separate")
 local board = assert(body:FindFirstChildOfClass("BillboardGui"))
 local background = assert(board:FindFirstChild("BossHealthBackground"))
 assert(background:FindFirstChild("BossHealthFill"), "Boss HP bar missing")

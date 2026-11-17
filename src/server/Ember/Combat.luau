@@ -157,7 +157,7 @@ end
 
 function Combat:enter(player)
     -- One exclusive encounter: other players cannot steal damage, rewards or arena slots.
-    if self.session then
+    if not player or player.Parent ~= Players or self.session then
         return false
     end
     local character = player.Character
@@ -180,7 +180,23 @@ function Combat:enter(player)
             self:close("abandoned")
         end
     end)
-    character:PivotTo(CFrame.new(self.center + Vector3.new(0, 4, 12)))
+    -- A failed teleport must not leave a permanent occupied arena or
+    -- retained CharacterRemoving/Died listeners. The Hub gateway releases
+    -- its own inTransit flag when enter returns false.
+    local original = character:GetPivot()
+    local moved, movementError = pcall(function()
+        character:PivotTo(CFrame.new(self.center + Vector3.new(0, 4, 12)))
+    end)
+    if not moved then
+        warn("[Ember] entrada na arena falhou: " .. tostring(movementError))
+        pcall(function()
+            if character.Parent and player.Character == character then
+                character:PivotTo(original)
+            end
+        end)
+        self:close("abandoned")
+        return false
+    end
     self:message("Guardião 100/100 · E atacar / Q esquivar\nControle B · toque nos comandos")
     task.spawn(function()
         while self.session == s do

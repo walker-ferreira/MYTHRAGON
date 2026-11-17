@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "external_ids": [],
+  "native_references": [
+    "rbxasset://textures/particles/smoke_main.dds",
+    "rbxasset://textures/particles/sparkles_main.dds"
+  ],
+  "procedural_scenes": [
+    {"id": "latunia", "version_source": "git", "origin": "original", "generator": "src/server/Latunia/Codex/Map.luau", "parameters": "src/server/Latunia/Codex/Layout.luau", "max_parts": 2500, "integration": "Diagnostics.Bootstrap", "runtime_evidence": "PENDING"},
+    {"id": "vila-central", "version_source": "git", "origin": "original", "generator": "src/server/Hub/Latunia.luau", "integration": "partnerBuilders.Central", "runtime_evidence": "PENDING"}
+  ]
+}

@@ -1,0 +1,48 @@
+name: INSPECT staging (no upload)
+on:
+  workflow_dispatch:
+    inputs:
+      publish_run_id:
+        description: Run de publicação cujo recibo/revisão serão inspecionados
+        required: true
+        type: string
+      mode:
+        description: Recuperar logs existentes ou repetir inspeção isolada
+        required: true
+        type: choice
+        options: [logs, verify]
+        default: logs
+
+permissions:
+  contents: read
+  actions: read
+  deployments: write
+concurrency:
+  group: roblox-staging-135004978091658
+  cancel-in-progress: false
+jobs:
+  inspect:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: staging
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+      ROBLOX_OPEN_CLOUD_API_KEY: ${{ secrets.ROBLOX_OPEN_CLOUD_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Recover exact receipt and inspect without upload
+        env:
+          PUBLISH_RUN_ID: ${{ inputs.publish_run_id }}
+          INSPECT_MODE: ${{ inputs.mode }}
+        run: python tools/inspect_staging.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: inspection-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: dist/
+          if-no-files-found: error
+          retention-days: 90

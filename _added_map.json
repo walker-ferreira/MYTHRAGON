@@ -1,0 +1,21 @@
+{
+ "src/server/Diagnostics/Bootstrap.luau": 2920,
+ "src/server/Diagnostics/BuildInfo.luau": 154,
+ "src/server/Diagnostics/Health.luau": 2302,
+ "tests/test_cloud.py": 3681,
+ "tests/test_coordinate.py": 1499,
+ "tests/test_inspect.py": 2048,
+ "tests/test_publish.py": 5488,
+ "tests/test_release.py": 3492,
+ "tools/configure_github.py": 2219,
+ "tools/coordinate.py": 3406,
+ "tools/engine_probe.luau": 2673,
+ "tools/inspect_staging.py": 4142,
+ "tools/install-lsp.sh": 698,
+ "tools/install-luau.sh": 380,
+ "tools/publish.py": 11567,
+ "tools/release.py": 6334,
+ "tools/static_gate.py": 2334,
+ "tools/validate.py": 2510,
+ "tools/verify_cloud.py": 7139
+}

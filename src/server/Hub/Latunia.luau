@@ -37,6 +37,10 @@ local Players = game:GetService("Players")
 
 local Latunia = {}
 
+-- Fonte única das posições das melhorias (testada pela CI em
+-- LatuniaIslandsData.spec.luau).
+local IslandsData = require(script.Parent.LatuniaIslandsData)
+
 -- Paleta Latúnia (concept art): arenito cobre, ferro escuro, latão, vidro
 -- âmbar e telhados de zinco envelhecido.
 local STONE = Color3.fromRGB(96, 78, 60)
@@ -46,6 +50,8 @@ local BRASS = Color3.fromRGB(201, 162, 39)
 local GLASS_AMBER = Color3.fromRGB(242, 178, 92)
 local ZINC_ROOF = Color3.fromRGB(125, 138, 140)
 local EMBER_GLOW = Color3.fromRGB(255, 157, 77)
+local WOOD_DARK = Color3.fromRGB(74, 58, 44)
+local GREEN_FOLIAGE = Color3.fromRGB(70, 130, 80)
 
 local ELEVATOR_COOLDOWN = 1
 
@@ -389,8 +395,141 @@ function Latunia.build(parent, anchorCFrame)
 	lamp(model, "LampiaoTrj3", W(Vector3.new(2, 0, 2)))
 	lamp(model, "LampiaoPraca", W(Vector3.new(-2, 8, -8)))
 
+	-- ===== Melhorias GLM (LAT-GLM-001, decisão 0007) =====
+	-- Ruas de pedra (dados testados pela CI).
+	for _, street in ipairs(IslandsData.Vila.paths) do
+		part(model, "Rua" .. street.name, Vector3.new(street.dx, 0.16, street.dz),
+			A(CFrame.new(street.x, 0.08, street.z)), Enum.Material.Cobblestone,
+			Color3.fromRGB(84, 70, 58))
+	end
+
+	-- Fonte da Praça: poço de pedra, água, jato e luz.
+	local fountain = IslandsData.find("Vila", "landmarks", "Fonte da Praça")
+	if fountain then
+		local fx, fz = fountain.x, fountain.z
+		for index = 0, 7 do
+			local angle = index * math.pi / 4
+			part(model, "FonteBorda" .. index, Vector3.new(3, 1.4, 3),
+				A(CFrame.new(fx + math.cos(angle) * 3.6, 8.7, fz + math.sin(angle) * 3.6)),
+				Enum.Material.Slate, STONE_DARK)
+		end
+		local water = part(model, "FonteAgua", Vector3.new(0.4, 7, 7),
+			A(CFrame.new(fx, 8.55, fz) * CFrame.Angles(0, 0, math.rad(90))),
+			Enum.Material.Glass, GLASS_AMBER)
+		water.Transparency = 0.35
+		part(model, "FonteColuna", Vector3.new(1, 2.6, 1),
+			A(CFrame.new(fx, 9.3, fz)), Enum.Material.Marble, Color3.fromRGB(200, 188, 164))
+		part(model, "FonteJato", Vector3.new(0.7, 1.4, 0.7),
+			A(CFrame.new(fx, 10.6, fz)), Enum.Material.Neon, GLASS_AMBER)
+		local waterLight = Instance.new("PointLight")
+		waterLight.Color = GLASS_AMBER
+		waterLight.Range = 14
+		waterLight.Brightness = 1
+		waterLight.Parent = model:FindFirstChild("FonteJato")
+		_ = water
+	end
+
+	-- Bancos e vasos na praça.
+	for _, spec in ipairs({ { -3, -12.5 }, { -3, -21.5 } }) do
+		part(model, "BancoAssento" .. spec[1] .. "_" .. spec[2], Vector3.new(3, 0.5, 1),
+			A(CFrame.new(spec[1], 8.45, spec[2])), Enum.Material.Wood, Color3.fromRGB(110, 84, 58))
+		part(model, "BancoPe" .. spec[1] .. "_" .. spec[2], Vector3.new(2.6, 0.4, 0.8),
+			A(CFrame.new(spec[1], 8.2, spec[2])), Enum.Material.Metal, IRON)
+	end
+	for _, spec in ipairs({ { -8, -21 }, { 14, -21 } }) do
+		part(model, "VasoPraca" .. spec[1] .. "_" .. spec[2], Vector3.new(3, 1.6, 3),
+			A(CFrame.new(spec[1], 8.8, spec[2])), Enum.Material.Terracotta,
+			Color3.fromRGB(140, 92, 62))
+		part(model, "VasoArvore" .. spec[1] .. "_" .. spec[2], Vector3.new(2.2, 2.4, 2.2),
+			A(CFrame.new(spec[1], 10.6, spec[2])), Enum.Material.Grass, GREEN_FOLIAGE)
+	end
+
+	-- Mural de Avisos (preparo de missões): quadro na entrada da vila.
+	local mural = IslandsData.find("Vila", "landmarks", "Mural de Avisos")
+	if mural then
+		part(model, "MuralPosteA", Vector3.new(0.5, 5, 0.5),
+			A(CFrame.new(mural.x, 2.5, mural.z - 1.2)), Enum.Material.Wood, WOOD_DARK)
+		part(model, "MuralPosteB", Vector3.new(0.5, 5, 0.5),
+			A(CFrame.new(mural.x, 2.5, mural.z + 1.2)), Enum.Material.Wood, WOOD_DARK)
+		part(model, "MuralQuadro", Vector3.new(0.4, 2.6, 3.4),
+			A(CFrame.new(mural.x, 3.6, mural.z)), Enum.Material.Wood, Color3.fromRGB(120, 92, 62))
+		for index = 1, 3 do
+			part(model, "MuralPapel" .. index, Vector3.new(0.1, 0.9, 0.7),
+				A(CFrame.new(mural.x + 0.25, 3.4 + (index % 2) * 0.9, mural.z - 0.9 + index * 0.9)),
+				Enum.Material.SmoothPlastic, Color3.fromRGB(226, 214, 180))
+		end
+	end
+
+	-- Barracas novas do mercado (toldos em cunha).
+	for _, spec in ipairs({ { -27, 3 }, { 18, 10 } }) do
+		part(model, "BarracaMesa" .. spec[1] .. "_" .. spec[2], Vector3.new(4, 1, 2),
+			A(CFrame.new(spec[1], 0.5, spec[2])), Enum.Material.Wood, Color3.fromRGB(120, 92, 62))
+		part(model, "BarracaToldo" .. spec[1] .. "_" .. spec[2], Vector3.new(4.6, 0.4, 2.6),
+			A(CFrame.new(spec[1], 3, spec[2]) * CFrame.Angles(0, 0, math.rad(10))),
+			Enum.Material.Fabric, Color3.fromRGB(160, 60, 50))
+		part(model, "BarracaBem" .. spec[1] .. "_" .. spec[2], Vector3.new(0.9, 0.9, 0.9),
+			A(CFrame.new(spec[1], 1.5, spec[2])), Enum.Material.Neon, EMBER_GLOW)
+	end
+
+	-- Mais duas construções no bairro (rua pavimentada passa na frente).
+	house(model, "Oficina5", W(Vector3.new(27, 0, -16)), 7, 6)
+	house(model, "Pensao", W(Vector3.new(28, 0, 10)), 7, 6)
+
+	-- Pontos preparados para NPC (medalhão de latão + aviso discreto).
+	for _, spot in ipairs(IslandsData.Vila.spots) do
+		local y = spot.level == "docas" and -5.3 or spot.level == "praca" and 8.15 or 0.75
+		local medallion = part(model, "NPCPonto" .. spot.level, Vector3.new(0.2, 2.6, 2.6),
+			A(CFrame.new(spot.x, y, spot.z) * CFrame.Angles(0, 0, math.rad(90))),
+			Enum.Material.Neon, BRASS)
+		medallion.CanQuery = false
+		local notice = part(model, "NPCPlaca" .. spot.level, Vector3.new(0.15, 0.8, 2.2),
+			A(CFrame.new(spot.x, y + 1.6, spot.z)), Enum.Material.Metal, IRON)
+		notice.CanQuery = false
+	end
+
+	-- Placas de orientação nas esquinas.
+	for _, spec in ipairs({
+		{ -20, 9, 0, "Docas da Vila ->" },
+		{ 12, 3, 0, "<- Mercado de Ferro e Vidro" },
+		{ 20, -13, 0, "Oficinas ->" },
+	}) do
+		local post = part(model, "PlacaPoste" .. spec[1] .. "_" .. spec[2],
+			Vector3.new(0.4, 4.4, 0.4), A(CFrame.new(spec[1], 2.2, spec[2])),
+			Enum.Material.Wood, WOOD_DARK)
+		local board = part(model, "PlacaTexto" .. spec[1] .. "_" .. spec[2],
+			Vector3.new(0.25, 1.2, 3), A(CFrame.new(spec[1], 3.8, spec[2])),
+			Enum.Material.Wood, Color3.fromRGB(120, 92, 62))
+		_ = post
+		_ = board
+	end
+
+	-- Lampiões extras (iluminação quente nas ruas e docas).
+	lamp(model, "LampiaoRuaA", W(Vector3.new(-18, 0, 8)))
+	lamp(model, "LampiaoRuaB", W(Vector3.new(10, 0, 8)))
+	lamp(model, "LampiaoRuaC", W(Vector3.new(24, 0, -2)))
+	lamp(model, "LampiaoDoca3", W(Vector3.new(0, -5, 20)))
+	lamp(model, "LampiaoPracaSul", W(Vector3.new(14, 8, -6)))
+
+	-- Bandeiras nas escadarias das docas (orientação ao chegar).
+	for _, spec in ipairs({ { -15, 25.5 }, { -9, 25.5 } }) do
+		part(model, "MastroBandeira" .. spec[1], Vector3.new(0.3, 7, 0.3),
+			A(CFrame.new(spec[1], 3.5, spec[2])), Enum.Material.Metal, BRASS)
+		part(model, "BandeiraTecido" .. spec[1], Vector3.new(2.4, 1.6, 0.1),
+			A(CFrame.new(spec[1] + 1.4, 6, spec[2])), Enum.Material.Fabric,
+			Color3.fromRGB(160, 60, 50))
+	end
+
 	model.Parent = parent
 	return model
 end
+
+-- Wrappers das ilhas GLM (Gelo/Selva): constroem o cenário base do Codex e
+-- adicionam as camadas GLM. O Bootstrap do Codex passa a usar
+-- Latunia.partnerBuilders (pedido GLM-R009).
+local LatuniaGelo = require(script.Parent.LatuniaGelo)
+local LatuniaSelva = require(script.Parent.LatuniaSelva)
+Latunia.Gelo = LatuniaGelo.build
+Latunia.Selva = LatuniaSelva.build
+Latunia.partnerBuilders = { Central = Latunia.build, Gelo = Latunia.Gelo, Selva = Latunia.Selva }
 
 return Latunia

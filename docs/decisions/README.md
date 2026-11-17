@@ -14,3 +14,4 @@ Leia estas decisões antes de mudar a arquitetura, o fluxo de publicação ou os
 Use o próximo número para uma decisão nova. Registre estado, contexto, decisão, motivo, consequências e como verificar. Quando uma decisão substituir outra, mantenha a anterior no histórico e indique o registro que a substituiu.
 
 Quando houver problema confirmado, acrescente os sintomas, a causa verificada, a correção e a verificação que impede a repetição. Marque dúvidas como pendentes e cite o PR ou a execução que confirmou a correção.
+| 0007 | Melhorias GLM nas ilhas de Latúnia — Gelo, Selva e Vila Central (LAT-GLM-001) | docs/decisions/0007-melhorias-ilhas-latinia-glm.md |

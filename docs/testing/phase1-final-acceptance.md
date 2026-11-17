@@ -1,6 +1,6 @@
 # MYTHRAGON — Gate final de aceitação da Fase 1
 
-**Estado atual:** implementação e build da Fase 1 em `main` entregues como **candidato de teste**, não certificadas como jogáveis. Última publicação experimental verificada: **staging revisão 51**, SHA `da50ac3ec6d93b0021d9250676b18845e62bc808`, GitHub Actions `44097503800`, `PERSISTED_OK` + `isolated engine bootstrap PASS`. Nenhum teste de cliente real é inferido disso.
+**Estado atual:** implementação e build da Fase 1 em `main` entregues como **candidato de teste**, não certificadas como jogáveis. Última publicação experimental verificada: **staging revisão 52**, SHA `c932ca58c9c6041eb1969e6483798fd315b260c9`, GitHub Actions `44098460021`, `PERSISTED_OK` + `isolated engine bootstrap PASS`. Nenhum teste de cliente real é inferido disso.
 
 ## Fluxo de 10 marcos implementado no servidor
 
@@ -20,7 +20,7 @@ A jornada visual também possui spawn, painéis de objetivos, quatro selos visua
 ## Gate A — código, build e cenário
 
 - [x] PRs de jogabilidade integrados, mantendo contribuições Codex/GLM.
-- [x] Compilação/CI Luau e Rojo da `main` passando para revisão 51.
+- [x] Compilação/CI Luau e Rojo da `main` passando para revisão 52.
 - [x] Publicação somente em staging e conferência da versão persistida.
 - [x] Inspector isolado verifica Aetheria, Ember, Varkhion, cinco ilhas, modelos GLM, prompts de viagem, mural, barra de vida e fontes.
 - [ ] Confirmar funcionamento físico com jogadores; CI e engine isolado não substituem.

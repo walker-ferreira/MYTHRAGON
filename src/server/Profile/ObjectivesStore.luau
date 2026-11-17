@@ -97,7 +97,7 @@ function ObjectivesStore.start(Hub)
             ExplorationPanel.hydrate(player, done)
             for objective, completed in pairs(done) do
                 if completed then
-                    if Data.isExploration(objective) then
+                    if Data.isExploration(objective) or objective == "retorno" then
                         local visited = arrivalRecorded[player]
                         if not visited then
                             visited = {}
@@ -151,6 +151,22 @@ function ObjectivesStore.start(Hub)
     end
 
     return {
+        recordEmberReturn = function(_, player)
+            if not active or not player or player.Parent ~= Players
+                or type(player.UserId) ~= "number" or player.UserId <= 0 then
+                return false
+            end
+            local visited = arrivalRecorded[player]
+            if not visited then
+                visited = {}
+                arrivalRecorded[player] = visited
+            end
+            if visited.retorno then return false end
+            visited.retorno = true
+            ExplorationPanel.markObjective(player, "retorno")
+            schedule(player.UserId, "retorno")
+            return true
+        end,
         recordArrival = function(_, player, islandId)
             local objectiveId = Data.arrivalId(islandId)
             if not active or not objectiveId or player.Parent ~= Players

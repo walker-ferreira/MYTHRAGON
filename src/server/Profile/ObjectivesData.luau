@@ -10,7 +10,7 @@ local arrivals = {
     Vulcanica = "vulcanica",
 }
 local allowed = {
-    guardioes = true, santuario = true, portal = true,
+    guardioes = true, santuario = true, portal = true, retorno = true,
     latunia = true, gelo = true, deserto = true, selva = true, vulcanica = true,
 }
 

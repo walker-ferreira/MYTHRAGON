@@ -41,7 +41,15 @@ function Bootstrap.run()
 		current.progress = ProgressStore.start(Profile, Hub)
 		local ObjectivesStore = require(parent.Profile.ObjectivesStore)
 		current.objectives = ObjectivesStore.start(Hub)
-		Ember.connectReturn(map, returnToHub)
+		Ember.connectReturn(map, function(player)
+			-- Only the active Ember encounter can use this callback. Debug
+			-- commands and Latunia returns call returnToHub independently.
+			returnToHub(player)
+			if Profile.hasSeal(player, "Ember") and current.objectives then
+				local first = current.objectives:recordEmberReturn(player)
+				if first then Hub.notify(player, "Jornada: retorno a Aetheria concluído!") end
+			end
+		end)
 		assert(map:FindFirstChild("Hub"), "Hub did not mount")
 		profileConnection = Players.PlayerRemoving:Connect(function(player) Profile.clearSession(player) end)
 	end, function()

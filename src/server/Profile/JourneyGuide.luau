@@ -6,6 +6,7 @@ Journey.steps = {
     { id = "santuario", label = "Converse com Varkhion" },
     { id = "portal", label = "Entre no portal de Ember" },
     { id = "Ember", label = "Derrote o Guardião e conquiste o selo" },
+    { id = "retorno", label = "Retorne a Aetheria pelo portal de Ember" },
     { id = "latunia", label = "Descubra a Vila Central de Latúnia" },
     { id = "gelo", label = "Explore a Ilha do Gelo" },
     { id = "deserto", label = "Explore a Ilha do Deserto" },

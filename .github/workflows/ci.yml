@@ -8,6 +8,8 @@ on:
       - 'src/**'
       - 'assets/**'
       - 'default.project.json'
+      # Probe changes must be re-verified against staging, not left untested.
+      - 'tools/engine_probe.luau'
   workflow_dispatch:
 
 permissions:

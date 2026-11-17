@@ -13,7 +13,11 @@ function ProgressData.read(raw)
     assert(raw.seals == nil or type(raw.seals) == "table", "Malformed saved seals")
     local seals = raw.seals or {}
     assert(seals.Ember == nil or type(seals.Ember) == "boolean", "Malformed Ember seal")
-    return { schema = 1, seals = { Ember = seals.Ember == true } }
+    -- Older servers could save the verified return before saving the seal.
+    -- The return milestone has always required ownership of this seal.
+    local objectives = raw.objectives
+    local returnedFromEmber = type(objectives) == "table" and objectives.retorno == true
+    return { schema = 1, seals = { Ember = seals.Ember == true or returnedFromEmber } }
 end
 
 -- UpdateAsync merge: never replace unrelated fields or erase an earned seal.

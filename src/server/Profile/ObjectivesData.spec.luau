@@ -1,6 +1,7 @@
 local D = require("./ObjectivesData")
 local seals = require("./ProgressData")
 for _, id in ipairs({"guardioes", "santuario", "portal"}) do assert(D.allowed(id)) end
+assert(D.allowed("latunia"), "First Central arrival must have a persistable objective ID")
 assert(not D.allowed("free_currency"))
 local previous = seals.merge(nil, "Ember")
 local step1 = D.merge(previous, "guardioes")
@@ -10,6 +11,10 @@ assert(D.read(step2).guardioes and D.read(step2).portal)
 local step3 = seals.merge(step2, "Ember")
 assert(step3.objectives.guardioes and step3.objectives.portal, "Seal write must preserve quests")
 assert(not D.read(step3).santuario)
+local arrived = D.merge(step3, "latunia")
+assert(D.read(arrived).latunia and arrived.seals.Ember == true)
+assert(D.read(D.merge(arrived, "latunia")).latunia, "Return visit must remain idempotent")
+assert(D.read(arrived).portal and D.read(arrived).guardioes, "Arrival cannot erase Hub objectives")
 local future = { schema = 1, seals = { Ember = true }, objectives = { bonus = true } }
 assert(D.merge(future, "santuario").objectives.bonus == true)
 for _, bad in ipairs({ "broken", { schema = 5, objectives = {} },

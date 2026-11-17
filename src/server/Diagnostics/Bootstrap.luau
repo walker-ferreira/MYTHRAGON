@@ -67,7 +67,12 @@ function Bootstrap.run()
 				Central = Vila.build,
 				Gelo = Expansion.ice,
 				Selva = Expansion.jungle,
-			})
+			}, function(player, islandId)
+				if islandId == "Central" and current.objectives then
+					local first = current.objectives:recordArrival(player, islandId)
+					if first then Hub.notify(player, "Jornada: Vila Central de Latúnia descoberta!") end
+				end
+			end)
 			assert(current.latunia.root.Parent == workspace, "Latunia did not mount")
 		end, function()
 			-- Map.build already owns rollback/connections; do not destroy an unowned scene.

@@ -1,0 +1,7 @@
+local Guide = require("./VarkhionGuidance")
+assert(Guide.forSeal(false) == Guide.EMBER)
+assert(Guide.forSeal(nil) == Guide.EMBER)
+assert(Guide.forSeal(true) == Guide.LATUNIA)
+assert(Guide.EMBER ~= Guide.LATUNIA)
+assert(string.find(Guide.LATUNIA, "Latúnia", 1, true))
+print("Varkhion story guidance: PASS")

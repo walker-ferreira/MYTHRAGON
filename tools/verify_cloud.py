@@ -30,10 +30,7 @@ for path, source in pairs(expected) do
 end
 local actualCount = 0
 local scripts = {}
-for _, root in {
-    game.ServerScriptService.Mythragon,
-    game.StarterPlayer.StarterPlayerScripts,
-} do
+local function countAuthored(root)
     for _, value in root:GetDescendants() do
         if value:IsA("LuaSourceContainer") then
             actualCount += 1
@@ -41,8 +38,27 @@ for _, root in {
         end
     end
 end
+-- Roblox injects its stock client controls/camera/sound packages in the
+-- engine runtime. They are not part of the authored Rojo artifact and must
+-- not be mistaken for uploaded source files. Only these exact engine roots
+-- are exempt; unknown client scripts still fail this count check.
+local stockRobloxScripts = {
+    PlayerModule = true,
+    PlayerScriptsLoader = true,
+    RbxCharacterSounds = true,
+}
+countAuthored(game.ServerScriptService.Mythragon)
+for _, child in game.StarterPlayer.StarterPlayerScripts:GetChildren() do
+    if not stockRobloxScripts[child.Name] then
+        if child:IsA("LuaSourceContainer") then
+            actualCount += 1
+            table.insert(scripts, child:GetFullName())
+        end
+        countAuthored(child)
+    end
+end
 if actualCount ~= count then
-    error(("Unexpected persisted script modules: expected=%%d actual=%%d paths=%%s")
+    error(("Unexpected persisted authored scripts: expected=%%d actual=%%d paths=%%s")
         :format(count, actualCount, HttpService:JSONEncode(scripts)))
 end
 local info = require(game.ServerScriptService.Mythragon.Diagnostics.BuildInfo)

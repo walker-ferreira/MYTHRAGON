@@ -51,7 +51,12 @@ class CloudEvidenceTests(unittest.TestCase):
         script_builder = inspect.getsource(verify_cloud.main)
         self.assertIn("game.StarterPlayer.StarterPlayerScripts", script_builder)
         self.assertIn("game.ServerScriptService.Mythragon", script_builder)
-        self.assertIn('Unexpected persisted script modules', script_builder)
+        # Engine auto-injects standard PlayerModule/controls and sounds.
+        # The authored client LocalScript must still be counted and matched.
+        for name in ("PlayerModule", "PlayerScriptsLoader", "RbxCharacterSounds"):
+            self.assertIn(name, script_builder)
+        self.assertIn("countAuthored(child)", script_builder)
+        self.assertIn("Unexpected persisted authored scripts", script_builder)
 
     def test_complete_with_error_is_not_success(self):
         result = self.complete()

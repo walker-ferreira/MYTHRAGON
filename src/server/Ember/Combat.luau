@@ -235,6 +235,10 @@ function Combat:dodge(player)
     local shift = direction * 11
     local target = root.Position + shift
     if (target - self.center).Magnitude > 48 then return false end
+    local rayParams = RaycastParams.new()
+    rayParams.FilterType = Enum.RaycastFilterType.Exclude
+    rayParams.FilterDescendantsInstances = { s.character, self.enemy, self.warning }
+    if workspace:Raycast(root.Position, shift, rayParams) then return false end
     if not s.dodge:use(os.clock()) then return false end
     root.AssemblyLinearVelocity = Vector3.zero
     s.character:PivotTo(s.character:GetPivot() + shift)

@@ -84,9 +84,12 @@ local function observePrompt(anchorPart, objectText, objectiveId)
 	prompt.RequiresLineOfSight = false
 	prompt.Parent = anchorPart
 	prompt.Triggered:Connect(function(player)
+		if player.Parent ~= Players or not anchorPart:IsDescendantOf(workspace) then return end
 		local character = player.Character
 		local humanoid = character and character:FindFirstChildOfClass("Humanoid")
-		if not (character and humanoid and humanoid.Health > 0) then
+		local root = character and character:FindFirstChild("HumanoidRootPart")
+		if not (character and humanoid and root) or humanoid.Health <= 0
+			or (root.Position - anchorPart.Position).Magnitude > 11 then
 			return
 		end
 		Hub.completeObjective(player, objectiveId)
@@ -880,10 +883,17 @@ function Hub.build(parent, onEnterEmber)
 		-- Contrato Ember (Sol): enter(player): boolean. false = recusado no
 		-- servidor (arena ocupada, personagem inválido). Sem recusa, o
 		-- jogador está a caminho de Ember e só volta pelo retorno do reino.
-		local accepted = onEnterEmber and onEnterEmber(player)
-		if accepted == false then
+		local ok, accepted = pcall(function()
+			return onEnterEmber and onEnterEmber(player)
+		end)
+		if not ok or accepted ~= true then
 			releaseTransit(player)
-			Hub.notify(player, "Guardião de Ember já está em combate · aguarde")
+			if not ok then
+				warn("[Hub] Ember entry failed: " .. tostring(accepted))
+				Hub.notify(player, "Não foi possível entrar em Ember. Tente novamente.")
+			else
+				Hub.notify(player, "Guardião de Ember já está em combate · aguarde")
+			end
 		else
 			-- Entrada aceita pelo servidor de Ember: objetivo do portal concluído.
 			Hub.completeObjective(player, "portal")

@@ -64,12 +64,11 @@ function Bootstrap.run()
 		health:stage("Latunia", function()
 			local Latunia = require(parent.Latunia.Codex.Map)
 			local Vila = require(parent.Hub.Latunia)
-			local Expansion = require(parent.Latunia.Codex.Expansion)
-			current.latunia = Latunia.build(workspace, returnToHub, {
-				Central = Vila.build,
-				Gelo = Expansion.ice,
-				Selva = Expansion.jungle,
-			}, function(player, islandId)
+			-- GLM builders layer new scenery over the existing Codex island base.
+			-- All five island travel contracts and the arrival objective remain intact.
+			assert(type(Vila.partnerBuilders) == "table", "Latunia GLM builders missing")
+			current.latunia = Latunia.build(workspace, returnToHub,
+				Vila.partnerBuilders, function(player, islandId)
 				if current.objectives then
 					local first = current.objectives:recordArrival(player, islandId)
 					if first then

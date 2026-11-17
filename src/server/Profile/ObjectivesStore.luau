@@ -83,8 +83,13 @@ function ObjectivesStore.start(Hub)
             end
             for objective, completed in pairs(done) do
                 if completed then
-                    if objective == "latunia" then
-                        arrivalRecorded[player] = true
+                    if Data.isExploration(objective) then
+                        local visited = arrivalRecorded[player]
+                        if not visited then
+                            visited = {}
+                            arrivalRecorded[player] = visited
+                        end
+                        visited[objective] = true
                     else
                         Hub.restoreObjective(player, objective)
                     end
@@ -117,13 +122,19 @@ function ObjectivesStore.start(Hub)
 
     return {
         recordArrival = function(_, player, islandId)
-            if not active or islandId ~= "Central" or player.Parent ~= Players
+            local objectiveId = Data.arrivalId(islandId)
+            if not active or not objectiveId or player.Parent ~= Players
                 or type(player.UserId) ~= "number" or player.UserId <= 0 then
                 return false
             end
-            if arrivalRecorded[player] then return false end
-            arrivalRecorded[player] = true
-            schedule(player.UserId, "latunia")
+            local visited = arrivalRecorded[player]
+            if not visited then
+                visited = {}
+                arrivalRecorded[player] = visited
+            end
+            if visited[objectiveId] then return false end
+            visited[objectiveId] = true
+            schedule(player.UserId, objectiveId)
             return true
         end,
         stop = function()

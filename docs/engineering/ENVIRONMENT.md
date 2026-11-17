@@ -26,8 +26,10 @@ atualizada, conversas resolvidas, inclusive admin; sem force-push/deleção; zer
 aprovações humanas obrigatórias). Auto-merge habilitado. Environment staging
 criado e restrito à branch main, sem reviewers. Respostas API conferidas.
 
-Permissão GitHub ainda insuficiente **para editar workflows**: OAuth não possui
-`workflow`; push de workflows recusado. Código/docs sem workflows enviados a #12,
-mas CI nova/publicação automática ainda NÃO instaladas. Ver OPS-002.
+Bloqueio histórico OPS-002 resolvido: proprietário concluiu refresh OAuth; scope
+`workflow` confirmado e push aceito. PR #12 integrado com código+workflows em
+main c66961397f30bb684f939421642dfc27c7a5848f; CI ampliada oficial 43983671970 PASS.
+Primeiro PUBLISH automático 43983719759 falhou antes de upload por REL-004,
+não por falta de permissão. Não confundir pipeline instalado com release publicada.
 
 Não registrar cookies, tokens, API keys ou conteúdo de configuração com segredos.

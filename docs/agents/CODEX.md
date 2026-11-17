@@ -2,6 +2,12 @@
 
 ## REC-001 — recuperação 2026-11-16 (estado mais recente)
 
+**Retomada após autenticação:** OPS-002 resolvido; PR #12 integrado com CI ampliada
+PASS (43983522637 e main 43983671970). Main c669613. Publicação automática
+43983719759 falhou antes de PATCH por confundir deployment automático vazio com
+journal (REL-004). Correção/regressão na branch codex/fix-staging-journal;
+19 testes Python PASS local, revisão GLM solicitada. Ainda sem nova revisão Roblox.
+
 Este bloco substitui restrições operacionais históricas abaixo; não reescreve suas
 evidências. Política permanente em AGENTS.md. Integrador: GPT-6.1 Sol.
 

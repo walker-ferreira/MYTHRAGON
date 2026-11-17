@@ -8,7 +8,7 @@ local sessions = {}
 
 local function draw(session)
     if not session.gui or not session.gui.Parent then return end
-    session.counter.Text = ("LATÚNIA · %d/5 DESCOBERTAS"):format(session.state.total)
+    session.counter.Text = ("LATÚNIA · %d/5 · toque para abrir"):format(session.state.total)
     local nextStep, completed, total = Journey.next(session.objectives, session.ember)
     session.nextObjective.Text = ("JORNADA %d/%d · %s"):format(completed, total, nextStep)
     for _, entry in ipairs(State.order) do
@@ -37,7 +37,7 @@ local function build(player, session)
     local frame = Instance.new("ScrollingFrame")
     frame.Name = "Panel"
     frame.Position = UDim2.new(0, 12, 0, 180)
-    frame.Size = UDim2.new(0.34, 0, 1, -194)
+    frame.Size = UDim2.new(0.34, 0, 0, 42)
     frame.CanvasSize = UDim2.new(1, 0, 0, 215)
     frame.ScrollingDirection = Enum.ScrollingDirection.Y
     frame.ScrollBarThickness = 5
@@ -47,13 +47,38 @@ local function build(player, session)
     frame.Parent = gui
 
     local limit = Instance.new("UISizeConstraint")
-    limit.MinSize = Vector2.new(145, 0)
+    limit.MinSize = Vector2.new(145, 42)
     limit.MaxSize = Vector2.new(235, 215)
     limit.Parent = frame
 
     local corner = Instance.new("UICorner")
     corner.CornerRadius = UDim.new(0, 8)
     corner.Parent = frame
+
+    -- The map remains visible until the player opens the exploration details.
+    local expanded = false
+    local function setExpanded(value)
+        expanded = value
+        frame.Size = UDim2.new(0.34, 0, 0, expanded and 215 or 42)
+        frame.ScrollingEnabled = expanded
+        for _, child in ipairs(frame:GetChildren()) do
+            if child:IsA("TextLabel") and child.Name ~= "Counter" then
+                child.Visible = expanded
+            end
+        end
+    end
+
+    local toggle = Instance.new("TextButton")
+    toggle.Name = "Toggle"
+    toggle.Size = UDim2.new(1, -12, 0, 36)
+    toggle.Position = UDim2.fromOffset(6, 3)
+    toggle.BackgroundTransparency = 1
+    toggle.Text = ""
+    toggle.ZIndex = 3
+    toggle.Parent = frame
+    toggle.Activated:Connect(function()
+        setExpanded(not expanded)
+    end)
 
     local heading = Instance.new("TextLabel")
     heading.Name = "Counter"
@@ -96,6 +121,7 @@ local function build(player, session)
 
     session.gui, session.counter, session.rows = gui, heading, rows
     session.nextObjective = nextObjective
+    setExpanded(false)
     draw(session)
 end
 

@@ -2,7 +2,7 @@
 local app = game:GetService("ServerScriptService").Mythragon
 local result = require(app.Diagnostics.Bootstrap).run()
 assert(result == require(app.Diagnostics.Bootstrap).run(), "Bootstrap must be idempotent")
-assert(result.healthy, "Mandatory component failed; inspect structured logs")
+assert(result.healthy, "Mandatory component failed: " .. game:GetService("HttpService"):JSONEncode(result.health.failures))
 local root = assert(workspace:FindFirstChild("LatuniaCodex"), "Latunia missing")
 local Layout = require(app.Latunia.Codex.Layout)
 local islands = root.Islands

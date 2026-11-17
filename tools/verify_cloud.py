@@ -63,6 +63,13 @@ return HttpService:JSONEncode({ git_sha = info.gitSha, universe_id = tostring(ga
             result.pop("script", None)
             save("engine-task.json", result)
             state = result.get("state")
+            if state in ("COMPLETE", "FAILED", "CANCELLED"):
+                # Preserve structured engine errors; do not turn missing logs into a false PASS.
+                from inspect_staging import collect_logs
+                try:
+                    collect_logs(path, receipt["revision"], key)
+                except Exception as log_error:
+                    save("engine-log-error.json", {"type": type(log_error).__name__, "message": str(log_error)})
             if state == "COMPLETE":
                 if result.get("error"):
                     raise ValueError("Engine COMPLETE contains error")

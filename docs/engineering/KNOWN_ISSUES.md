@@ -13,4 +13,5 @@
 | DATA-001 | Profile mantém só sessão | Conhecido; fora do escopo desta recuperação |
 | OPS-002 | Push que altera workflows recusado: OAuth sem escopo workflow | Resolvido: proprietário autorizou scope; push real aceito |
 | REL-003 | Não mesclar código novo sem workflows | Resolvido: #12 integrou código e workflows juntos em c669613 |
-| REL-004 | Registro automático do environment confundido com journal de upload | Run 43983719759 falhou antes de PATCH; fix/teste em revisão; CODEX |
+| REL-004 | Registro automático do environment confundido com journal de upload | Resolvido pelo PR #14; publicação seguinte chegou à revisão 13 |
+| WORLD-002 | Inspeção da revisão 13 confirmou Sources mas Bootstrap isolado FAILED | Recuperar logs de componente; não concluir que servidor normal foi testado; CODEX |

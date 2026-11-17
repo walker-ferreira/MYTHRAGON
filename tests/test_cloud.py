@@ -36,7 +36,8 @@ class CloudEvidenceTests(unittest.TestCase):
         with patch.object(verify_cloud, "OUT", self.out), patch.object(
                 verify_cloud, "save", side_effect=lambda name, value: (self.out / name).write_text(json.dumps(value))), patch.object(
                 verify_cloud, "request", side_effect=side_effect), patch.dict(
-                verify_cloud.os.environ, {"ROBLOX_OPEN_CLOUD_API_KEY": "test-only"}), patch("builtins.print"):
+                verify_cloud.os.environ, {"ROBLOX_OPEN_CLOUD_API_KEY": "test-only"}), patch(
+                "inspect_staging.collect_logs", return_value=[]), patch("builtins.print"):
             verify_cloud.main()
 
     def complete(self, **changes):

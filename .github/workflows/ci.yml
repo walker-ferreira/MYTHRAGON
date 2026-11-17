@@ -3,6 +3,18 @@ on:
   pull_request:
   push:
     branches: [main, 'setup/**']
+    paths-ignore:
+      - 'docs/**'
+      - 'AGENTS.md'
+      - 'ARCHITECTURE.md'
+      - 'GDD.md'
+      - 'README.md'
+      - 'tests/**'
+      - '.github/workflows/ci.yml'
+      - '.github/workflows/inspect-staging.yml'
+      - 'tools/inspect_staging.py'
+      - 'tools/verify_cloud.py'
+      - 'tools/engine_probe.luau'
   workflow_dispatch:
 
 permissions:

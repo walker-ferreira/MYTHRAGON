@@ -6,6 +6,14 @@ Claim por branch/PR, nunca dois escritores no mesmo worktree.
 Estados de trabalho: AVAILABLE, ASSIGNED, IMPLEMENTING, REVIEW, BLOCKED, INTEGRATED,
 AWAITING_OWNER. Estados de certificação são separados (AGENTS.md).
 
+## EMBER-RETURN-ATOMIC-001 — gravar retorno e selo juntos
+
+- Responsável: CODEX. Base: `5e87e2a575143b39af082ae50c151cab31007f14`. Branch: `codex/persist-ember-return-with-seal`.
+- Caminhos: `src/server/Profile/ObjectivesData.luau` e `ObjectivesData.spec.luau`.
+- Dependências: retorno validado pelo servidor exige vitória, selo concedido e viagem concluída.
+- Aceite: gravação do marco de retorno inclui o selo de Ember na mesma atualização. Descobertas de ilhas preservam selos existentes.
+- Próximo checkpoint: rodar CI e confirmar a revisão experimental. Reconexão com cliente Roblox faz parte do teste de aceitação.
+
 ## QUEST-SAVE-BATCH-001 — consolidar gravação dos marcos da jornada
 
 - Responsável: CODEX. Base: `ca70154aec58b50b2aa53c20fed95cbf54cd5159`. Branch: `codex/objective-save-batches`.

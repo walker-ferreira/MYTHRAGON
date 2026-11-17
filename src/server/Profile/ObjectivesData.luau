@@ -54,6 +54,11 @@ function ObjectivesData.mergeMany(raw, completed)
     end
     out.schema = 1
     out.objectives = objectives
+    -- A server-validated Ember return proves that the player owns the seal.
+    -- Persist both together even if the independent seal write has not finished.
+    if completed.retorno then
+        return ProgressData.merge(out, "Ember")
+    end
     if not out.seals then out.seals = {} end
     return out
 end

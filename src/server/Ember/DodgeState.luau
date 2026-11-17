@@ -8,11 +8,13 @@ function DodgeState.new()
     return setmetatable({ nextAllowed = -math.huge, lastDodge = -math.huge }, DodgeState)
 end
 
+function DodgeState:canUse(now)
+    return type(now) == "number" and now == now and now ~= math.huge
+        and now ~= -math.huge and now >= self.nextAllowed
+end
+
 function DodgeState:use(now)
-    if type(now) ~= "number" or now ~= now or now == math.huge
-        or now == -math.huge or now < self.nextAllowed then
-        return false
-    end
+    if not self:canUse(now) then return false end
     self.lastDodge = now
     self.nextAllowed = now + DodgeState.COOLDOWN
     return true

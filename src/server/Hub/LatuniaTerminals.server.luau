@@ -139,23 +139,25 @@ local function terminal(parent, baseCFrame, titulo, rotas)
 	return model
 end
 
--- Terminal de embarque: 8 studs do centro da doca central da rota, no nível
--- do cais (origin Y + 1 é o centro da peça da doca; +1.6 pousa a base no topo).
-local function embarqueCFrame(quad)
-	local center = Vector3.new((quad[1] + quad[3]) / 2, 0, (quad[2] + quad[4]) / 2)
-	local dir = center.Magnitude > 0.01 and -center.Unit or Vector3.new(0, 0, -1)
-	local base = pos(Layout.origin) + center + dir * 8
-	return CFrame.new(base.X, base.Y + 1.6, base.Z)
+-- O ponto oficial de embarque é B.dock(...): BoardingPoint em b + (0, 3, 0),
+-- NÃO no centro da doca. Colocar os pads a 7 studs de b, em direção a a,
+-- mantém o clique dentro da distância máxima real (14 studs) do controlador.
+local function pertoDoPonto(quad, origem, floor)
+	local a = Vector3.new(quad[1], 0, quad[2])
+	local b = Vector3.new(quad[3], 0, quad[4])
+	local direction = (a - b).Magnitude > 0.01 and (a - b).Unit or Vector3.new(0, 0, -1)
+	local localPos = b + direction * 7
+	return CFrame.new(origem + localPos + Vector3.new(0, floor + 1.6, 0))
 end
 
--- Terminal de retorno: 8 studs do centro da doca da ilha, no piso dela.
+local function embarqueCFrame(quad)
+	return pertoDoPonto(quad, pos(Layout.origin), 0)
+end
+
 local function retornoCFrame(quad, slotId)
 	local def = Layout.islands[slotId]
-	local at = pos(Layout.origin) + Vector3.new(def.x, 0, def.z)
-	local center = Vector3.new((quad[1] + quad[3]) / 2, 0, (quad[2] + quad[4]) / 2)
-	local dir = center.Magnitude > 0.01 and -center.Unit or Vector3.new(0, 0, -1)
-	local base = at + center + dir * 8
-	return CFrame.new(base.X, at.Y + def.floor + 1.6, base.Z)
+	local origin = pos(Layout.origin) + Vector3.new(def.x, 0, def.z)
+	return pertoDoPonto(quad, origin, def.floor)
 end
 
 task.spawn(function()

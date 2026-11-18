@@ -55,7 +55,7 @@ AWAITING_OWNER. Estados de certificação são separados (AGENTS.md).
 - Evidência: GitHub Actions CI `44103144825` e staging `44103219262` concluídos; revisão **57**, `PERSISTED_OK + isolated engine bootstrap PASS`. A revisão 50 havia sido publicada, mas a inspeção falhou; corrigido pelos PRs #61/#62 e verificado na 51.
 - **Não certificado:** testes reais de servidor/cliente, 2 jogadores, joystick mobile, desempenho e DataStore entre servidores. Estado `AWAITING_OWNER` para evidência, **não** `PLAYTEST_OK`, `RUNTIME_OK`, `DATASTORE_OK` ou produção.
 - Próximo checkpoint: executar [gate de aceitação](../testing/phase1-final-acceptance.md) em servidor novo e registrar revisão, logs F9 e evidências (sem dados pessoais). Corrigir problemas reproduzidos em PR separado.
-- Coordenação: GLM PR #45 continua bloqueado por teleporte direto e não deve substituir o menu seguro PR #58. Os 10 NPCs permanecem desativados. Histórico abaixo é preservado, mesmo quando marcado como REVIEW no passado.
+- Coordenação: GLM PR #45 continua bloqueado por teleporte direto e não deve substituir o menu seguro PR #58. Substituto seguro aberto pela GLM: **PR #91** (GLM-R013, terminais físicos via `Map.requestTravel`, CI verde, aguardando revisão); #45 pode ser fechado sem merge. Os 10 NPCs permanecem desativados. Histórico abaixo é preservado, mesmo quando marcado como REVIEW no passado.
 
 
 ## EMBER-RETURN-PERSIST-001 — validar vitória no retorno e enfileirar salvamento antes da interface
